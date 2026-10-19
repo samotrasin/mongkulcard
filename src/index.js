@@ -4,7 +4,8 @@
 //   /                     greeting page
 //   /<event>              polite "use your personal link" page
 //   /<event>/<code>       a guest's personal invitation
-//   /img/..., /media/...  pictures and video (served from the public/ folder)
+//   /img/...             pictures (served from the public/ folder)
+//   /media/<event>/<file> video and music (served from the R2 bucket)
 
 // Rules that match the database: 7 characters from a-z and 2-9 without i, l, o.
 const CODE_RE = /^[a-hj-km-np-z2-9]{7}$/;
@@ -23,9 +24,14 @@ export default {
       return new Response('Method not allowed', { status: 405 });
     }
 
-    // Pictures and video: hand over to the static files.
-    if (parts[0] === 'img' || parts[0] === 'media') {
+    // Pictures: hand over to the static files in public/img.
+    if (parts[0] === 'img') {
       return env.ASSETS.fetch(request);
+    }
+
+    // Video and music: /media/<event>/<file>, kept in the R2 bucket.
+    if (parts[0] === 'media' && parts.length === 3 && SLUG_RE.test(parts[1])) {
+      return serveMedia(request, env, parts[1], parts[2]);
     }
 
     // Home
@@ -66,8 +72,9 @@ async function guestInvitation(request, env, ctx, url, slug, code) {
   let html = await file.text();
 
   // The design files say img/... and media/..., which only works on a page at the site root.
-  // On /lychhayly/<code> the browser would look in /lychhayly/img/..., so make them start with "/".
-  html = html.replace(/(["'(])(img|media)\//g, '$1/$2/');
+  // On /lychhayly/<code> the browser would look in /lychhayly/img/..., so make them start with "/". Media also gets the event name in front.
+  html = html.replace(/(["'(])img\//g, '$1/img/');
+  html = html.replace(/(["'(])media\//g, (m, q) => `${q}/media/${slug}/`);
 
   const MARK = '__GUEST_JS__';
   if (!html.includes("guest:'Chenda'")) return new Response('Template has no guest field', { status: 500 });
@@ -89,6 +96,61 @@ async function guestInvitation(request, env, ctx, url, slug, code) {
   }
 
   return page(html, 200, { 'cache-control': 'private, no-store' });
+}
+
+// Video and music from R2. Phones ask for the file in pieces ("Range"), which is what
+// lets a video start quickly and be skipped forward, so we answer those properly.
+const MEDIA_FILE_RE = /^[a-z0-9][a-z0-9._-]{0,59}\.(mp4|mp3|m4a|webm|jpg|png|webp)$/i;
+
+async function serveMedia(request, env, slug, file) {
+  if (!MEDIA_FILE_RE.test(file) || file.includes('..')) return page(notFound(), 404);
+
+  const obj = await env.PHOTOS.get(`media/${slug}/${file}`, { range: request.headers });
+  if (!obj) return page(notFound(), 404);
+
+  const headers = new Headers();
+  obj.writeHttpMetadata(headers); // content-type etc. stored with the file
+  headers.set('etag', obj.httpEtag);
+  headers.set('accept-ranges', 'bytes');
+  headers.set('cache-control', 'public, max-age=3600');
+  headers.set('x-robots-tag', 'noindex, nofollow');
+  headers.set('x-content-type-options', 'nosniff');
+
+  let status = 200;
+  if (obj.range && request.headers.has('range')) {
+    const size = obj.size;
+    let start, end;
+    const r = obj.range;
+    if (r.suffix !== undefined && r.suffix !== null) {
+      // "the last N bytes"
+      start = Math.max(0, size - r.suffix);
+      end = size - 1;
+    } else {
+      start = r.offset ?? 0;
+      end = r.length !== undefined && r.length !== null ? start + r.length - 1 : size - 1;
+    }
+    if (!Number.isFinite(start) || !Number.isFinite(end)) {
+      // Safety net: read the numbers from the browser's own Range header instead.
+      const m = /bytes=(\d*)-(\d*)/.exec(request.headers.get('range') || '');
+      if (m && m[1] !== '') {
+        start = Number(m[1]);
+        end = m[2] !== '' ? Math.min(Number(m[2]), size - 1) : size - 1;
+      } else if (m && m[2] !== '') {
+        start = Math.max(0, size - Number(m[2]));
+        end = size - 1;
+      } else {
+        start = 0;
+        end = size - 1;
+      }
+    }
+    headers.set('content-range', `bytes ${start}-${end}/${size}`);
+    headers.set('content-length', String(end - start + 1));
+    status = 206;
+  } else {
+    headers.set('content-length', String(obj.size));
+  }
+
+  return new Response(request.method === 'HEAD' ? null : obj.body, { status, headers });
 }
 
 // ---------------------------------------------------------------- helpers
