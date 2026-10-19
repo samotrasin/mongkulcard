@@ -553,7 +553,8 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
       ['p08',1000,1500],['p09',1500,1000],['p10',1001,1500],['p13',1500,1000],['p05',1000,1500],['p14',1500,1021],
       ['p11',1001,1500],['p15',1001,1500],['p12',988,1500],['p16',1000,1500]
     ],
-    video:'media/prewedding.mp4'
+    video:'media/prewedding.mp4',
+    music:'media/music.mp3'
   };
 
   /* guest name */
@@ -623,6 +624,7 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
   var opened=false;
   function openInvite(){
     if(opened)return;opened=true;
+    startMusic();
     cover.classList.add('opening');
     document.body.classList.add('opened');
     setTimeout(function(){cover.hidden=true;root.classList.remove('locked')},reduce?30:1700);
@@ -660,12 +662,29 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
 
   /* top bar */
   function setHidden(el,h){if(h)el.setAttribute('hidden','');else el.removeAttribute('hidden')}
-  var musicOn=false;
-  $('#musicBtn').addEventListener('click',function(){
-    musicOn=!musicOn;
-    this.setAttribute('aria-pressed',musicOn);
-    setHidden($('#musicOn'),!musicOn);setHidden($('#musicOff'),musicOn);
-    toast('Background music is a placeholder in this mockup.');
+  /* background music: starts when the guest taps the cover (phones only allow sound after a tap) */
+  var musicOn=false,audio=null;
+  function setMusicUi(on){
+    musicOn=on;
+    $('#musicBtn').setAttribute('aria-pressed',on);
+    setHidden($('#musicOn'),!on);setHidden($('#musicOff'),on);
+  }
+  function startMusic(){
+    if(!EVENT.music)return;
+    if(!audio){
+      audio=new Audio(EVENT.music);
+      audio.loop=true;audio.volume=.7;audio.preload='auto';
+      audio.addEventListener('error',function(){audio=null;setMusicUi(false);toast('The music could not be played.')});
+    }
+    var p=audio.play();
+    if(p&&p.then)p.then(function(){setMusicUi(true)}).catch(function(){setMusicUi(false)});
+    else setMusicUi(true);
+  }
+  function stopMusic(){if(audio)audio.pause();setMusicUi(false)}
+  $('#musicBtn').addEventListener('click',function(){if(musicOn)stopMusic();else startMusic()});
+  document.addEventListener('visibilitychange',function(){
+    if(!audio)return;
+    if(document.hidden)audio.pause();else if(musicOn)audio.play().catch(function(){});
   });
   $('#notesBtn').addEventListener('click',function(){
     var off=document.body.classList.toggle('notes-off');
