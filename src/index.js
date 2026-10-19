@@ -65,6 +65,10 @@ async function guestInvitation(request, env, ctx, url, slug, code) {
   if (!file.ok) return new Response('Template missing', { status: 500 });
   let html = await file.text();
 
+  // The design files say img/... and media/..., which only works on a page at the site root.
+  // On /lychhayly/<code> the browser would look in /lychhayly/img/..., so make them start with "/".
+  html = html.replace(/(["'(])(img|media)\//g, '$1/$2/');
+
   const MARK = '__GUEST_JS__';
   if (!html.includes("guest:'Chenda'")) return new Response('Template has no guest field', { status: 500 });
   html = html.replace("guest:'Chenda'", () => 'guest:' + MARK);        // the setting used by the script
