@@ -1,0 +1,18 @@
+{
+  "name": "mongkulcard",
+  "compatibility_date": "2026-10-01",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mongkulcard",
+      "database_id": "0c8bd69a-675d-48ee-b3db-eee64338e16b",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "PHOTOS",
+      "bucket_name": "mongkulcard-photos"
+    }
+  ]
+}
