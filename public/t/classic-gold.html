@@ -305,6 +305,24 @@ html.menu-open{overflow:hidden}
 .is-locked .drop,.is-locked .slots,.is-locked .count,.is-locked .field,.is-locked .btn{opacity:.55}
 .is-locked,.is-locked *{cursor:not-allowed}
 
+/* gallery: one row of photos, swipe left and right, loops */
+#gallery{justify-content:flex-start;padding-top:calc(58px + env(safe-area-inset-top,0px))}
+#gallery .head{margin-bottom:14px}
+.head-inline .kh{display:flex;align-items:baseline;justify-content:center;gap:12px;margin-top:8px}
+.head-inline .sub{font-size:1.2rem}
+#gallery .vidtile{margin-bottom:14px}
+.gal-wrap{position:relative;left:50%;transform:translateX(-50%);width:min(100vw,440px)}
+.gal-track{--sw:min(62vw,268px);display:flex;gap:12px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding:4px calc((100% - var(--sw))/2) 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.gal-track::-webkit-scrollbar{display:none}
+.gal-slide{flex:0 0 var(--sw);aspect-ratio:4/5;scroll-snap-align:center;scroll-snap-stop:always;padding:0;border-radius:10px;overflow:hidden;background:#d9ccb8;box-shadow:0 6px 18px rgba(77,63,49,.15)}
+.gal-slide img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.gal-arrow{position:absolute;top:calc(50% - 8px);transform:translateY(-50%);z-index:2;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(255,252,245,.82);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid var(--line);color:var(--ink)}
+.gal-arrow svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.gal-arrow.prev{left:8px}
+.gal-arrow.next{right:8px}
+@media (hover:none){.gal-arrow{display:none}}
+.gal-count{text-align:center;font-family:var(--en);font-size:.95rem;letter-spacing:.12em;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:2px}
+
 @media (max-height:660px){.crest{width:min(52%,32svh)}.cover-title{font-size:1.1rem}.plate{font-size:1.3rem}}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -474,17 +492,21 @@ html.menu-open{overflow:hidden}
   <!-- Page 8: Gallery (taller than a screen, scrolls normally) -->
   <section class="page alt" id="gallery">
     <div class="in">
-      <div class="head">
+      <div class="head head-inline">
         <div class="orn"><i></i></div>
-        <div class="kh">វិចិត្រសាល</div>
-        <div class="sub">Gallery</div>
+        <div class="kh">វិចិត្រសាល <span class="sub">Gallery</span></div>
       </div>
       <div id="vidHost"><button type="button" class="vidtile" id="vidBtn" aria-label="Play pre-wedding video">
         <img src="img/poster.jpg" alt="" width="1500" height="1000" loading="lazy">
         <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5v17L21 12z"/></svg></span>
         <span class="cap">Pre-wedding video</span>
       </button></div>
-      <div class="gal" id="gal"></div>
+      <div class="gal-wrap">
+        <button type="button" class="gal-arrow prev" id="galPrev" aria-label="Previous photo"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <div class="gal-track" id="galTrack" role="region" aria-label="Photo gallery" tabindex="0"></div>
+        <button type="button" class="gal-arrow next" id="galNext" aria-label="Next photo"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="gal-count" aria-live="off"><span id="galIdx">1</span> / <span id="galN"></span></div>
     </div>
   </section>
 
@@ -635,15 +657,38 @@ html.menu-open{overflow:hidden}
     d.appendChild(k);d.appendChild(e);li.appendChild(t);li.appendChild(d);sched.appendChild(li);
   });
 
-  /* gallery + lightbox */
-  var gal=$('#gal'),lb=$('#lb'),lbImg=$('#lbImg');
-  EVENT.photos.forEach(function(p,i){
-    var b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Open photo '+(i+1));
-    var im=document.createElement('img');im.src='img/'+p[0]+'.jpg';im.width=p[1];im.height=p[2];im.alt='Pre-wedding photo '+(i+1);im.loading='lazy';
-    b.appendChild(im);
-    b.addEventListener('click',function(){lbImg.src=im.src;lbImg.alt=im.alt;lb.hidden=false;});
-    gal.appendChild(b);
-  });
+  /* gallery: one row, swipe left and right, loops around (the list is repeated three times and we jump back to the middle copy) */
+  var track=$('#galTrack'),lb=$('#lb'),lbImg=$('#lbImg');
+  var NP=EVENT.photos.length,pitch=0;
+  for(var rep=0;rep<3;rep++){
+    EVENT.photos.forEach(function(p,i){
+      var b=document.createElement('button');b.type='button';b.className='gal-slide';
+      if(rep!==1){b.tabIndex=-1;b.setAttribute('aria-hidden','true')}
+      b.setAttribute('aria-label','Open photo '+(i+1));
+      var im=document.createElement('img');im.src='img/'+p[0]+'.jpg';im.width=p[1];im.height=p[2];im.alt='Pre-wedding photo '+(i+1);im.loading='lazy';im.decoding='async';
+      b.appendChild(im);
+      b.addEventListener('click',function(){lbImg.src=im.src;lbImg.alt=im.alt;lb.hidden=false;});
+      track.appendChild(b);
+    });
+  }
+  $('#galN').textContent=NP;
+  function measure(){var s=track.children;pitch=s.length>1?s[1].offsetLeft-s[0].offsetLeft:0}
+  function galIndex(){return pitch?Math.round(track.scrollLeft/pitch):0}
+  function galShow(){$('#galIdx').textContent=(galIndex()%NP)+1}
+  var galTimer;
+  function galSettle(){
+    if(!pitch)return;
+    var i=galIndex();
+    if(i<NP)track.scrollLeft+=NP*pitch;else if(i>=2*NP)track.scrollLeft-=NP*pitch;
+    galShow();
+  }
+  function galStart(){measure();track.scrollLeft=NP*pitch;galShow()}
+  track.addEventListener('scroll',function(){galShow();clearTimeout(galTimer);galTimer=setTimeout(galSettle,110)},{passive:true});
+  window.addEventListener('resize',function(){var i=galIndex()%NP;measure();track.scrollLeft=(NP+i)*pitch});
+  $('#galPrev').addEventListener('click',function(){track.scrollBy({left:-pitch,behavior:'smooth'})});
+  $('#galNext').addEventListener('click',function(){track.scrollBy({left:pitch,behavior:'smooth'})});
+  galStart();
+  window.addEventListener('load',galStart);
   function closeLb(){lb.hidden=true;lbImg.removeAttribute('src')}
   lb.addEventListener('click',closeLb);
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!lb.hidden)closeLb()});
