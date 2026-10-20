@@ -95,27 +95,50 @@ input,textarea{font:inherit;color:inherit}
 .open-btn .lbl{font-family:var(--en);font-size:.82rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 5px rgba(220,167,76,.2)}50%{box-shadow:0 0 0 11px rgba(220,167,76,.07)}}
 
-/* floating bars */
-.topbar{position:fixed;top:0;left:50%;width:min(100%,440px);transform:translateX(-50%) translateY(-12px);z-index:40;display:flex;justify-content:flex-end;gap:8px;
-  padding:calc(10px + env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) 0 max(14px,env(safe-area-inset-left,0px));pointer-events:none;opacity:0;transition:opacity .6s .5s,transform .6s .5s}
-.topbar>*{pointer-events:auto}
-.pill{display:inline-flex;align-items:center;gap:2px;height:34px;padding:0 4px;border-radius:99px;background:rgba(255,252,245,.9);border:1px solid var(--line);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-family:var(--en);font-size:.9rem;font-weight:600;letter-spacing:.06em;color:var(--muted)}
-.pill button{height:26px;min-width:34px;padding:0 9px;border-radius:99px;display:inline-flex;align-items:center;justify-content:center}
-.pill button[aria-pressed="true"]{background:var(--gold-deep);color:#fff}
-.pill svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.nav{position:fixed;bottom:0;left:50%;width:min(100%,440px);transform:translateX(-50%) translateY(16px);z-index:40;display:flex;justify-content:center;
-  padding:0 max(14px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));pointer-events:none;opacity:0;transition:opacity .6s .6s,transform .6s .6s}
-.nav ul{pointer-events:auto;list-style:none;margin:0;padding:6px 8px;display:flex;gap:2px;border-radius:99px;background:rgba(255,252,245,.94);border:1px solid var(--line);box-shadow:0 8px 24px rgba(77,63,49,.16);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.nav button{width:44px;height:40px;border-radius:99px;display:grid;place-items:center;color:var(--muted);transition:background .25s,color .25s}
-.nav button[aria-current="true"]{background:var(--gold-deep);color:#fff}
-.nav svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
-.toast{position:fixed;left:50%;bottom:calc(82px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(10px);z-index:80;max-width:min(88vw,380px);padding:10px 20px;border-radius:22px;white-space:pre-line;background:var(--ink);color:var(--cream);font-family:var(--en);font-size:1rem;line-height:1.4;text-align:center;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s}
+/* top bar: frosted glass, crest on the left, music and menu on the right */
+.bar{position:fixed;top:0;left:50%;width:min(100%,440px);z-index:40;transform:translateX(-50%) translateY(-8px);opacity:0;transition:opacity .6s .5s,transform .6s .5s;
+  padding-top:env(safe-area-inset-top,0px);background:rgba(255,252,245,.72);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(178,128,44,.2)}
+body.opened .bar{opacity:1;transform:translateX(-50%)}
+.bar-in{height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 max(6px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
+.bar-logo{height:44px;display:flex;align-items:center;padding:0 6px 0 0}
+.bar-logo img{display:block;height:28px;width:auto}
+.bar-right{display:flex;align-items:center}
+.bar-btn{width:44px;height:44px;display:grid;place-items:center;color:var(--ink);border-radius:50%}
+.bar-btn svg[hidden]{display:none}
+.bar-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ham{position:relative;display:block;width:18px;height:12px}
+.ham i{position:absolute;left:0;width:18px;height:1.5px;background:currentColor;border-radius:1px;transition:transform .35s cubic-bezier(.4,0,.2,1),top .35s cubic-bezier(.4,0,.2,1)}
+.ham i:first-child{top:2px}
+.ham i:last-child{top:9px}
+.menu-open .ham i:first-child{top:5.5px;transform:rotate(45deg)}
+.menu-open .ham i:last-child{top:5.5px;transform:rotate(-45deg)}
+html.menu-open{overflow:hidden}
+
+/* menu panel: drops down from the bar */
+.menu{position:fixed;top:0;bottom:0;left:50%;width:min(100%,440px);z-index:35;transform:translateX(-50%);
+  padding:calc(48px + env(safe-area-inset-top,0px) + 14px) 0 calc(24px + env(safe-area-inset-bottom,0px));
+  background:rgba(255,252,245,.9);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);
+  overflow-y:auto;overscroll-behavior:contain;opacity:0;visibility:hidden;transition:opacity .3s,visibility 0s .3s}
+.menu.open{opacity:1;visibility:visible;transition:opacity .3s,visibility 0s}
+.menu-lang{display:flex;gap:8px;padding:0 24px 18px}
+.menu-lang button{flex:1;height:40px;border:1px solid var(--line);border-radius:99px;font-family:var(--en),var(--kh-body);font-size:1rem;font-weight:600;color:var(--muted);transition:background .25s,color .25s}
+.menu-lang button[aria-pressed="true"]{background:var(--gold-deep);border-color:var(--gold-deep);color:#fff}
+.menu ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.menu li{border-bottom:1px solid var(--line);opacity:0;transform:translateY(-8px);transition:opacity .35s,transform .35s}
+.menu.open li{opacity:1;transform:none}
+.menu.open li:nth-child(1){transition-delay:.04s}.menu.open li:nth-child(2){transition-delay:.07s}.menu.open li:nth-child(3){transition-delay:.10s}
+.menu.open li:nth-child(4){transition-delay:.13s}.menu.open li:nth-child(5){transition-delay:.16s}.menu.open li:nth-child(6){transition-delay:.19s}
+.menu.open li:nth-child(7){transition-delay:.22s}.menu.open li:nth-child(8){transition-delay:.25s}
+.menu li button{width:100%;display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:15px 24px;text-align:left}
+.menu li .en{font-family:var(--en);font-size:1.65rem;font-weight:600;line-height:1.2;color:var(--ink)}
+.menu li .kh{font-family:var(--kh-display);font-size:.8rem;line-height:1.9;color:var(--gold-deep);text-align:right}
+.menu li button[aria-current="true"] .en{color:var(--gold-deep)}
+.toast{position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(10px);z-index:80;max-width:min(88vw,380px);padding:10px 20px;border-radius:22px;white-space:pre-line;background:var(--ink);color:var(--cream);font-family:var(--en);font-size:1rem;line-height:1.4;text-align:center;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s}
 .toast.show{opacity:1;transform:translateX(-50%)}
 
 /* Khmer page */
 .k-title{font-family:var(--kh-display);font-size:1.4rem;line-height:1.9;margin:0}
-.arch{position:relative;width:min(78%,300px,max(170px,calc((100svh - 330px)*.75)));aspect-ratio:3/4;margin:22px auto 26px;border-radius:999px 999px 10px 10px;border:1px solid var(--gold);padding:6px;background:var(--cream)}
+.arch{position:relative;width:min(78%,300px,max(170px,calc((100svh - 300px)*.75)));aspect-ratio:3/4;margin:22px auto 26px;border-radius:999px 999px 10px 10px;border:1px solid var(--gold);padding:6px;background:var(--cream)}
 .arch img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 30%;border-radius:999px 999px 6px 6px}
 .hosts{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-family:var(--kh-display);font-size:.9rem;line-height:1.9;color:var(--gold-deep);margin-bottom:6px}
 .k-intro{font-family:var(--kh-display);font-size:.95rem;line-height:1.9;color:var(--gold-deep);margin:0 0 4px}
@@ -246,12 +269,12 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
 
 /* pages: every section is one screen, and the screen glides to the next one */
 .page{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;scroll-snap-align:start;background:var(--cream);
-  padding-top:calc(70px + env(safe-area-inset-top,0px));padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
+  padding-top:calc(64px + env(safe-area-inset-top,0px));padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))}
 .page.alt{background:var(--cream2)}
 .page>.in{width:100%}
-#khmer,#khmer2,#english{padding-top:calc(96px + env(safe-area-inset-top,0px));padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
+#khmer,#khmer2,#english{padding-top:calc(84px + env(safe-area-inset-top,0px));padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
 #khmer2 .hosts{margin-top:0}
-#thanks{padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
+#thanks{padding-bottom:calc(40px + env(safe-area-inset-bottom,0px))}
 .foot{margin-top:34px}
 
 /* wishes: wall of small cards (2 columns, 2 rows showing, scrolls) above the form */
@@ -285,7 +308,7 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
 @media (max-height:660px){.crest{width:min(52%,32svh)}.cover-title{font-size:1.1rem}.plate{font-size:1.3rem}}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .half,.topbar,.nav,.seam,.toast{transition-duration:.01s;transition-delay:0s}
+  .half,.bar,.menu,.menu li,.ham i,.seam,.toast{transition-duration:.01s;transition-delay:0s}
   .open-btn .circ{animation:none}
 }
 </style>
@@ -315,27 +338,33 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
   <div class="seam"></div>
 </div>
 
-<div class="topbar" id="topbar">
-  <div class="pill" role="group" aria-label="Language">
-    <button type="button" id="lgKh" aria-pressed="true">KH</button>
-    <button type="button" id="lgEn" aria-pressed="false">EN</button>
+<header class="bar" id="bar">
+  <div class="bar-in">
+    <button type="button" class="bar-logo" id="barLogo" aria-label="Back to the top"><img src="img/crest.png" alt="" width="692" height="808"></button>
+    <div class="bar-right">
+      <button type="button" class="bar-btn" id="musicBtn" aria-pressed="false" aria-label="Music">
+        <svg viewBox="0 0 24 24" id="musicOn" aria-hidden="true" hidden><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>
+        <svg viewBox="0 0 24 24" id="musicOff" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+      </button>
+      <button type="button" class="bar-btn" id="menuBtn" aria-label="Menu" aria-expanded="false" aria-controls="menu"><span class="ham"><i></i><i></i></span></button>
+    </div>
   </div>
-  <div class="pill">
-    <button type="button" id="musicBtn" aria-pressed="false" aria-label="Music">
-      <svg viewBox="0 0 24 24" id="musicOn" aria-hidden="true" hidden><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>
-      <svg viewBox="0 0 24 24" id="musicOff" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
-    </button>
-  </div>
-</div>
+</header>
 
-<nav class="nav" aria-label="Sections">
+<nav class="menu" id="menu" aria-label="Sections">
+  <div class="menu-lang" role="group" aria-label="Language">
+    <button type="button" id="lgKh" aria-pressed="true">ភាសាខ្មែរ</button>
+    <button type="button" id="lgEn" aria-pressed="false">English</button>
+  </div>
   <ul>
-    <li><button type="button" data-go="program" aria-label="Program"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></button></li>
-    <li><button type="button" data-go="location" aria-label="Location"><svg viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg></button></li>
-    <li><button type="button" data-go="gallery" aria-label="Gallery"><svg viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-4.5 3.5 3L16 12l4.5 5"/></svg></button></li>
-    <li><button type="button" data-go="gift" aria-label="Gift"><svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M3 9h18v3H3zM12 9v11M12 9c-2.5 0-4-1-4-2.5S9.5 4 12 6.5C14.5 4 16 5 16 6.5S14.5 9 12 9z"/></svg></button></li>
-    <li><button type="button" data-go="wishes" aria-label="RSVP and wishes"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.4A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></button></li>
-    <li><button type="button" data-go="photos" aria-label="Share photos"><svg viewBox="0 0 24 24"><path d="M4 8h3l1.5-2.5h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button></li>
+    <li><button type="button" data-go="count"><span class="en">Countdown</span><span class="kh">រាប់ថយក្រោយ</span></button></li>
+    <li><button type="button" data-go="program"><span class="en">Program</span><span class="kh">កម្មវិធី</span></button></li>
+    <li><button type="button" data-go="location"><span class="en">Location</span><span class="kh">ទីតាំង</span></button></li>
+    <li><button type="button" data-go="gallery"><span class="en">Gallery</span><span class="kh">វិចិត្រសាល</span></button></li>
+    <li><button type="button" data-go="gift"><span class="en">Gift</span><span class="kh">ចំណងដៃ</span></button></li>
+    <li><button type="button" data-go="rsvp"><span class="en">RSVP</span><span class="kh">ការចូលរួម</span></button></li>
+    <li><button type="button" data-go="wishes"><span class="en">Wishes</span><span class="kh">ពាក្យជូនពរ</span></button></li>
+    <li><button type="button" data-go="photos"><span class="en">Photos</span><span class="kh">រូបថត</span></button></li>
   </ul>
 </nav>
 
@@ -671,13 +700,25 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
     var el=document.getElementById(id);
     if(el)el.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
   }
-  $$('[data-go]').forEach(function(b){b.addEventListener('click',function(){go(b.getAttribute('data-go'))})});
+  /* menu: opens from the bar; choosing anything closes it, then glides to the page */
+  var menu=$('#menu'),menuBtn=$('#menuBtn'),menuOpen=false;
+  function setMenu(o){
+    menuOpen=o;menu.classList.toggle('open',o);root.classList.toggle('menu-open',o);
+    menuBtn.setAttribute('aria-expanded',o);
+  }
+  function goFromMenu(id){
+    if(menuOpen){setMenu(false);setTimeout(function(){go(id)},120)}else go(id);
+  }
+  menuBtn.addEventListener('click',function(){setMenu(!menuOpen)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&menuOpen)setMenu(false)});
+  $$('[data-go]').forEach(function(b){b.addEventListener('click',function(){goFromMenu(b.getAttribute('data-go'))})});
+  $('#barLogo').addEventListener('click',function(){goFromMenu('khmer')});
   var lgKh=$('#lgKh'),lgEn=$('#lgEn');
-  lgKh.addEventListener('click',function(){go('khmer')});
-  lgEn.addEventListener('click',function(){go('english')});
-  var navBtns=$$('.nav [data-go]');
+  lgKh.addEventListener('click',function(){goFromMenu('khmer')});
+  lgEn.addEventListener('click',function(){goFromMenu('english')});
+  var navBtns=$$('.menu [data-go]');
   var PAGES=['khmer','khmer2','english','count','program','location','gallery','gift','rsvp','wishes','photos','thanks'].map(function(id){return document.getElementById(id)});
-  var NAVOF={count:'program',rsvp:'wishes'};
+  var NAVOF={};
   function setCurrent(id){
     var n=NAVOF[id]||id;
     navBtns.forEach(function(b){b.setAttribute('aria-current',b.getAttribute('data-go')===n?'true':'false')});
