@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
+<meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#FFFCF5">
 <title>Ly Chhayly and Ma Meyhuy Wedding</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,13 +28,14 @@
   color-scheme:light;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory}
+html.typing,html.free{scroll-snap-type:none}
 html.locked{overflow:hidden}
 body{margin:0;background:var(--stone);color:var(--ink);font-family:var(--kh-body),var(--en);line-height:1.8;-webkit-text-size-adjust:100%}
 button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
 input,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--gold-deep);outline-offset:3px}
-.phone{max-width:440px;margin:0 auto;background:var(--cream);position:relative;overflow:hidden;box-shadow:0 0 70px rgba(77,63,49,.22)}
+.phone{max-width:440px;margin:0 auto;background:var(--cream);position:relative;overflow:hidden;overflow:clip;box-shadow:0 0 70px rgba(77,63,49,.22)}
 .in{padding-left:max(28px,env(safe-area-inset-left,0px));padding-right:max(28px,env(safe-area-inset-right,0px));position:relative;z-index:1}
 .band{position:relative;padding-block:60px}
 .center{text-align:center}
@@ -62,8 +64,6 @@ input,textarea{font:inherit;color:inherit}
 .head .kh{font-family:var(--kh-display);font-size:1.25rem;line-height:1.9;color:var(--gold-deep);margin-top:14px}
 .head .sub{font-family:var(--en);font-style:italic;font-size:1.2rem;color:var(--muted)}
 .eyebrow{font-family:var(--en);font-size:.8rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-deep)}
-.note{display:block;width:fit-content;max-width:100%;margin:0 auto 22px;padding:3px 12px;font-family:var(--en);font-size:.88rem;line-height:1.45;font-style:italic;color:var(--muted);border:1px dashed var(--gold);border-radius:99px;background:rgba(255,255,255,.7);text-align:center}
-body.notes-off .note{display:none}
 
 /* cover */
 .cover{position:fixed;top:0;bottom:0;left:50%;width:min(100%,440px);transform:translateX(-50%);z-index:60;overflow:hidden;cursor:pointer}
@@ -110,13 +110,12 @@ body.notes-off .note{display:none}
 .nav button[aria-current="true"]{background:var(--gold-deep);color:#fff}
 .nav svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
-.toast{position:fixed;left:50%;bottom:calc(82px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(10px);z-index:80;max-width:min(88vw,380px);padding:9px 18px;border-radius:99px;background:var(--ink);color:var(--cream);font-family:var(--en);font-size:1rem;line-height:1.4;text-align:center;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s}
+.toast{position:fixed;left:50%;bottom:calc(82px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(10px);z-index:80;max-width:min(88vw,380px);padding:10px 20px;border-radius:22px;white-space:pre-line;background:var(--ink);color:var(--cream);font-family:var(--en);font-size:1rem;line-height:1.4;text-align:center;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s}
 .toast.show{opacity:1;transform:translateX(-50%)}
 
 /* Khmer page */
-#khmer{padding-top:120px;padding-bottom:125px;background:var(--cream)}
 .k-title{font-family:var(--kh-display);font-size:1.4rem;line-height:1.9;margin:0}
-.arch{position:relative;width:min(78%,300px);aspect-ratio:3/4;margin:22px auto 26px;border-radius:999px 999px 10px 10px;border:1px solid var(--gold);padding:6px;background:var(--cream)}
+.arch{position:relative;width:min(78%,300px,max(170px,calc((100svh - 330px)*.75)));aspect-ratio:3/4;margin:22px auto 26px;border-radius:999px 999px 10px 10px;border:1px solid var(--gold);padding:6px;background:var(--cream)}
 .arch img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 30%;border-radius:999px 999px 6px 6px}
 .hosts{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-family:var(--kh-display);font-size:.9rem;line-height:1.9;color:var(--gold-deep);margin-bottom:6px}
 .k-intro{font-family:var(--kh-display);font-size:.95rem;line-height:1.9;color:var(--gold-deep);margin:0 0 4px}
@@ -130,18 +129,17 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
 .k-thanks{font-family:var(--kh-display);font-size:.95rem;color:var(--gold-deep);margin:0}
 
 /* English page */
-#english{padding-top:110px;padding-bottom:125px;background:var(--cream2)}
-.mini-crest{width:min(46%,150px);height:auto;display:block;margin:0 auto 18px}
+.mini-crest{width:min(36%,118px);height:auto;display:block;margin:0 auto 14px}
 .e-dear{font-family:var(--en);font-style:italic;font-size:1.3rem;color:var(--muted);margin:0 0 12px}
-.e-line{font-family:var(--en);font-size:1.15rem;letter-spacing:.14em;text-transform:uppercase;line-height:1.8;margin:0;color:var(--gold-deep)}
-.e-names{font-family:var(--en);font-weight:600;font-size:2.1rem;line-height:1.25;letter-spacing:.05em;margin:18px 0 18px}
-.e-names .amp{display:block;font-family:var(--script);font-weight:400;font-size:2.4rem;letter-spacing:0;line-height:1.1;margin:2px 0}
-.e-date{font-family:var(--en);font-size:1.3rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;line-height:1.5;margin:20px 0 0}
-.e-venue{font-family:var(--en);font-size:1.15rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:4px}
-.e-thanks{font-family:var(--script);font-size:2.2rem;line-height:1.2;margin:20px 0 0}
+.e-line{font-family:var(--en);font-size:1.02rem;letter-spacing:.1em;text-transform:uppercase;line-height:1.7;margin:0;color:var(--gold-deep)}
+.e-names{font-family:var(--en);font-weight:600;font-size:1.95rem;line-height:1.2;letter-spacing:.05em;margin:12px 0}
+.e-names .amp{display:block;font-family:var(--script);font-weight:400;font-size:2.1rem;letter-spacing:0;line-height:1.1;margin:0}
+.e-date{font-family:var(--en);font-size:1.12rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;line-height:1.5;margin:14px 0 0}
+.e-venue{font-family:var(--en);font-size:1rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.e-thanks{font-family:var(--script);font-size:1.9rem;line-height:1.2;margin:8px 0 0}
+#english .branch{width:170px}
 
 /* countdown */
-#count{background:var(--cream)}
 .cd{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .cd div{background:var(--cream2);border:1px solid var(--line);border-radius:10px;padding:14px 4px 10px;text-align:center}
 .cd b{display:block;font-family:var(--en);font-weight:600;font-size:2.15rem;line-height:1;font-variant-numeric:tabular-nums;color:var(--ink)}
@@ -151,7 +149,6 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
 .cd-sub{margin:14px 0 0;text-align:center;font-family:var(--en);font-size:1.05rem;color:var(--muted)}
 
 /* program */
-#program{background:var(--cream2)}
 .day-lbl{text-align:center;font-family:var(--kh-display);font-size:.9rem;line-height:1.9;color:var(--gold-deep);margin:0 0 4px}
 .day-en{text-align:center;font-family:var(--en);font-size:1.15rem;font-style:italic;color:var(--muted);margin:0 0 22px}
 .sched{list-style:none;margin:0;padding:0;position:relative}
@@ -175,7 +172,6 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
 .cta{text-align:center;margin-top:28px}
 
 /* location */
-#location{background:var(--cream)}
 .mapbox{border:1px solid var(--gold);padding:10px;background:var(--cream);box-shadow:inset 0 0 0 3px var(--cream),inset 0 0 0 4px var(--line)}
 .mapbox img{display:block;width:100%;height:auto}
 .venue-card{text-align:center;margin-top:20px}
@@ -183,7 +179,6 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
 .venue-card p{margin:0;font-family:var(--en);font-size:1.1rem;color:var(--muted);line-height:1.5}
 
 /* gallery */
-#gallery{background:var(--cream2)}
 .vidtile{position:relative;display:block;width:100%;aspect-ratio:3/2;border-radius:6px;overflow:hidden;background:#222;margin-bottom:10px}
 .vidtile img,.vidtile video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .vidtile .play{position:absolute;inset:0;margin:auto;width:58px;height:58px;border-radius:50%;background:rgba(255,252,245,.92);display:grid;place-items:center}
@@ -198,7 +193,6 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
 .lb .x{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:14px;width:40px;height:40px;border-radius:50%;background:rgba(255,252,245,.15);color:#fff;font-size:1.6rem;line-height:1}
 
 /* gift */
-#gift{background:var(--cream)}
 .qrcard{width:min(100%,250px);margin:0 auto;padding:18px 18px 14px;background:#fff;border:1px solid var(--gold);box-shadow:inset 0 0 0 4px #fff,inset 0 0 0 5px var(--line);text-align:center}
 .qrcard svg{display:block;width:100%;height:auto;color:var(--ink)}
 .qrcard .bank{margin-top:10px;font-family:var(--en);font-size:.85rem;letter-spacing:.24em;color:var(--gold-deep);text-transform:uppercase}
@@ -207,8 +201,6 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
 .lead{font-family:var(--en);font-size:1.15rem;line-height:1.55;color:var(--muted);text-align:center;margin:0 0 24px}
 
 /* rsvp, wishes, photos */
-#wishes{background:var(--cream2)}
-#photos{background:var(--cream)}
 .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px 20px}
 .card+.card{margin-top:22px}
 .card h3{margin:0 0 4px;text-align:center;font-family:var(--kh-display);font-weight:400;font-size:1.05rem;line-height:1.9;color:var(--gold-deep)}
@@ -243,7 +235,6 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
 .fine{margin:12px 0 0;text-align:center;font-family:var(--en);font-size:.98rem;line-height:1.5;color:var(--muted)}
 
 /* closing + footer */
-#thanks{background:var(--cream);padding-block:70px 40px}
 .thanks-s{font-family:var(--script);font-size:3.6rem;line-height:1.1;margin:16px 0 0}
 .thanks-k{font-family:var(--kh-display);font-size:1.05rem;line-height:2;color:var(--gold-deep)}
 .foot{margin-top:46px;padding-top:26px;border-top:1px solid var(--line);font-family:var(--en);color:var(--muted)}
@@ -252,6 +243,44 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
 .foot .soc{display:flex;justify-content:center;gap:18px;font-size:1rem;letter-spacing:.08em}
 .foot .soc a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--line)}
 .padnav{height:92px}
+
+/* pages: every section is one screen, and the screen glides to the next one */
+.page{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;scroll-snap-align:start;background:var(--cream);
+  padding-top:calc(70px + env(safe-area-inset-top,0px));padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
+.page.alt{background:var(--cream2)}
+.page>.in{width:100%}
+#khmer,#khmer2,#english{padding-top:calc(96px + env(safe-area-inset-top,0px));padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
+#khmer2 .hosts{margin-top:0}
+#thanks{padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
+.foot{margin-top:34px}
+
+/* wishes: wall of small cards (2 columns, 2 rows showing, scrolls) above the form */
+.wall{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:114px;gap:8px;height:236px;overflow-y:auto;padding:2px 2px 4px;margin-bottom:14px;scrollbar-width:thin;scrollbar-color:var(--gold) transparent;-webkit-overflow-scrolling:touch}
+.wcard{display:flex;flex-direction:column;gap:3px;text-align:left;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden;min-width:0}
+.wcard b{font-family:var(--en),var(--kh-body);font-size:.95rem;font-weight:600;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wcard p{margin:0;font-family:var(--en),var(--kh-body);font-size:.86rem;line-height:1.45;color:var(--ink);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.wall-empty{grid-column:1/-1;align-self:center;text-align:center;font-family:var(--en);font-style:italic;font-size:1.1rem;color:var(--muted);padding:0 16px}
+.wform{padding:14px 16px 12px}
+.wform .field{margin-bottom:10px}
+.wform .field textarea{min-height:56px}
+.wform .field input,.wform .field textarea{padding:8px 11px}
+.wcount{text-align:right;font-family:var(--en);font-size:.85rem;color:var(--muted);margin-top:-2px}
+.wm{position:fixed;inset:0;z-index:90;background:rgba(30,24,18,.6);display:grid;place-items:center;padding:20px}
+.wm[hidden]{display:none!important}
+.wm .box{width:min(100%,380px);max-height:80svh;overflow:auto;background:#fff;border:1px solid var(--gold);border-radius:12px;padding:22px 22px 18px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.wm b{display:block;font-family:var(--en),var(--kh-body);font-size:1.2rem;font-weight:600;margin-bottom:6px}
+.wm p{margin:0 0 16px;font-family:var(--en),var(--kh-body);font-size:1.1rem;line-height:1.6;overflow-wrap:anywhere}
+.wm .btn{width:100%}
+
+/* photos page before the upload window opens */
+.lockpill{display:none;width:fit-content;margin:0 auto 10px;padding:4px 16px;border:1px solid var(--gold);border-radius:99px;background:#fff;text-align:center;font-size:.9rem;line-height:1.6;color:var(--gold-deep)}
+.lockpill small{display:block;font-family:var(--en);font-size:.92rem;letter-spacing:.04em;color:var(--muted)}
+.is-locked-page .lockpill{display:block}
+#photos .drop{padding:14px;margin-bottom:10px}
+#photos .count{margin-bottom:8px}
+#photos .card{padding:16px 18px}
+.is-locked .drop,.is-locked .slots,.is-locked .count,.is-locked .field,.is-locked .btn{opacity:.55}
+.is-locked,.is-locked *{cursor:not-allowed}
 
 @media (max-height:660px){.crest{width:min(52%,32svh)}.cover-title{font-size:1.1rem}.plate{font-size:1.3rem}}
 @media (prefers-reduced-motion:reduce){
@@ -297,9 +326,6 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
       <svg viewBox="0 0 24 24" id="musicOff" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
     </button>
   </div>
-  <div class="pill">
-    <button type="button" id="notesBtn" aria-pressed="true">Notes</button>
-  </div>
 </div>
 
 <nav class="nav" aria-label="Sections">
@@ -314,20 +340,24 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
 </nav>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="wm" id="wm" hidden role="dialog" aria-modal="true" aria-label="Wish"><div class="box"><b id="wmName"></b><p id="wmText"></p><button type="button" class="btn" id="wmClose">បិទ <small>Close</small></button></div></div>
 <div class="lb" id="lb" hidden><button class="x" type="button" aria-label="Close photo">×</button><img id="lbImg" alt=""></div>
 
 <main class="phone" id="phone">
 
-  <!-- Page 1: Khmer -->
-  <section class="page band flor center" id="khmer">
+  <!-- Page 2: Khmer title and the couple -->
+  <section class="page flor center" id="khmer">
     <div class="in">
-      <span class="note">Khmer text is copied from the printed card. Replace it with the typed text.</span>
       <h1 class="k-title goldtext">សិរីមង្គលអាពាហ៍ពិពាហ៍</h1>
       <div class="arch"><img src="img/cover.jpg" alt="Ly Chhayly and Ma Meyhuy at Angkor" width="1100" height="1467"><img class="branch arch-br" src="img/leaf.svg" alt="" width="1480" height="450"></div>
+    </div>
+  </section>
+
+  <!-- Page 3: Khmer invitation text -->
+  <section class="page flor center" id="khmer2">
+    <div class="in">
       <div class="hosts"><div>លោកស្រី លឹម សៀមម៉េង</div><div>លោកស្រី ឡើង ខេង</div></div>
       <p class="k-intro">មានកិត្តិយសសូមគោរពអញ្ជើញ</p>
-      <p class="k-guest" data-guest>Chenda</p>
-      <span class="note">Each guest's name comes from their own link</span>
       <p class="k-body">ឯកឧត្តម លោកឧកញ៉ា លោកជំទាវ លោក លោកស្រី អ្នកនាង កញ្ញា និងប្រិយមិត្តអញ្ជើញចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយសដើម្បីប្រសិទ្ធពរជ័យសិរីមង្គលក្នុងពិធីរៀបអាពាហ៍ពិពាហ៍ កូនប្រុស កូនស្រី របស់យើងខ្ញុំ ។</p>
       <div class="pair">
         <div><small>កូនប្រុសនាម</small><strong>លី ឆាយលី</strong></div>
@@ -338,24 +368,22 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
     </div>
   </section>
 
-  <!-- Page 2: English -->
-  <section class="page band flor center" id="english">
+  <!-- Page 4: English invitation -->
+  <section class="page alt flor center" id="english">
     <div class="in">
       <img class="mini-crest" src="img/crest.png" alt="" width="692" height="808">
-      <p class="e-dear">Dear <span data-guest>Chenda</span>,</p>
       <p class="e-line">Request the joy of your presence<br>at the celebration of our wedding</p>
       <div class="e-names goldtext">Ly Chhayly <span class="amp">&amp;</span> Ma Meyhuy</div>
       <div class="e-date">Sunday, 20th December 2026<br>at 5 PM</div>
       <div class="e-venue">PH Grand Hall Euro 3<br>Phnom Penh, Cambodia</div>
-      <div style="margin-top:18px"><img class="branch" src="img/leaf.svg" alt="" width="1480" height="450"></div>
+      <div style="margin-top:10px"><img class="branch" src="img/leaf.svg" alt="" width="1480" height="450"></div>
       <div class="e-thanks goldtext">Thank you!</div>
     </div>
   </section>
 
-  <!-- Countdown -->
-  <section class="band" id="count">
+  <!-- Page 5: Countdown -->
+  <section class="page" id="count">
     <div class="in">
-      <span class="note">Counts to the 5:00 PM reception, in Cambodia time</span>
       <div class="head" style="margin-bottom:22px">
         <div class="orn"><i></i></div>
         <div class="kh">រាប់ថយក្រោយ</div>
@@ -372,10 +400,9 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
     </div>
   </section>
 
-  <!-- Program -->
-  <section class="band" id="program">
+  <!-- Page 6: Program (taller than a screen, scrolls normally) -->
+  <section class="page alt" id="program">
     <div class="in">
-      <span class="note">One day, ten steps. Each time and name is editable.</span>
       <div class="head">
         <div class="orn"><i></i></div>
         <div class="kh">កម្មវិធីមង្គលអាពាហ៍ពិពាហ៍</div>
@@ -393,10 +420,9 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
     </div>
   </section>
 
-  <!-- Location -->
-  <section class="band" id="location">
+  <!-- Page 7: Location -->
+  <section class="page" id="location">
     <div class="in">
-      <span class="note">Map and button come from the printed card</span>
       <div class="head">
         <div class="orn"><i></i></div>
         <div class="kh">ទីតាំង</div>
@@ -416,10 +442,9 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
     </div>
   </section>
 
-  <!-- Gallery -->
-  <section class="band" id="gallery">
+  <!-- Page 8: Gallery (taller than a screen, scrolls normally) -->
+  <section class="page alt" id="gallery">
     <div class="in">
-      <span class="note">Pre-wedding photos from Angkor. Tap a photo to enlarge it.</span>
       <div class="head">
         <div class="orn"><i></i></div>
         <div class="kh">វិចិត្រសាល</div>
@@ -434,10 +459,9 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
     </div>
   </section>
 
-  <!-- Gift -->
-  <section class="band" id="gift">
+  <!-- Page 9: Gift -->
+  <section class="page" id="gift">
     <div class="in">
-      <span class="note">Sample QR only. The couple's bank QR is still needed.</span>
       <div class="head">
         <div class="orn"><i></i></div>
         <div class="kh">ចំណងដៃ</div>
@@ -452,10 +476,9 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
     </div>
   </section>
 
-  <!-- RSVP + wishes -->
-  <section class="band" id="wishes">
+  <!-- Page 10: RSVP -->
+  <section class="page alt" id="rsvp">
     <div class="in">
-      <span class="note">RSVP is optional. The host can switch it off.</span>
       <div class="card">
         <h3>ការចូលរួម</h3>
         <p>Will you join us?</p>
@@ -469,32 +492,37 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
         </div>
         <button type="button" class="btn solid" style="width:100%" data-toast="Preview only. Nothing is saved or sent.">ផ្ញើ <small>Send reply</small></button>
       </div>
+    </div>
+  </section>
 
-      <div class="card">
-        <h3>ពាក្យជូនពរ</h3>
-        <p>Wishes</p>
-        <div class="wishes-list">
-          <div class="wish"><b>Vanna</b><time>Sample wish</time><p>Wishing you a lifetime of love and laughter together.</p></div>
-          <div class="wish"><b>Sreyneang</b><time>Sample wish</time><p>Congratulations, so happy for you both!</p></div>
-        </div>
-        <div class="field"><label for="wName">Your name</label><input id="wName" type="text" placeholder="Chenda" autocomplete="off"></div>
-        <div class="field"><label for="wMsg">Your wish</label><textarea id="wMsg" placeholder="Write a few kind words"></textarea></div>
+  <!-- Page 11: Wishes (wall on top, form below) -->
+  <section class="page" id="wishes">
+    <div class="in">
+      <div class="head" style="margin-bottom:10px">
+        <div class="orn"><i></i></div>
+        <div class="kh" style="margin-top:6px">ពាក្យជូនពរ</div>
+        <div class="sub">Wishes</div>
+      </div>
+      <div class="wall" id="wall" tabindex="0" aria-label="Wishes from guests"></div>
+      <div class="card wform">
+        <div class="field"><label for="wName">Your name</label><input id="wName" type="text" maxlength="60" placeholder="Chenda" autocomplete="off"></div>
+        <div class="field"><label for="wMsg">Your wish</label><textarea id="wMsg" maxlength="150" placeholder="Write a few kind words"></textarea><div class="wcount"><span id="wLeft">150</span> / 150</div></div>
         <button type="button" class="btn solid" style="width:100%" data-toast="Preview only. Nothing is saved or sent.">ផ្ញើ <small>Send wish</small></button>
       </div>
     </div>
   </section>
 
-  <!-- Photo upload -->
-  <section class="band" id="photos">
+  <!-- Page 12: Photo upload (locked until the wedding) -->
+  <section class="page alt" id="photos">
     <div class="in">
-      <span class="note">Opens 19 Dec 2026, the day before. Only the hosts see photos. Deleted 19 Jan 2027.</span>
-      <div class="head">
+      <div class="head" style="margin-bottom:12px">
         <div class="orn"><i></i></div>
         <div class="kh">រូបថត</div>
         <div class="sub">Share your photos</div>
       </div>
-      <div class="card">
-        <p class="lead" style="margin-bottom:16px">Add up to 5 photos from the day. Only the hosts can see them.</p>
+      <div class="lockpill" id="lockPill">នឹងបើកនៅថ្ងៃមង្គលការ<small>Opens on the wedding day</small></div>
+      <div class="card" id="photoCard">
+        <p class="lead" style="margin-bottom:10px">Add up to 5 photos from the day. Only the hosts can see them.</p>
         <div class="drop">
           <svg viewBox="0 0 24 24"><path d="M12 16V5M7.5 9.5 12 5l4.5 4.5M4.5 15v4h15v-4"/></svg>
           <p>Choose up to 5 photos</p>
@@ -508,8 +536,8 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
     </div>
   </section>
 
-  <!-- Closing -->
-  <section class="band center" id="thanks">
+  <!-- Page 13: Thank you -->
+  <section class="page center" id="thanks">
     <div class="in">
       <img class="branch" src="img/leaf.svg" alt="" width="1480" height="450">
       <p class="thanks-s goldtext">Thank you</p>
@@ -518,9 +546,7 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
         <div class="by">បង្កើតដោយ · Created by</div>
         <div class="brand">BRAND NAME</div>
         <div class="soc"><a href="#" data-toast="Brand links go here.">Facebook</a><a href="#" data-toast="Brand links go here.">Telegram</a><a href="#" data-toast="Brand links go here.">TikTok</a></div>
-        <span class="note" style="margin:18px auto 0">Brand name still to be decided</span>
       </div>
-      <div class="padnav"></div>
     </div>
   </section>
 </main>
@@ -548,11 +574,20 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
       {t:'12:00',ap:'PM',kh:'ពិធីចាក់ទឹកតែ',en:'Tea-pouring ceremony'},
       {t:'5:00',ap:'PM',kh:'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារ នៅ សាលសន្និសីទបុរីប៉េងហួត បឹងស្នោ (EURO3)',en:'Evening reception at PH Grand Hall Euro 3',main:true}
     ],
+    wishes:[
+      {n:'Vanna',m:'Wishing you a lifetime of love and laughter together.'},
+      {n:'Sreyneang',m:'Congratulations, so happy for you both!'},
+      {n:'សុខា',m:'សូមជូនពរឱ្យអ្នកទាំងពីរមានសុភមង្គលជារៀងរហូត។'},
+      {n:'Dara',m:'May your home be filled with warmth, patience and plenty of good food. We are so happy to celebrate with you, and we wish you every blessing ahead.'},
+      {n:'Chantha',m:'Best wishes to the happy couple!'},
+      {n:'Sophea',m:'សូមអបអរសាទរ សូមឱ្យមានក្តីស្រឡាញ់ និងសុភមង្គលជានិច្ច។'}
+    ],
     photos:[
       ['p01',1001,1500],['p02',1500,1001],['p04',987,1500],['p03',1500,1001],['p07',1000,1500],['p06',1500,1024],
       ['p08',1000,1500],['p09',1500,1000],['p10',1001,1500],['p13',1500,1000],['p05',1000,1500],['p14',1500,1021],
       ['p11',1001,1500],['p15',1001,1500],['p12',988,1500],['p16',1000,1500]
     ],
+    photosOpenAt:'2026-12-19T00:00:00+07:00',
     video:'media/prewedding.mp4',
     music:'media/music.mp3'
   };
@@ -586,9 +621,9 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
 
   /* video tile: plays media/prewedding.mp4 when the file exists */
   var toastEl=$('#toast'),tt;
-  function toast(msg){
+  function toast(msg,ms){
     toastEl.textContent=msg;toastEl.classList.add('show');
-    clearTimeout(tt);tt=setTimeout(function(){toastEl.classList.remove('show')},2800);
+    clearTimeout(tt);tt=setTimeout(function(){toastEl.classList.remove('show')},ms||2800);
   }
   var vidBtn=$('#vidBtn');
   vidBtn.addEventListener('click',function(){
@@ -641,24 +676,37 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
   lgKh.addEventListener('click',function(){go('khmer')});
   lgEn.addEventListener('click',function(){go('english')});
   var navBtns=$$('.nav [data-go]');
+  var PAGES=['khmer','khmer2','english','count','program','location','gallery','gift','rsvp','wishes','photos','thanks'].map(function(id){return document.getElementById(id)});
+  var NAVOF={count:'program',rsvp:'wishes'};
   function setCurrent(id){
-    navBtns.forEach(function(b){b.setAttribute('aria-current',b.getAttribute('data-go')===id?'true':'false')});
+    var n=NAVOF[id]||id;
+    navBtns.forEach(function(b){b.setAttribute('aria-current',b.getAttribute('data-go')===n?'true':'false')});
   }
-  if('IntersectionObserver' in window){
-    var seen={};
-    var io=new IntersectionObserver(function(entries){
-      entries.forEach(function(en){seen[en.target.id]=en.isIntersecting?en.intersectionRatio:0});
-      var best=null,bv=0;
-      Object.keys(seen).forEach(function(k){if(seen[k]>bv){bv=seen[k];best=k}});
-      if(best){
-        if(best==='khmer'||best==='english'){
-          lgKh.setAttribute('aria-pressed',best==='khmer');lgEn.setAttribute('aria-pressed',best==='english');
-          setCurrent('');
-        }else{setCurrent(best)}
-      }
-    },{threshold:[0,.15,.3,.5,.75]});
-    ['khmer','english','program','location','gallery','gift','wishes','photos'].forEach(function(id){io.observe(document.getElementById(id))});
+  /* Pages taller than the screen: also snap at their bottom edge, and switch snapping off while the screen is fully inside one,
+     so every part of a long page can be reached on any phone. */
+  function markTall(){
+    var H=window.innerHeight;
+    PAGES.forEach(function(p){p.style.scrollSnapAlign=p.offsetHeight>H+2?'start end':''});
   }
+  markTall();window.addEventListener('resize',markTall);
+  var ticking=false;
+  function onScroll(){
+    if(ticking)return;ticking=true;
+    requestAnimationFrame(function(){
+      ticking=false;
+      var H=window.innerHeight,inside=false;
+      PAGES.forEach(function(p){var r=p.getBoundingClientRect();if(p.offsetHeight>H+2&&r.top<=1&&r.bottom>=H-1)inside=true});
+      root.classList.toggle('free',inside);
+      var mid=window.innerHeight*.5,cur=null;
+      PAGES.forEach(function(p){var r=p.getBoundingClientRect();if(r.top<=mid&&r.bottom>mid)cur=p.id});
+      if(!cur)return;
+      var kh=(cur==='khmer'||cur==='khmer2'),en=(cur==='english');
+      if(kh||en){lgKh.setAttribute('aria-pressed',kh);lgEn.setAttribute('aria-pressed',en)}
+      setCurrent(kh||en?'':cur);
+    });
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
 
   /* top bar */
   function setHidden(el,h){if(h)el.setAttribute('hidden','');else el.removeAttribute('hidden')}
@@ -686,10 +734,6 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
     if(!audio)return;
     if(document.hidden)audio.pause();else if(musicOn)audio.play().catch(function(){});
   });
-  $('#notesBtn').addEventListener('click',function(){
-    var off=document.body.classList.toggle('notes-off');
-    this.setAttribute('aria-pressed',!off);
-  });
 
   /* countdown to the 5:00 PM reception, Cambodia time (UTC+7) */
   var target=new Date(EVENT.start).getTime();
@@ -716,6 +760,41 @@ body.opened .topbar,body.opened .nav{opacity:1;transform:translateX(-50%)}
   function setG(v){g=Math.max(1,Math.min(10,v));$('#gNum').textContent=g}
   $('#gMinus').addEventListener('click',function(){setG(g-1)});
   $('#gPlus').addEventListener('click',function(){setG(g+1)});
+
+  /* wishes: wall of small cards, tap one to read it in full */
+  var wall=$('#wall'),wm=$('#wm');
+  function openWish(w){$('#wmName').textContent=w.n;$('#wmText').textContent=w.m;wm.hidden=false}
+  function closeWish(){wm.hidden=true}
+  if(EVENT.wishes.length){
+    EVENT.wishes.forEach(function(w){
+      var c=document.createElement('button');c.type='button';c.className='wcard';
+      var n=document.createElement('b');n.textContent=w.n;
+      var p=document.createElement('p');p.textContent=w.m;
+      c.appendChild(n);c.appendChild(p);
+      c.addEventListener('click',function(){openWish(w)});
+      wall.appendChild(c);
+    });
+  }else{
+    var em=document.createElement('p');em.className='wall-empty';em.textContent='Be the first to send a wish.';wall.appendChild(em);
+  }
+  wm.addEventListener('click',function(e){if(e.target===wm)closeWish()});
+  $('#wmClose').addEventListener('click',closeWish);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!wm.hidden)closeWish()});
+  $('#wMsg').addEventListener('input',function(){$('#wLeft').textContent=150-this.value.length});
+
+  /* while a guest is typing, the keyboard shrinks the screen: pause page snapping so nothing jumps */
+  document.addEventListener('focusin',function(e){if(/^(INPUT|TEXTAREA)$/.test(e.target.tagName))root.classList.add('typing')});
+  document.addEventListener('focusout',function(){root.classList.remove('typing')});
+
+  /* photo page: visible from the start, but locked until the upload window opens */
+  var LOCK_MSG='ការចែករំលែករូបថតនឹងបើកនៅថ្ងៃមង្គលការ\nPhoto sharing will be available on the wedding day.';
+  if(Date.now()<new Date(EVENT.photosOpenAt).getTime()){
+    var pcard=$('#photoCard');
+    pcard.classList.add('is-locked');
+    $('#photos').classList.add('is-locked-page');
+    $$('input',pcard).forEach(function(i){i.readOnly=true});
+    pcard.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();toast(LOCK_MSG,4200)},true);
+  }
 
   /* sample QR (decorative, not a real code) */
   (function(){
