@@ -320,6 +320,40 @@ html.menu-open{overflow:hidden}
 .fold:not(.open) .fold-in{padding-top:0}
 .page .head.tight{margin-bottom:18px}
 @media (prefers-reduced-motion:reduce){.fold,.fold.open,.fold-btn .chev{transition:none}}
+
+/* gift envelope: tap it, the flap opens and the QR card slides out */
+.env-stage{--w:min(86vw,320px);--h:calc(var(--w)*.66);position:relative;width:var(--w);height:var(--h);margin:0 auto;perspective:1100px;transition:height .55s cubic-bezier(.4,0,.2,1) .75s}
+.env-stage.open{transition:height .65s cubic-bezier(.4,0,.2,1) .35s}
+.env{position:absolute;left:0;right:0;bottom:0;height:var(--h);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.env:focus-visible{outline:2px solid var(--gold-deep);outline-offset:8px}
+.env-back{position:absolute;inset:0;background:linear-gradient(180deg,#d6b878,#e4cb98);border-radius:3px;box-shadow:0 12px 30px rgba(77,63,49,.22)}
+.env-slot{position:absolute;inset:0;z-index:2;clip-path:inset(0);transition:clip-path .2s ease .75s}
+.env-stage.open .env-slot{transition:clip-path .3s ease .7s}
+.env-card{position:absolute;left:10%;width:80%;bottom:8px;visibility:hidden;transition:transform .9s cubic-bezier(.5,0,.3,1),visibility 0s 1.8s}
+.env-stage.open .env-card{visibility:visible;transition:transform 1.1s cubic-bezier(.3,.7,.2,1) .75s,visibility 0s}
+.env-card .qrcard{width:100%}
+.env-front{position:absolute;inset:0;width:100%;height:100%;z-index:3;display:block;filter:drop-shadow(0 -1px 2px rgba(77,63,49,.12))}
+.env-flapwrap{position:absolute;left:0;right:0;top:0;height:58.8%;z-index:4;transform-origin:50% 0;transition:transform .7s cubic-bezier(.5,0,.3,1) 1.05s,z-index 0s 1.4s}
+.env-stage.open .env-flapwrap{transition:transform .8s cubic-bezier(.5,0,.3,1),z-index 0s .4s}
+.env-flap{display:block;width:100%;height:100%}
+.env-seal{position:absolute;left:50%;top:100%;width:42px;height:auto;aspect-ratio:692/808;box-sizing:border-box;padding:7px;transform:translate(-50%,-55%);border-radius:50%;background:radial-gradient(circle at 35% 30%,#fbf3da,#e2bf72);object-fit:contain;box-shadow:0 2px 6px rgba(77,63,49,.3);transition:opacity .3s 1.6s}
+.env-stage.open .env-seal{transition:opacity .3s}
+.env-stage:not(.open) .env-seal{animation:pulse 2.4s ease-in-out infinite}
+.env-stage.open .env-flapwrap{transform:rotateX(180deg);z-index:1}
+.env-stage.open .env-slot{clip-path:inset(-900px -40px 0 -40px)}
+.env-stage.open .env-card{transform:translateY(calc(var(--rise,0px) * -1))}
+.env-stage.open .env-seal{opacity:0;animation:none}
+.env-hint{text-align:center;font-family:var(--kh-body);font-size:.92rem;color:var(--muted);margin:20px 0 0;transition:opacity .4s 1.6s,max-height .5s 1.2s,margin .5s 1.2s;max-height:60px;overflow:hidden}
+.env-hint small{font-family:var(--en);font-style:italic;font-size:1.05rem;margin-left:6px}
+.env-hint.gone{opacity:0;max-height:0;margin:0;pointer-events:none;transition:opacity .3s,max-height .5s,margin .5s}
+.save-note{text-align:center;font-family:var(--en);font-size:.85rem;line-height:1.45;color:var(--muted);margin:8px 0 0;white-space:pre-line}
+.save-note:empty{display:none}
+.qrcard .bank{margin-top:0;margin-bottom:2px}
+.qrcard #qr{margin-top:12px}
+.qrcard .btn svg{display:inline-block;width:18px;height:18px}
+.qsave{width:100%;min-height:42px;margin-top:14px;padding:6px 10px;font-size:.9rem}
+.qrcard img{display:block;width:100%;height:auto}
+@media (prefers-reduced-motion:reduce){.env-stage,.env-stage.open,.env-slot,.env-card,.env-flapwrap,.env-stage.open .env-slot,.env-stage.open .env-card,.env-stage.open .env-flapwrap{transition-duration:.01s;transition-delay:0s}.env-stage:not(.open) .env-seal{animation:none}}
 </style>
 
 <script>
@@ -526,12 +560,32 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
         <div class="kh">ចំណងដៃ</div>
         <div class="sub">Wedding gift</div>
       </div>
-      <p class="lead">Your presence is the greatest gift. If you wish to send a gift, scan the code below.</p>
-      <div class="qrcard">
-        <div id="qr" aria-hidden="true"></div>
-        <div class="bank">ABA · KHQR</div>
-        <div class="acct">ACCOUNT NAME<small>000 000 000</small></div>
+      <p class="lead">Your presence is the greatest gift. If you wish to send a gift, open the envelope below.</p>
+      <div class="env-stage" id="envStage">
+        <div class="env" id="env" role="button" tabindex="0" aria-expanded="false" aria-controls="qrcard" aria-label="Open the envelope">
+          <div class="env-back"></div>
+          <div class="env-slot">
+            <div class="env-card" id="envCard">
+              <div class="qrcard" id="qrcard" aria-hidden="true">
+                <div class="bank">ABA · KHQR</div>
+                <div class="acct">ACCOUNT NAME<small>000 000 000</small></div>
+                <div id="qr"></div>
+                <button type="button" class="btn solid qsave" id="saveQr">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
+                  រក្សាទុក QR <small>Save QR</small>
+                </button>
+                <p class="save-note" id="saveNote" aria-live="polite"></p>
+              </div>
+            </div>
+          </div>
+          <svg class="env-front" viewBox="0 0 320 211" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="ef" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f7ebcb"/><stop offset="1" stop-color="#ecd8a8"/></linearGradient></defs><path d="M0 0 L160 118 L320 0 L320 211 L0 211 Z" fill="url(#ef)"/><path d="M0 211 L160 118 L320 211 M0 0 L160 118 L320 0" fill="none" stroke="rgba(178,128,44,.38)" stroke-width="1" vector-effect="non-scaling-stroke"/></svg>
+          <div class="env-flapwrap" aria-hidden="true">
+            <svg class="env-flap" viewBox="0 0 320 124" preserveAspectRatio="none"><defs><linearGradient id="ff" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2e1b6"/><stop offset="1" stop-color="#e6cd96"/></linearGradient></defs><path d="M0 0 H320 L160 124 Z" fill="url(#ff)" stroke="rgba(178,128,44,.45)" stroke-width="1" vector-effect="non-scaling-stroke"/></svg>
+            <img class="env-seal" src="img/crest.png" alt="" width="692" height="808">
+          </div>
+        </div>
       </div>
+      <p class="env-hint" id="envHint">ចុចលើស្រោមសំបុត្រ <small>Tap the envelope</small></p>
     </div>
   </section>
 
@@ -863,6 +917,77 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     for(y=0;y<n;y++)for(x=0;x<n;x++)if(cells[y][x])s+='<rect x="'+(x+q)+'" y="'+(y+q)+'" width="1" height="1"/>';
     $('#qr').innerHTML=s+'</g></svg>';
   })();
+
+  /* turn the QR into a PNG picture, so guests can press and hold it, or use the Save button */
+  var qrBlob=null;
+  function qrToPng(){
+    return new Promise(function(res){
+      var host=$('#qr'),sv=host.querySelector('svg');
+      if(!sv){var im0=host.querySelector('img');if(!im0)return res(null);fetch(im0.src).then(function(r){return r.blob()}).then(res).catch(function(){res(null)});return}
+      var str=new XMLSerializer().serializeToString(sv).replace(/currentColor/g,'#2b2118');
+      if(str.indexOf('xmlns=')<0)str=str.replace('<svg','<svg xmlns="http://www.w3.org/2000/svg"');
+      str=str.replace('<svg ','<svg width="800" height="800" ');
+      var img=new Image();
+      img.onload=function(){
+        try{
+          var c=document.createElement('canvas');c.width=c.height=1000;
+          var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,1000,1000);x.drawImage(img,100,100,800,800);
+          c.toBlob(function(b){res(b)},'image/png');
+        }catch(e){res(null)}
+      };
+      img.onerror=function(){res(null)};
+      img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(str);
+    });
+  }
+  qrToPng().then(function(b){
+    if(!b)return;
+    qrBlob=b;
+    var im=new Image();im.src=URL.createObjectURL(b);im.alt='Gift QR code';im.width=1000;im.height=1000;
+    $('#qr').innerHTML='';$('#qr').appendChild(im);
+  });
+
+  /* envelope */
+  var envStage=$('#envStage'),env=$('#env'),envCard=$('#envCard');
+  function sizeEnv(){
+    var H=env.offsetHeight,cardH=envCard.offsetHeight;
+    envStage.style.setProperty('--rise',(H*.9-8)+'px');
+    envStage.style.height=(cardH+H*.9)+'px';
+  }
+  function toggleEnv(){
+    var open=!envStage.classList.contains('open');
+    if(open){sizeEnv()}else{envStage.style.height=''}
+    envStage.classList.toggle('open',open);
+    env.setAttribute('aria-expanded',open);
+    env.setAttribute('aria-label',open?'Close the envelope':'Open the envelope');
+    if(open)$('#qrcard').removeAttribute('aria-hidden');else $('#qrcard').setAttribute('aria-hidden','true');
+    $('#envHint').classList.toggle('gone',open);
+    if(!open)$('#saveNote').textContent='';
+  }
+  /* tapping the envelope opens it, tapping it again closes it; tapping the card itself (or its Save button) does nothing */
+  env.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.env-card'))return;toggleEnv()});
+  env.addEventListener('keydown',function(e){if(e.target!==env)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleEnv()}});
+  var envW=window.innerWidth;
+  window.addEventListener('resize',function(){
+    if(window.innerWidth===envW)return;envW=window.innerWidth;
+    if(envStage.classList.contains('open')){envStage.style.transition='none';sizeEnv();void envStage.offsetHeight;envStage.style.transition=''}
+  });
+
+  /* save the QR to the phone */
+  function setNote(t){$('#saveNote').textContent=t;if(envStage.classList.contains('open'))sizeEnv()}
+  $('#saveQr').addEventListener('click',function(){
+    var HOLD='Press and hold the QR code, then choose "Save Image".\nចុចលើ QR ឱ្យជាប់ រួចជ្រើសរើស "Save Image"។';
+    if(!qrBlob){setNote(HOLD);return}
+    var file=null;try{file=new File([qrBlob],'gift-qr.png',{type:'image/png'})}catch(e){}
+    if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
+      navigator.share({files:[file],title:'Wedding gift QR'}).catch(function(e){if(!e||e.name!=='AbortError')setNote(HOLD)});
+      return;
+    }
+    try{
+      var a=document.createElement('a');a.href=URL.createObjectURL(qrBlob);a.download='gift-qr.png';
+      document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},800);
+      setNote('Saved. If nothing happened:\n'+HOLD);
+    }catch(e){setNote(HOLD)}
+  });
 })();
 </script>
 
