@@ -287,9 +287,9 @@ html.menu-open{overflow:hidden}
 .head-inline .sub{font-size:1.2rem}
 #gallery .vidtile{margin-bottom:14px}
 .gal-wrap{position:relative;left:50%;transform:translateX(-50%);width:min(100vw,440px)}
-.gal-track{--sw:min(62vw,268px);display:flex;gap:12px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding:4px calc((100% - var(--sw))/2) 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.gal-track{--sw:min(62vw,268px);display:flex;gap:12px;overflow-x:auto;overscroll-behavior-x:contain;padding:4px calc((100% - var(--sw))/2) 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .gal-track::-webkit-scrollbar{display:none}
-.gal-slide{flex:0 0 var(--sw);aspect-ratio:4/5;scroll-snap-align:center;scroll-snap-stop:always;padding:0;border-radius:10px;overflow:hidden;background:#d9ccb8;box-shadow:0 6px 18px rgba(77,63,49,.15)}
+.gal-slide{flex:0 0 var(--sw);aspect-ratio:4/5;padding:0;border-radius:10px;overflow:hidden;background:#d9ccb8;box-shadow:0 6px 18px rgba(77,63,49,.15)}
 .gal-slide img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
 .gal-arrow{position:absolute;top:calc(50% - 8px);transform:translateY(-50%);z-index:2;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(255,252,245,.82);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid var(--line);color:var(--ink)}
 .gal-arrow svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -726,6 +726,32 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   window.addEventListener('resize',function(){if(window.innerWidth===galW)return;galW=window.innerWidth;var i=galIndex()%NP;measure();track.scrollLeft=(NP+i)*pitch});
   $('#galPrev').addEventListener('click',function(){track.scrollBy({left:-pitch,behavior:'smooth'})});
   $('#galNext').addEventListener('click',function(){track.scrollBy({left:pitch,behavior:'smooth'})});
+  /* the gallery slides by itself, slowly and without stopping; it waits while the guest is touching it, while it is off screen, or while a photo is open */
+  var GAL_SPEED=38; /* pixels per second */
+  var galPaused=false,galSeen=false,galResume=0,galPos=0,galLast=0,galRun=false;
+  function galFrame(t){
+    if(!galRun)return;
+    var dt=galLast?Math.min(t-galLast,64):16;galLast=t;
+    if(!galPaused&&galSeen&&!document.hidden&&lb.hidden&&pitch){
+      galPos+=GAL_SPEED*dt/1000;
+      if(galPos>=2*NP*pitch)galPos-=NP*pitch;   /* wrap to the middle copy, it looks identical */
+      track.scrollLeft=galPos;
+    }else{galLast=0}
+    requestAnimationFrame(galFrame);
+  }
+  function galHold(){galPaused=true;clearTimeout(galResume)}
+  function galRelease(){clearTimeout(galResume);galResume=setTimeout(function(){galPos=track.scrollLeft;galPaused=false},2500)}
+  ['touchstart','pointerdown','mousedown'].forEach(function(ev){track.addEventListener(ev,galHold,{passive:true})});
+  track.addEventListener('wheel',function(){galHold();galRelease()},{passive:true});
+  ['touchend','touchcancel','pointerup','pointercancel','mouseup'].forEach(function(ev){track.addEventListener(ev,galRelease,{passive:true})});
+  $('#galPrev').addEventListener('click',function(){galHold();galRelease()});
+  $('#galNext').addEventListener('click',function(){galHold();galRelease()});
+  if(!reduce){
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(function(es){galSeen=es[0].isIntersecting;if(galSeen)galPos=track.scrollLeft},{threshold:.2}).observe($('#gallery'));
+    }else{galSeen=true}
+    galRun=true;requestAnimationFrame(galFrame);
+  }
   galStart();
   window.addEventListener('load',function(){measure();if(!track.scrollLeft)galStart()});
   function closeLb(){lb.hidden=true;lbImg.removeAttribute('src')}
