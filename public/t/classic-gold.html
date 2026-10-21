@@ -30,7 +30,7 @@
 *{box-sizing:border-box}
 html.locked{overflow:hidden}
 body{margin:0;background:var(--stone);color:var(--ink);font-family:var(--kh-body),var(--en);line-height:1.8;-webkit-text-size-adjust:100%}
-@media (max-width:440px){html,body{background:var(--cream)}}
+@media (max-width:440px){html{background:var(--cream)}body{background:transparent}}
 button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
 input,textarea{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--gold-deep);outline-offset:3px}
@@ -242,12 +242,6 @@ html.menu-open{overflow:hidden}
 .stepper div{display:flex;align-items:center;gap:12px}
 .stepper button{width:34px;height:34px;border-radius:50%;border:1px solid var(--gold);font-family:var(--en);font-size:1.3rem;line-height:1;color:var(--gold-deep)}
 .stepper output{min-width:24px;text-align:center;font-family:var(--en);font-size:1.4rem;font-variant-numeric:tabular-nums}
-.wish{padding:14px 0;border-top:1px solid var(--line)}
-.wish:first-of-type{border-top:0;padding-top:0}
-.wish b{font-family:var(--en);font-size:1.15rem;font-weight:600}
-.wish time{display:block;font-family:var(--en);font-size:.9rem;color:var(--muted)}
-.wish p{margin:4px 0 0;font-family:var(--en);font-size:1.1rem;line-height:1.5}
-.wishes-list{margin-bottom:20px}
 .drop{display:grid;justify-items:center;gap:6px;padding:20px 14px;border:1.5px dashed var(--gold);border-radius:10px;background:var(--cream);margin-bottom:14px;text-align:center}
 .drop svg{width:34px;height:34px;fill:none;stroke:var(--gold-deep);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
 .drop p{margin:0;font-family:var(--en);font-size:1.05rem;line-height:1.4;color:var(--muted)}
@@ -267,31 +261,14 @@ html.menu-open{overflow:hidden}
 .padnav{height:92px}
 
 /* pages: every section is one screen, and the screen glides to the next one */
-.page{position:relative;min-height:calc(var(--vh)*100);display:flex;flex-direction:column;justify-content:center;
-  padding-top:calc(64px + var(--sat,0px));padding-bottom:calc(40px + var(--sab,0px))}
+.page{position:relative;display:flex;flex-direction:column;justify-content:flex-start;
+  padding-top:30px;padding-bottom:30px;scroll-margin-top:calc(56px + var(--sat,0px))}
 .page>.in{width:100%}
-#khmer,#khmer2,#english{padding-top:calc(84px + var(--sat,0px));padding-bottom:calc(84px + var(--sab,0px))}
+#khmer{padding-top:calc(72px + var(--sat,0px))}
 #khmer2 .hosts{margin-top:0}
 #thanks{padding-bottom:calc(40px + var(--sab,0px))}
 .foot{margin-top:34px}
 
-/* wishes: wall of small cards (2 columns, 2 rows showing, scrolls) above the form */
-.wall{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:114px;gap:8px;height:236px;overflow-y:auto;padding:2px 2px 4px;margin-bottom:14px;scrollbar-width:thin;scrollbar-color:var(--gold) transparent;-webkit-overflow-scrolling:touch}
-.wcard{display:flex;flex-direction:column;gap:3px;text-align:left;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;overflow:hidden;min-width:0}
-.wcard b{font-family:var(--en),var(--kh-body);font-size:.95rem;font-weight:600;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.wcard p{margin:0;font-family:var(--en),var(--kh-body);font-size:.86rem;line-height:1.45;color:var(--ink);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
-.wall-empty{grid-column:1/-1;align-self:center;text-align:center;font-family:var(--en);font-style:italic;font-size:1.1rem;color:var(--muted);padding:0 16px}
-.wform{padding:14px 16px 12px}
-.wform .field{margin-bottom:10px}
-.wform .field textarea{min-height:56px}
-.wform .field input,.wform .field textarea{padding:8px 11px}
-.wcount{text-align:right;font-family:var(--en);font-size:.85rem;color:var(--muted);margin-top:-2px}
-.wm{position:fixed;inset:0;z-index:90;background:rgba(30,24,18,.6);display:grid;place-items:center;padding:20px}
-.wm[hidden]{display:none!important}
-.wm .box{width:min(100%,380px);max-height:calc(var(--vh)*80);overflow:auto;background:#fff;border:1px solid var(--gold);border-radius:12px;padding:22px 22px 18px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
-.wm b{display:block;font-family:var(--en),var(--kh-body);font-size:1.2rem;font-weight:600;margin-bottom:6px}
-.wm p{margin:0 0 16px;font-family:var(--en),var(--kh-body);font-size:1.1rem;line-height:1.6;overflow-wrap:anywhere}
-.wm .btn{width:100%}
 
 /* photos page before the upload window opens */
 .lockpill{display:none;width:fit-content;margin:0 auto 10px;padding:4px 16px;border:1px solid var(--gold);border-radius:99px;background:#fff;text-align:center;font-size:.9rem;line-height:1.6;color:var(--gold-deep)}
@@ -304,7 +281,7 @@ html.menu-open{overflow:hidden}
 .is-locked,.is-locked *{cursor:not-allowed}
 
 /* gallery: one row of photos, swipe left and right, loops */
-#gallery{justify-content:flex-start;padding-top:calc(58px + var(--sat,0px))}
+#gallery{justify-content:flex-start}
 #gallery .head{margin-bottom:14px}
 .head-inline .kh{display:flex;align-items:baseline;justify-content:center;gap:12px;margin-top:8px}
 .head-inline .sub{font-size:1.2rem}
@@ -322,7 +299,7 @@ html.menu-open{overflow:hidden}
 .gal-count{text-align:center;font-family:var(--en);font-size:.95rem;letter-spacing:.12em;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:2px}
 
 /* fixed background: the cream sheet and the faint gold monogram stay in place while the pages scroll over them */
-.bgwrap{position:fixed;top:0;bottom:0;left:50%;width:min(100%,440px);transform:translateX(-50%);z-index:-1;pointer-events:none;background:var(--cream);overflow:hidden}
+.bgwrap{position:fixed;top:0;height:calc(var(--vh)*100);left:50%;width:min(100%,440px);transform:translate3d(-50%,0,0);-webkit-backface-visibility:hidden;backface-visibility:hidden;will-change:transform;z-index:-1;pointer-events:none;background:var(--cream);overflow:hidden}
 .mark{position:absolute;top:50%;left:50%;width:min(88%,400px);height:auto;transform:translate(-50%,-50%);opacity:var(--mark-op,.12)}
 .mark path{fill:#dba74c}
 
@@ -332,6 +309,17 @@ html.menu-open{overflow:hidden}
   .half,.bar,.menu,.menu li,.ham i,.seam,.toast{transition-duration:.01s;transition-delay:0s}
   .open-btn .circ{animation:none}
 }
+
+/* drop-down panels (program, wishes): hidden until the guest taps the button */
+.fold-btn{margin-top:4px}
+.fold-btn .chev{transition:transform .35s ease}
+.fold-btn[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.fold{display:grid;grid-template-rows:0fr;opacity:0;visibility:hidden;transition:grid-template-rows .5s cubic-bezier(.4,0,.2,1),opacity .4s ease,visibility 0s .5s}
+.fold.open{grid-template-rows:1fr;opacity:1;visibility:visible;transition:grid-template-rows .5s cubic-bezier(.4,0,.2,1),opacity .5s ease .1s,visibility 0s}
+.fold-in{min-height:0;overflow:hidden;padding-top:22px}
+.fold:not(.open) .fold-in{padding-top:0}
+.page .head.tight{margin-bottom:18px}
+@media (prefers-reduced-motion:reduce){.fold,.fold.open,.fold-btn .chev{transition:none}}
 </style>
 
 <script>
@@ -394,13 +382,11 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     <li><button type="button" data-go="gallery"><span class="en">Gallery</span><span class="kh">វិចិត្រសាល</span></button></li>
     <li><button type="button" data-go="gift"><span class="en">Gift</span><span class="kh">ចំណងដៃ</span></button></li>
     <li><button type="button" data-go="rsvp"><span class="en">RSVP</span><span class="kh">ការចូលរួម</span></button></li>
-    <li><button type="button" data-go="wishes"><span class="en">Wishes</span><span class="kh">ពាក្យជូនពរ</span></button></li>
     <li><button type="button" data-go="photos"><span class="en">Photos</span><span class="kh">រូបថត</span></button></li>
   </ul>
 </nav>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<div class="wm" id="wm" hidden role="dialog" aria-modal="true" aria-label="Wish"><div class="box"><b id="wmName"></b><p id="wmText"></p><button type="button" class="btn" id="wmClose">បិទ <small>Close</small></button></div></div>
 <div class="lb" id="lb" hidden><button class="x" type="button" aria-label="Close photo">×</button><img id="lbImg" alt=""></div>
 
 <main class="phone" id="phone">
@@ -463,11 +449,18 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   <!-- Page 6: Program (taller than a screen, scrolls normally) -->
   <section class="page alt" id="program">
     <div class="in">
-      <div class="head">
+      <div class="head tight">
         <div class="orn"><i></i></div>
         <div class="kh">កម្មវិធីមង្គលអាពាហ៍ពិពាហ៍</div>
         <div class="sub">Wedding program</div>
       </div>
+      <div class="cta" style="margin-top:0">
+        <button type="button" class="btn fold-btn" data-fold="progFold" aria-expanded="false" aria-controls="progFold">
+          <span>មើលកម្មវិធី <small>View program</small></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+      </div>
+      <div class="fold" id="progFold">
+        <div class="fold-in">
       <p class="day-lbl">ថ្ងៃអាទិត្យ ទី២០ ខែធ្នូ ឆ្នាំ២០២៦</p>
       <p class="day-en">Sunday, 20 December 2026</p>
       <ul class="sched" id="sched"></ul>
@@ -476,6 +469,8 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
           <svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M12 13v4M10 15h4"/></svg>
           ដាក់ក្នុងប្រតិទិន <small>Add to calendar</small>
         </button>
+      </div>
+        </div>
       </div>
     </div>
   </section>
@@ -559,23 +554,6 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     </div>
   </section>
 
-  <!-- Page 11: Wishes (wall on top, form below) -->
-  <section class="page" id="wishes">
-    <div class="in">
-      <div class="head" style="margin-bottom:10px">
-        <div class="orn"><i></i></div>
-        <div class="kh" style="margin-top:6px">ពាក្យជូនពរ</div>
-        <div class="sub">Wishes</div>
-      </div>
-      <div class="wall" id="wall" tabindex="0" aria-label="Wishes from guests"></div>
-      <div class="card wform">
-        <div class="field"><label for="wName">Your name</label><input id="wName" type="text" maxlength="60" placeholder="Chenda" autocomplete="off"></div>
-        <div class="field"><label for="wMsg">Your wish</label><textarea id="wMsg" maxlength="150" placeholder="Write a few kind words"></textarea><div class="wcount"><span id="wLeft">150</span> / 150</div></div>
-        <button type="button" class="btn solid" style="width:100%" data-toast="Preview only. Nothing is saved or sent.">ផ្ញើ <small>Send wish</small></button>
-      </div>
-    </div>
-  </section>
-
   <!-- Page 12: Photo upload (locked until the wedding) -->
   <section class="page alt" id="photos">
     <div class="in">
@@ -637,14 +615,6 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
       {t:'11:30',ap:'AM',kh:'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារថ្ងៃត្រង់',en:'Lunch for honored guests'},
       {t:'12:00',ap:'PM',kh:'ពិធីចាក់ទឹកតែ',en:'Tea-pouring ceremony'},
       {t:'5:00',ap:'PM',kh:'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារ នៅ សាលសន្និសីទបុរីប៉េងហួត បឹងស្នោ (EURO3)',en:'Evening reception at PH Grand Hall Euro 3',main:true}
-    ],
-    wishes:[
-      {n:'Vanna',m:'Wishing you a lifetime of love and laughter together.'},
-      {n:'Sreyneang',m:'Congratulations, so happy for you both!'},
-      {n:'សុខា',m:'សូមជូនពរឱ្យអ្នកទាំងពីរមានសុភមង្គលជារៀងរហូត។'},
-      {n:'Dara',m:'May your home be filled with warmth, patience and plenty of good food. We are so happy to celebrate with you, and we wish you every blessing ahead.'},
-      {n:'Chantha',m:'Best wishes to the happy couple!'},
-      {n:'Sophea',m:'សូមអបអរសាទរ សូមឱ្យមានក្តីស្រឡាញ់ និងសុភមង្គលជានិច្ច។'}
     ],
     photos:[
       ['p01',1001,1500],['p02',1500,1001],['p04',987,1500],['p03',1500,1001],['p07',1000,1500],['p06',1500,1024],
@@ -731,6 +701,17 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     var pr=v.play();if(pr&&pr.catch)pr.catch(function(){});
   });
 
+  /* drop-down panels */
+  $$('[data-fold]').forEach(function(btn){
+    var panel=document.getElementById(btn.getAttribute('data-fold'));
+    if(!panel)return;
+    btn.addEventListener('click',function(){
+      var open=!panel.classList.contains('open');
+      panel.classList.toggle('open',open);
+      btn.setAttribute('aria-expanded',open);
+    });
+  });
+
   /* toast on preview-only buttons */
   document.addEventListener('click',function(e){
     var t=e.target.closest&&e.target.closest('[data-toast]');
@@ -777,7 +758,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   lgKh.addEventListener('click',function(){goFromMenu('khmer')});
   lgEn.addEventListener('click',function(){goFromMenu('english')});
   var navBtns=$$('.menu [data-go]');
-  var PAGES=['khmer','khmer2','english','count','program','location','gallery','gift','rsvp','wishes','photos','thanks'].map(function(id){return document.getElementById(id)});
+  var PAGES=['khmer','khmer2','english','count','program','location','gallery','gift','rsvp','photos','thanks'].map(function(id){return document.getElementById(id)});
   var NAVOF={};
   function setCurrent(id){
     var n=NAVOF[id]||id;
@@ -852,26 +833,6 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   $('#gMinus').addEventListener('click',function(){setG(g-1)});
   $('#gPlus').addEventListener('click',function(){setG(g+1)});
 
-  /* wishes: wall of small cards, tap one to read it in full */
-  var wall=$('#wall'),wm=$('#wm');
-  function openWish(w){$('#wmName').textContent=w.n;$('#wmText').textContent=w.m;wm.hidden=false}
-  function closeWish(){wm.hidden=true}
-  if(EVENT.wishes.length){
-    EVENT.wishes.forEach(function(w){
-      var c=document.createElement('button');c.type='button';c.className='wcard';
-      var n=document.createElement('b');n.textContent=w.n;
-      var p=document.createElement('p');p.textContent=w.m;
-      c.appendChild(n);c.appendChild(p);
-      c.addEventListener('click',function(){openWish(w)});
-      wall.appendChild(c);
-    });
-  }else{
-    var em=document.createElement('p');em.className='wall-empty';em.textContent='Be the first to send a wish.';wall.appendChild(em);
-  }
-  wm.addEventListener('click',function(e){if(e.target===wm)closeWish()});
-  $('#wmClose').addEventListener('click',closeWish);
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!wm.hidden)closeWish()});
-  $('#wMsg').addEventListener('input',function(){$('#wLeft').textContent=150-this.value.length});
 
   /* photo page: visible from the start, but locked until the upload window opens */
   var LOCK_MSG='ការចែករំលែករូបថតនឹងបើកនៅថ្ងៃមង្គលការ\nPhoto sharing will be available on the wedding day.';
