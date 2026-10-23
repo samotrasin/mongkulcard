@@ -64,7 +64,7 @@ export default {
 
 async function guestInvitation(request, env, ctx, url, slug, code) {
   const guest = await env.DB.prepare(
-    `SELECT g.id, g.display_name, e.status, t.code AS template,
+    `SELECT g.id, g.display_name, g.language, e.status, t.code AS template,
             (strftime('%Y-%m-%dT%H:%M:%SZ','now') > e.links_expire_at) AS expired
        FROM guests g
        JOIN events e    ON e.id = g.event_id
@@ -94,6 +94,11 @@ async function guestInvitation(request, env, ctx, url, slug, code) {
   html = html.replace("guest:'Chenda'", () => 'guest:' + MARK);        // the setting used by the script
   html = html.replaceAll('Chenda', () => escapeHtml(guest.display_name)); // the visible text
   html = html.replace(MARK, () => jsString(guest.display_name));
+
+  // The language the host chose for this guest (the guest can still switch inside the invitation).
+  const lang = guest.language === 'en' ? 'en' : 'km';
+  html = html.replace("lang:'km',", () => `lang:'${lang}',`);
+  html = html.replace('<html lang="km" data-lang="km">', () => `<html lang="${lang}" data-lang="${lang}">`);
 
   // Count the open (real people only), without making the guest wait.
   if (request.method === 'GET' && !BOT_RE.test(request.headers.get('user-agent') || '')) {

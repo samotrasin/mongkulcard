@@ -182,7 +182,7 @@ async function listGuests(env, session, url) {
   const ev = await ownedEvent(env, session, Number(url.searchParams.get('event')));
   if (!ev) return json({ error: 'Not found.' }, 404);
   const { results } = await env.DB.prepare(
-    `SELECT id, code, display_name AS name, open_count AS opens, first_opened_at AS first_opened, last_opened_at AS last_opened
+    `SELECT id, code, display_name AS name, language, open_count AS opens, first_opened_at AS first_opened, last_opened_at AS last_opened
        FROM guests WHERE event_id = ?1 AND deleted_at IS NULL AND is_disabled = 0
       ORDER BY id`
   ).bind(ev.id).all();
@@ -203,6 +203,7 @@ async function addGuests(request, env, session) {
     return json({ error: `Please add at most ${MAX_NAMES_PER_REQUEST} names at a time.` }, 400);
   }
 
+  const language = body.language === 'en' ? 'en' : 'km';
   const names = [];
   let skipped = 0;
   for (const raw of body.names) {
@@ -220,9 +221,9 @@ async function addGuests(request, env, session) {
     try {
       const statements = names.map((n) =>
         env.DB.prepare(
-          `INSERT INTO guests (event_id, code, display_name, source) VALUES (?1, ?2, ?3, ?4)
-           RETURNING id, code, display_name AS name, open_count AS opens, first_opened_at AS first_opened, last_opened_at AS last_opened`
-        ).bind(ev.id, newCode(), n, names.length > 1 ? 'import' : 'manual')
+          `INSERT INTO guests (event_id, code, display_name, source, language) VALUES (?1, ?2, ?3, ?4, ?5)
+           RETURNING id, code, display_name AS name, language, open_count AS opens, first_opened_at AS first_opened, last_opened_at AS last_opened`
+        ).bind(ev.id, newCode(), n, names.length > 1 ? 'import' : 'manual', language)
       );
       statements.push(audit(env, ev.id, session.username, 'guests.added', 'guest', null, { count: names.length }));
       const out = await env.DB.batch(statements);
@@ -244,11 +245,13 @@ async function renameGuest(request, env, session, id) {
 
   const g = await findGuest(env, session, id);
   if (!g) return json({ error: 'Not found.' }, 404);
+  const language = body.language === 'en' ? 'en' : body.language === 'km' ? 'km' : null;   // null = leave as it is
   await env.DB.batch([
-    env.DB.prepare(`UPDATE guests SET display_name = ?1 WHERE id = ?2`).bind(name, id),
+    env.DB.prepare(`UPDATE guests SET display_name = ?1, language = COALESCE(?2, language) WHERE id = ?3`).bind(name, language, id),
     audit(env, g.event_id, session.username, 'guest.renamed', 'guest', id, null),
   ]);
-  return json({ ok: true, name });
+  const row = await env.DB.prepare(`SELECT language FROM guests WHERE id = ?1`).bind(id).first();
+  return json({ ok: true, name, language: row ? row.language : 'km' });
 }
 
 async function deleteGuest(env, session, id) {

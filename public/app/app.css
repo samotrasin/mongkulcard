@@ -74,3 +74,14 @@ textarea.short{min-height:120px}
 .guest .sub.link{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .guest .actions{margin-top:10px;gap:6px}
 .guest .btn.small{padding:7px 9px;font-size:13px}
+
+.langrow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.langrow .lbl{font-size:.85rem;color:var(--muted)}
+.seg2{display:inline-flex;border:1px solid var(--line);border-radius:99px;overflow:hidden;background:#fff}
+.seg2 button{padding:8px 16px;font-size:.9rem;border:0;background:transparent;color:var(--muted);cursor:pointer}
+.seg2 button[aria-pressed="true"]{background:var(--gold2);color:#fff}
+.chip.lang{border-color:#d8c79b;color:#8a6a25}
+.edit select{width:auto}
+.guest .edit{flex-wrap:wrap}
+.guest .edit input{flex:1 1 100%}
+.guest .edit select{flex:1 1 auto}

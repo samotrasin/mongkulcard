@@ -1,6 +1,9 @@
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var state = { events: [], ev: null, slug: '', guests: [] };
+  var lang = 'km';
+  try { if (localStorage.getItem('mc-lang') === 'en') lang = 'en'; } catch (e) {}
+  var LANG_NAME = { km: 'ខ្មែរ Khmer', en: 'English' };
   var DEFAULT_MSG = 'Dear {name},\nYou are warmly invited to our celebration. Please open your personal invitation here:\n{link}';
 
   // ---------- helpers
@@ -110,6 +113,7 @@
     sub.appendChild(el('span', 'u', location.host + '/' + state.slug + '/' + g.code));
     r.appendChild(sub);
     var st = el('div', 'sub');
+    st.appendChild(el('span', 'chip lang', LANG_NAME[g.language] || LANG_NAME.km)); st.appendChild(document.createTextNode(' '));
     if (g.opens > 0) {
       st.appendChild(el('span', 'chip opened', 'Opened' + (g.opens > 1 ? ' ' + g.opens + '×' : '')));
       if (g.last_opened) st.appendChild(document.createTextNode(' ' + fmtDate(g.last_opened)));
@@ -134,14 +138,16 @@
     var inp = el('input'); inp.type = 'text'; inp.maxLength = 120; inp.value = g.name; inp.setAttribute('aria-label', 'Guest name');
     var save = el('button', 'btn small', 'Save'); save.type = 'button';
     var cancel = el('button', 'btn small ghost', 'Cancel'); cancel.type = 'button';
-    e.appendChild(inp); e.appendChild(save); e.appendChild(cancel);
+    var ls = el('select'); ls.setAttribute('aria-label', 'Invitation language');
+    ['km', 'en'].forEach(function (v) { var o = el('option', null, LANG_NAME[v]); o.value = v; if (v === (g.language || 'km')) o.selected = true; ls.appendChild(o); });
+    e.appendChild(inp); e.appendChild(ls); e.appendChild(save); e.appendChild(cancel);
     var err = el('div', 'err'); err.setAttribute('role', 'alert');
     r.appendChild(e); r.appendChild(err);
     inp.focus(); inp.select();
     function go() {
       save.disabled = true;
-      api('PATCH', '/api/guests/' + g.id, { name: inp.value }).then(function (d) {
-        g.name = d.name; render(g.id); toast('Name changed. The link stays the same.');
+      api('PATCH', '/api/guests/' + g.id, { name: inp.value, language: ls.value }).then(function (d) {
+        g.name = d.name; g.language = d.language; render(g.id); toast('Name changed. The link stays the same.');
       }).catch(function (x) { err.textContent = x.message; save.disabled = false; });
     }
     save.addEventListener('click', go);
@@ -178,7 +184,7 @@
   function add(names, btn) {
     $('addErr').textContent = '';
     btn.disabled = true;
-    api('POST', '/api/guests', { event: state.ev.id, names: names }).then(function (d) {
+    api('POST', '/api/guests', { event: state.ev.id, names: names, language: lang }).then(function (d) {
       d.guests.forEach(function (g) { state.guests.push(g); });
       $('q').value = '';
       if (d.guests.length === 1) {
@@ -196,6 +202,15 @@
   $('toMany').addEventListener('click', function () { $('single').hidden = true; $('many').hidden = false; $('addErr').textContent = ''; $('manyNames').focus(); });
   $('toOne').addEventListener('click', function () { $('many').hidden = true; $('single').hidden = false; $('addErr').textContent = ''; });
   $('q').addEventListener('input', function () { render(); });
+
+  // ---------- language choice for the next guest(s)
+  function paintLang() {
+    Array.prototype.forEach.call($('langSeg').querySelectorAll('button'), function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-v') === lang); });
+  }
+  Array.prototype.forEach.call($('langSeg').querySelectorAll('button'), function (b) {
+    b.addEventListener('click', function () { lang = b.getAttribute('data-v'); try { localStorage.setItem('mc-lang', lang); } catch (e) {} paintLang(); });
+  });
+  paintLang();
 
   // ---------- message template
   $('msgToggle').addEventListener('click', function () { $('msgbox').hidden = !$('msgbox').hidden; });
