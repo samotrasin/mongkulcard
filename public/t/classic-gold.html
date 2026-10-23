@@ -77,23 +77,34 @@ input,textarea{font:inherit;color:inherit}
 .half.r .art{right:0}
 .cover.opening .half.l{transform:translateX(-101%)}
 .cover.opening .half.r{transform:translateX(101%)}
-.seam{position:absolute;top:0;bottom:0;left:50%;width:2px;margin-left:-1px;z-index:2;background:linear-gradient(180deg,transparent,#EBCB86 15%,var(--gold) 50%,#EBCB86 85%,transparent);box-shadow:0 0 14px rgba(235,203,134,.9);transition:opacity .5s}
+.seam{position:absolute;top:0;bottom:0;left:50%;width:1px;margin-left:-.5px;z-index:2;background:linear-gradient(180deg,transparent,rgba(235,203,134,.7) 15%,rgba(201,157,70,.8) 50%,rgba(235,203,134,.7) 85%,transparent);box-shadow:0 0 6px rgba(235,203,134,.5);transition:opacity .5s}
 .cover.opening .seam{opacity:0}
-.art{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(6px,calc(var(--vh)*1.6),16px);text-align:center;background:var(--cream);
-  padding:calc(clamp(70px,calc(var(--vh)*15),130px) + var(--sat,0px)) 30px calc(clamp(64px,calc(var(--vh)*12),110px) + var(--sab,0px))}
-.art::before,.art::after{content:"";position:absolute;left:0;right:0;pointer-events:none;background-repeat:no-repeat;background-size:100% 100%}
-.art::before{top:0;aspect-ratio:1504/435;background-image:url("img/flor-top.jpg")}
-.art::after{bottom:0;aspect-ratio:1504/436;background-image:url("img/flor-bot.jpg")}
-.art>div,.art>button,.art>img{position:relative;z-index:1}
-.crest{width:min(64%,calc(var(--vh)*40),260px);height:auto;display:block}
-.cover-title{font-family:var(--kh-display);font-size:1.3rem;line-height:1.8}
-.guest-lbl{font-family:var(--kh-display);font-size:.95rem;line-height:1.8;color:var(--gold-deep)}
-.plate{margin:2px auto 0;min-width:230px;padding:8px 26px;border:1px solid var(--gold);box-shadow:inset 0 0 0 3px var(--cream),inset 0 0 0 4px var(--line);background:rgba(255,255,255,.6);font-family:var(--en);font-size:1.6rem;font-weight:600;letter-spacing:.05em;color:var(--ink)}
-.open-btn{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:6px}
-.open-btn .circ{width:52px;height:52px;border-radius:50%;border:1px solid var(--gold);display:grid;place-items:center;background:rgba(255,255,255,.85);animation:pulse 2.4s ease-in-out infinite}
-.open-btn svg{width:17px;height:17px;fill:var(--gold-deep);margin-left:3px}
-.open-btn .kh{font-family:var(--kh-display);font-size:.9rem;line-height:1.8;color:var(--gold-deep)}
-.open-btn .lbl{font-family:var(--en);font-size:.82rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.cover{--cw:min(100vw,var(--colw));--u:calc(min(var(--cw),calc(var(--vh)*70.94))/1240)} /* one "unit": the cover is drawn on a 1240 x 1748 sheet and scaled to fit */
+.art{position:absolute;overflow:hidden;text-align:center;
+  background:radial-gradient(60% 28% at 62% 0%,#e0d4c4 0%,transparent 70%),radial-gradient(45% 30% at 100% 8%,#e2d6d0 0%,transparent 70%),radial-gradient(55% 22% at 0% 100%,#d6c2b3 0%,transparent 72%),radial-gradient(70% 20% at 55% 100%,#e3e0d3 0%,transparent 70%),#ece8e3}
+.gl{position:absolute;width:calc(var(--u)*402);height:auto;pointer-events:none;user-select:none}
+.gl-tr{top:0;right:0;transform:scaleX(-1)}
+.gl-bl{bottom:0;left:0;width:calc(var(--u)*287);transform:scaleY(-1)}
+.stage{position:absolute;top:0;bottom:0;left:50%;width:calc(var(--u)*1240);transform:translateX(-50%)}
+.arch-card{position:absolute;left:calc(var(--u)*148);right:calc(var(--u)*160);top:calc(var(--u)*215);bottom:calc(var(--u)*213);background:#efedec;
+  border:max(1.5px,calc(var(--u)*5)) solid #cfaa8e;border-radius:calc(var(--u)*466) calc(var(--u)*466) 0 0;box-shadow:0 calc(var(--u)*16) calc(var(--u)*40) rgba(110,90,70,.2)}
+.fl{position:absolute;height:auto;pointer-events:none;user-select:none}
+.fl-left{left:calc(var(--u)*15);top:calc(var(--u)*5);width:calc(var(--u)*759)}
+.fl-palm{right:calc(var(--u)*4);bottom:calc(var(--u)*520);width:calc(var(--u)*356)}
+.fl-br{right:calc(var(--u)*1);bottom:calc(var(--u)*8);width:calc(var(--u)*534)}
+.cv-content{position:absolute;left:calc(var(--u)*148);right:calc(var(--u)*160);top:calc(var(--u)*215);bottom:calc(var(--u)*213);display:flex;flex-direction:column;align-items:center;
+  padding:calc(var(--u)*170) 0 calc(var(--u)*150)}
+.crest{width:calc(var(--u)*530);height:auto;display:block;flex:none}
+.cover-title{font-family:var(--kh-display);font-size:max(13px,calc(var(--u)*58));line-height:1.8;margin-top:calc(var(--u)*6)}
+.cv-low{margin:auto 0;display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*12);width:100%}
+.cv-div{width:calc(var(--u)*480);height:auto;display:block}
+.guest-lbl{font-family:var(--kh-display);font-size:max(12px,calc(var(--u)*52));line-height:1.8;color:var(--gold-deep)}
+.plate{max-width:calc(var(--u)*560);font-family:var(--en);font-size:max(19px,calc(var(--u)*88));font-weight:600;line-height:1.15;letter-spacing:.04em;color:var(--ink);overflow-wrap:anywhere;text-wrap:balance;padding:0 4px}
+.open-btn{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:calc(var(--u)*14)}
+.open-btn .circ{width:max(40px,calc(var(--u)*150));height:max(40px,calc(var(--u)*150));border-radius:50%;border:1px solid var(--gold);display:grid;place-items:center;background:rgba(255,255,255,.85);animation:pulse 2.4s ease-in-out infinite}
+.open-btn svg{width:max(14px,calc(var(--u)*50));height:max(14px,calc(var(--u)*50));fill:var(--gold-deep);margin-left:3px}
+.open-btn .kh{font-family:var(--kh-display);font-size:max(12px,calc(var(--u)*50));line-height:1.8;color:var(--gold-deep)}
+.open-btn .lbl{font-family:var(--en);font-size:max(10px,calc(var(--u)*40));letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 5px rgba(220,167,76,.2)}50%{box-shadow:0 0 0 11px rgba(220,167,76,.07)}}
 
 /* top bar: frosted glass, crest on the left, music and menu on the right */
@@ -305,7 +316,6 @@ html.menu-open{overflow:hidden}
 .mark{position:absolute;top:50%;left:50%;width:min(88%,400px);height:auto;transform:translate(-50%,-50%);opacity:var(--mark-op,.12)}
 .mark path{fill:#dba74c}
 
-@media (max-height:660px){.crest{width:min(52%,calc(var(--vh)*32))}.cover-title{font-size:1.1rem}.plate{font-size:1.3rem}}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .half,.bar,.menu,.menu li,.ham i,.seam,.toast{transition-duration:.01s;transition-delay:0s}
@@ -412,18 +422,29 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
 </aside>
 <template id="coverArt">
   <div class="art">
-    <img class="crest" src="img/crest.png" alt="Wedding crest" width="692" height="808">
-    <div class="cover-title goldtext">សិរីមង្គលអាពាហ៍ពិពាហ៍</div>
-    <img class="branch" src="img/leaf.svg" alt="" width="1480" height="450">
-    <div>
-      <div class="guest-lbl">សូមគោរពអញ្ជើញ</div>
-      <div class="plate" data-guest>Chenda</div>
+    <img class="gl gl-tr" src="img/cover/glitter.webp" alt="" width="402" height="730" decoding="async">
+    <img class="gl gl-bl" src="img/cover/glitter.webp" alt="" width="402" height="730" decoding="async">
+    <div class="stage">
+      <div class="arch-card"></div>
+      <img class="fl fl-left" src="img/cover/flower-left.webp" alt="" width="759" height="1093" decoding="async">
+      <img class="fl fl-palm" src="img/cover/flower-palm.webp" alt="" width="356" height="566" decoding="async">
+      <img class="fl fl-br" src="img/cover/flower-br.webp" alt="" width="534" height="675" decoding="async">
+      <div class="cv-content">
+        <img class="crest" src="img/crest.png" alt="Wedding crest" width="692" height="808">
+        <div class="cover-title goldtext">សិរីមង្គលអាពាហ៍ពិពាហ៍</div>
+        <div class="cv-low">
+          <img class="cv-div" src="img/cover/divider-top.webp" alt="" width="480" height="41">
+          <div class="guest-lbl">សូមគោរពអញ្ជើញ</div>
+          <div class="plate" data-guest>Chenda</div>
+          <img class="cv-div" src="img/cover/divider-bottom.webp" alt="" width="480" height="41">
+          <button class="open-btn" type="button" aria-label="Open invitation">
+            <span class="circ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5v17L21 12z"/></svg></span>
+            <span class="kh">បើកសំបុត្រ</span>
+            <span class="lbl">Open invitation</span>
+          </button>
+        </div>
+      </div>
     </div>
-    <button class="open-btn" type="button" aria-label="Open invitation">
-      <span class="circ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5v17L21 12z"/></svg></span>
-      <span class="kh">បើកសំបុត្រ</span>
-      <span class="lbl">Open invitation</span>
-    </button>
   </div>
 </template>
 
