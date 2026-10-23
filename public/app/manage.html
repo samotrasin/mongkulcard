@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Guest links · MongkulCard</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/app.css">
+</head><body>
+<div class="wrap">
+  <div class="top">
+    <span class="brand">MongkulCard</span>
+    <span class="links">
+      <button class="btn ghost small" id="pwBtn" type="button">Password</button>
+      <button class="btn ghost small" id="outBtn" type="button">Log out</button>
+    </span>
+  </div>
+
+  <div class="card evhead" id="head">
+    <select id="evSel" hidden aria-label="Invitation"></select>
+    <h2 id="evTitle">Loading…</h2>
+    <div class="meta muted" id="evMeta"></div>
+    <div class="stats"><span><b id="nGuests">0</b> guests</span><span><b id="nOpened">0</b> opened</span></div>
+  </div>
+
+  <div class="card" id="addCard" hidden>
+    <div id="single">
+      <label for="oneName">Guest name</label>
+      <div class="row">
+        <div class="grow"><input id="oneName" type="text" maxlength="120" autocomplete="off" placeholder="e.g. Mr. Sok Dara"></div>
+        <button class="btn" id="oneAdd" type="button">Add &amp; get link</button>
+      </div>
+      <p class="hint">Type the name exactly as it should appear on the invitation, including any title.
+        <button class="linkbtn" id="toMany" type="button">Add many names at once</button></p>
+    </div>
+    <div id="many" hidden>
+      <label for="manyNames">Paste your list, one name per line</label>
+      <textarea id="manyNames" placeholder="Mr. Sok Dara&#10;Ms. Chan Sreyneang&#10;Uncle Vireak and family"></textarea>
+      <div class="actions mt10">
+        <button class="btn" id="manyAdd" type="button">Add all</button>
+        <button class="btn ghost" id="toOne" type="button">Back</button>
+      </div>
+    </div>
+    <p class="err" id="addErr" role="alert"></p>
+  </div>
+
+  <div class="card result" id="result" hidden>
+    <div><b id="resName"></b> <span class="muted">· link ready</span></div>
+    <div class="url" id="resUrl"></div>
+    <div class="actions">
+      <button class="btn small" id="resLink" type="button">Copy link</button>
+      <button class="btn small ghost" id="resMsg" type="button">Copy message</button>
+    </div>
+  </div>
+
+  <div class="card" id="listCard" hidden>
+    <div class="search"><input id="q" type="text" placeholder="Search guests" autocomplete="off" aria-label="Search guests"></div>
+    <div id="list"></div>
+  </div>
+
+  <div class="card" id="msgCard" hidden>
+    <button class="linkbtn" id="msgToggle" type="button">Edit the message that "Copy message" creates</button>
+    <div id="msgbox" hidden>
+      <textarea id="msgText" class="short"></textarea>
+      <p class="hint">Use <b>{name}</b> for the guest's name and <b>{link}</b> for their link. Saved on this phone.</p>
+      <div class="actions mt8">
+        <button class="btn small" id="msgSave" type="button">Save</button>
+        <button class="btn small ghost" id="msgReset" type="button">Back to the standard message</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modalbg" id="delBg" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="delT">
+  <h2 id="delT">Are you sure?</h2>
+  <p id="delP"></p>
+  <div class="actions"><button class="btn ghost" id="delNo" type="button">Cancel</button><button class="btn danger solid" id="delYes" type="button">Delete</button></div>
+</div></div>
+
+<div class="modalbg" id="pwBg" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="pwT">
+  <h2 id="pwT">Change password</h2>
+  <div class="field"><label for="pwCur">Current password</label><input id="pwCur" type="password" autocomplete="current-password"></div>
+  <div class="field"><label for="pwNew">New password (at least 10 characters)</label><input id="pwNew" type="password" autocomplete="new-password"></div>
+  <p class="err" id="pwErr" role="alert"></p>
+  <div class="actions"><button class="btn ghost" id="pwNo" type="button">Cancel</button><button class="btn" id="pwYes" type="button">Save</button></div>
+</div></div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="/app/manage.js"></script>
+</body></html>

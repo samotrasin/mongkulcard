@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Sign in · MongkulCard</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app/app.css">
+</head><body>
+<main class="center"><form class="card login" id="f" autocomplete="on">
+  <h1>MongkulCard</h1>
+  <div class="rule"></div>
+  <p class="muted tagline">Sign in to manage your guest links.</p>
+  <div class="field"><label for="u">Username</label>
+    <input id="u" name="username" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" required></div>
+  <div class="field"><label for="p">Password</label>
+    <div class="pwrow"><input id="p" name="password" type="password" autocomplete="current-password" required>
+    <button type="button" id="show">Show</button></div></div>
+  <button class="btn full" id="go" type="submit">Sign in</button>
+  <p class="err" id="err" role="alert" aria-live="polite"></p>
+</form></main>
+<script src="/app/login.js"></script>
+</body></html>

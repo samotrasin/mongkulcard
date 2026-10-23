@@ -4,6 +4,7 @@
 //   /                     greeting page
 //   /<event>              polite "use your personal link" page
 //   /<event>/<code>       a guest's personal invitation
+//   /login, /manage       the host's sign-in and guest manager (src/host.js)
 //   /img/...             pictures (served from the public/ folder)
 //   /media/<event>/<file> video and music (served from the R2 bucket)
 
@@ -15,13 +16,25 @@ const SLUG_RE = /^[a-z0-9-]{3,40}$/;
 // They must not count as "opened".
 const BOT_RE = /bot|crawler|spider|facebookexternalhit|whatsapp|preview|slurp/i;
 
+import { hostPage, appFile, api } from './host.js';
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const parts = url.pathname.split('/').filter(Boolean);
 
+    // The host's manage page and its data. Only /api/... may change anything.
+    if (parts[0] === 'api') return api(request, env, ctx, url, parts);
+
     if (request.method !== 'GET' && request.method !== 'HEAD') {
       return new Response('Method not allowed', { status: 405 });
+    }
+
+    if (parts[0] === 'login' || (parts[0] === 'manage' && parts.length === 1)) {
+      return (await hostPage(request, env, url, parts)) || page(notFound(), 404);
+    }
+    if (parts[0] === 'app' && parts.length === 2) {
+      return (await appFile(request, env, url, parts[1])) || page(notFound(), 404);
     }
 
     // Pictures: hand over to the static files in public/img.
