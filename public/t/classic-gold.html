@@ -69,37 +69,79 @@ input,textarea{font:inherit;color:inherit}
 /* cover */
 .cover{position:fixed;top:0;bottom:0;left:var(--cx);width:min(100%,var(--colw));transform:translateX(-50%);z-index:60;overflow:hidden;cursor:pointer}
 .cover[hidden]{display:none!important}
-.cover{perspective:1200px;perspective-origin:50% 50%}
-/* two doors, hinged at the outer edges, that swing inward (away from the guest) onto a bright light */
+.cover{perspective:1300px;perspective-origin:50% 50%}
+/* two doors, hinged at the outer edges, that swing inward (away from the guest) into a blinding light */
 .half{position:absolute;top:0;bottom:0;width:50%;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;will-change:transform,opacity;
-  transition:transform 2.7s cubic-bezier(.55,.04,.25,1),opacity .7s ease}
+  transition:transform 2.6s cubic-bezier(.5,.02,.22,1) .85s}
 .half.l{left:0;transform-origin:0 50%}
 .half.r{right:0;transform-origin:100% 50%}
 .half .art{position:absolute;top:0;bottom:0;width:200%}
 .half.l .art{left:0}
 .half.r .art{right:0}
-.half::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 2.7s ease-in}
-.half.l::after{background:linear-gradient(90deg,rgba(90,60,15,0) 35%,rgba(90,60,15,.6))}
-.half.r::after{background:linear-gradient(270deg,rgba(90,60,15,0) 35%,rgba(90,60,15,.6))}
+/* gold rim on the edge where the doors meet */
+.half::before{content:"";position:absolute;top:0;bottom:0;width:calc(var(--u)*13);z-index:3;pointer-events:none;background:linear-gradient(90deg,#8f6a22,#f3d88e 34%,#fff7d6 50%,#d6aa4c 68%,#86601c);
+  -webkit-mask-image:linear-gradient(#000 calc(var(--u)*215),transparent 0,transparent calc(100% - var(--u)*213),#000 0);mask-image:linear-gradient(#000 calc(var(--u)*215),transparent 0,transparent calc(100% - var(--u)*213),#000 0)}
+.half.l::before{right:0}
+.half.r::before{left:0}
+/* shade + a bright sheen that slides across the door face while it turns */
+.half::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;z-index:2;
+  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.65) 47%,transparent 62%),linear-gradient(90deg,rgba(80,55,12,0) 30%,rgba(80,55,12,.65));
+  background-size:260% 100%,100% 100%;background-position:130% 0,0 0;transition:opacity 1.6s ease-in .85s,background-position 2.6s cubic-bezier(.4,0,.3,1) .85s}
+.half.r::after{background:linear-gradient(255deg,transparent 30%,rgba(255,255,255,.65) 47%,transparent 62%),linear-gradient(270deg,rgba(80,55,12,0) 30%,rgba(80,55,12,.65));background-size:260% 100%,100% 100%;background-position:-30% 0,0 0}
 .cover.opening .half.l{transform:rotateY(86deg)}
 .cover.opening .half.r{transform:rotateY(-86deg)}
 .cover.opening .half::after{opacity:1}
+.half.l::after{}
+.cover.opening .half.l::after{background-position:-30% 0,0 0}
+.cover.opening .half.r::after{background-position:130% 0,0 0}
 .cover.opening .open-btn{opacity:0;transition:opacity .35s}
-.cover.doors-gone .half{opacity:0}
-/* the light behind the doors: starts blinding, then dims down to show the invitation */
-.light{position:absolute;inset:0;background:radial-gradient(80% 66% at 50% 50%,#ffffff 0%,#fffdf6 42%,#fff4d8 78%,#fdebc0 100%);opacity:1;transition:opacity 2.8s cubic-bezier(.3,.1,.3,1)}
-.cover.dim .light{opacity:0}
+/* what is behind the doors, the beam that bleeds over them, and the white-out that dims down to the page */
+.light{position:absolute;inset:0;background:radial-gradient(80% 66% at 50% 50%,#ffffff 0%,#fffdf6 42%,#fff4d8 78%,#fdebc0 100%)}
+.beam{position:absolute;left:50%;top:-6%;bottom:-6%;width:78%;z-index:3;pointer-events:none;opacity:0;transform:translateX(-50%) scaleX(.012);
+  background:linear-gradient(90deg,rgba(255,236,170,0),rgba(255,244,205,.9) 32%,#fff 50%,rgba(255,244,205,.9) 68%,rgba(255,236,170,0));will-change:transform,opacity}
+.cover.opening .beam{opacity:1;transform:translateX(-50%) scaleX(1);transition:opacity .5s ease-out .85s,transform 2.4s cubic-bezier(.45,0,.2,1) .85s}
+/* a thin line of light (like a light-saber) runs up the seam from the bottom to the top, then the doors open */
+.saber{position:absolute;left:50%;top:0;bottom:0;width:0;z-index:6;pointer-events:none}
+.saber::before{content:"";position:absolute;left:-2px;width:4px;top:0;bottom:0;border-radius:2px;opacity:0;clip-path:inset(100% 0 0 0);
+  background:linear-gradient(90deg,#fff3c2,#fff 50%,#fff3c2);box-shadow:0 0 6px 2px #fff,0 0 16px 6px rgba(255,226,130,.95),0 0 38px 14px rgba(255,200,90,.6)}
+.saber::after{content:"";position:absolute;left:-26px;width:52px;height:52px;bottom:-26px;border-radius:50%;opacity:0;
+  background:radial-gradient(circle,#fff 0 18%,rgba(255,236,160,.9) 36%,rgba(255,200,90,0) 70%)}
+.cover.opening .saber::before{animation:sabline 1.2s cubic-bezier(.45,0,.25,1) forwards}
+.cover.opening .saber::after{animation:sabhead .85s cubic-bezier(.45,0,.25,1) forwards}
+@keyframes sabline{0%{opacity:1;clip-path:inset(100% 0 0 0)}70%{opacity:1;clip-path:inset(0 0 0 0)}100%{opacity:0;clip-path:inset(0 0 0 0)}}
+@keyframes sabhead{0%{opacity:1;bottom:-26px}85%{opacity:1}100%{opacity:0;bottom:calc(100% - 26px)}}
+.flash{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;background:radial-gradient(88% 72% at 50% 50%,#fff 0%,#fffdf6 46%,#fff3d4 82%,#fde6b0 100%)}
+.cover.opening .flash{animation:flash 5.2s linear 1.95s forwards}
+@keyframes flash{0%{opacity:0;animation-timing-function:cubic-bezier(.55,0,.85,.45)}24%{opacity:1}34%{opacity:1;animation-timing-function:cubic-bezier(.2,.1,.25,1)}100%{opacity:0}}
+.cover.doors-gone .half,.cover.doors-gone .beam,.cover.doors-gone .light{visibility:hidden}
 .cover.done{pointer-events:none}
-/* butterflies and birds that fly out of the light */
+/* idle: a soft glint of light slides over the cover, and a few stars twinkle on the crest */
+.cv-shine{position:absolute;left:calc(var(--u)*148);right:calc(var(--u)*160);top:calc(var(--u)*215);bottom:calc(var(--u)*213);overflow:hidden;pointer-events:none;border-radius:calc(var(--u)*466) calc(var(--u)*466) 0 0}
+.cv-shine::before{content:"";position:absolute;top:-10%;bottom:-10%;left:0;width:30%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.7),transparent);transform:translateX(-160%) skewX(-18deg);animation:shine 6.5s ease-in-out 1.4s infinite}
+@keyframes shine{0%{transform:translateX(-160%) skewX(-18deg)}34%,100%{transform:translateX(420%) skewX(-18deg)}}
+.tw{position:absolute;width:calc(var(--u)*54);height:calc(var(--u)*54);margin:calc(var(--u)*-27) 0 0 calc(var(--u)*-27);pointer-events:none;opacity:0;
+  background:radial-gradient(circle,#fff 0 10%,rgba(255,226,140,.85) 16%,transparent 58%),linear-gradient(90deg,transparent 46%,rgba(255,240,190,.95) 50%,transparent 54%),linear-gradient(0deg,transparent 46%,rgba(255,240,190,.95) 50%,transparent 54%);animation:twk 3.4s ease-in-out infinite}
+@keyframes twk{0%,100%{opacity:0;transform:scale(.3) rotate(0)}42%{opacity:1;transform:scale(1) rotate(25deg)}72%{opacity:0;transform:scale(.4) rotate(50deg)}}
+.defs{position:absolute;width:0;height:0}
+.tw.t1{left:calc(var(--u)*430);top:calc(var(--u)*470);animation-delay:0s}
+.tw.t2{left:calc(var(--u)*860);top:calc(var(--u)*560);animation-delay:1.1s}
+.tw.t3{left:calc(var(--u)*640);top:calc(var(--u)*400);animation-delay:2.2s}
+.tw.t4{left:calc(var(--u)*540);top:calc(var(--u)*920);animation-delay:.6s}
+.tw.t5{left:calc(var(--u)*790);top:calc(var(--u)*880);animation-delay:1.7s}
+/* golden butterflies, birds, light trails and dust */
 .crit{position:absolute;inset:0;pointer-events:none;z-index:5;overflow:hidden}
 .bf,.bd{position:absolute;left:0;top:0;opacity:0;will-change:transform,opacity}
 .bf{background:url(img/fx/butterfly.webp) 0 0/1600% 100% no-repeat;animation:bfflap .8s steps(16) infinite}
 @keyframes bfflap{from{background-position:0 0}to{background-position:106.667% 0}}
-.bd{fill:#7d5c22;stroke:#7d5c22;stroke-width:1.6;stroke-linejoin:round}
-.bd .up{animation:bdup .46s steps(1) infinite}
-.bd .dn{animation:bddn .46s steps(1) infinite}
+.bd{fill:url(#birdGold);stroke:#c8962f;stroke-width:1.1;stroke-linejoin:round;filter:drop-shadow(0 0 3px rgba(255,214,120,.95)) drop-shadow(0 0 9px rgba(255,196,90,.7))}
+.bd .up{animation:bdup .3s steps(1) infinite}
+.bd .dn{animation:bddn .3s steps(1) infinite}
 @keyframes bdup{0%{opacity:1}50%{opacity:0}}
 @keyframes bddn{0%{opacity:0}50%{opacity:1}}
+.sp{position:absolute;left:0;top:0;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#fffbe6 0%,rgba(255,224,130,.9) 38%,rgba(255,200,90,0) 72%);animation:spark 1s ease-out forwards}
+@keyframes spark{0%{opacity:.95;transform:translate3d(var(--x),var(--y),0) scale(1)}100%{opacity:0;transform:translate3d(calc(var(--x) + var(--dx)),calc(var(--y) + var(--dy)),0) scale(.15)}}
+.dust{position:absolute;border-radius:50%;pointer-events:none;opacity:0;background:radial-gradient(circle,#fffbe8 0%,rgba(255,222,128,.85) 40%,rgba(255,200,90,0) 72%);animation:dust var(--t) ease-in-out var(--d) 1 both}
+@keyframes dust{0%{opacity:0;transform:translate3d(0,0,0) scale(.6)}25%{opacity:var(--o)}60%{opacity:calc(var(--o)*.6)}100%{opacity:0;transform:translate3d(var(--sx),var(--rise),0) scale(1.1)}}
 .cover{--cw:min(100vw,var(--colw));--u:calc(min(var(--cw),calc(var(--vh)*70.94))/1240)} /* one "unit": the cover is drawn on a 1240 x 1748 sheet and scaled to fit */
 .art{position:absolute;overflow:hidden;text-align:center;
   background:radial-gradient(60% 28% at 62% 0%,#e0d4c4 0%,transparent 70%),radial-gradient(45% 30% at 100% 8%,#e2d6d0 0%,transparent 70%),radial-gradient(55% 22% at 0% 100%,#d6c2b3 0%,transparent 72%),radial-gradient(70% 20% at 55% 100%,#e3e0d3 0%,transparent 70%),#ece8e3}
@@ -120,11 +162,12 @@ input,textarea{font:inherit;color:inherit}
 .cv-low{margin:auto 0;display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*12);width:100%}
 .cv-div{width:calc(var(--u)*480);height:auto;display:block}
 .guest-lbl{font-family:var(--kh-display);font-size:max(12px,calc(var(--u)*52));line-height:1.8;color:var(--gold-deep)}
-.plate{max-width:calc(var(--u)*560);font-family:var(--en);font-size:max(19px,calc(var(--u)*88));font-weight:600;line-height:1.15;letter-spacing:.04em;color:var(--ink);overflow-wrap:anywhere;text-wrap:balance;padding:0 4px}
-.open-btn{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:calc(var(--u)*14)}
+.plate{max-width:calc(var(--u)*560);font-family:var(--en);font-size:max(19px,calc(var(--u)*88));font-weight:600;line-height:1.15;letter-spacing:.04em;color:var(--gold-deep);background:linear-gradient(180deg,#e9c46e 0%,#c8932f 55%,#a87522 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;overflow-wrap:anywhere;text-wrap:balance;padding:0 4px}
+.open-btn{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:calc(var(--u)*30);animation:txtpulse 1.9s ease-in-out infinite}
+@keyframes txtpulse{0%,100%{transform:scale(1);opacity:.82;filter:drop-shadow(0 0 0 rgba(220,167,76,0))}50%{transform:scale(1.09);opacity:1;filter:drop-shadow(0 0 7px rgba(232,190,100,.9))}}
 .open-btn .circ{width:max(40px,calc(var(--u)*150));height:max(40px,calc(var(--u)*150));border-radius:50%;border:1px solid var(--gold);display:grid;place-items:center;background:rgba(255,255,255,.85);animation:pulse 2.4s ease-in-out infinite}
 .open-btn svg{width:max(14px,calc(var(--u)*50));height:max(14px,calc(var(--u)*50));fill:var(--gold-deep);margin-left:3px}
-.open-btn .kh{font-family:var(--kh-display);font-size:max(12px,calc(var(--u)*50));line-height:1.8;color:var(--gold-deep)}
+.open-btn .kh{font-family:var(--kh-display);font-size:max(14px,calc(var(--u)*64));line-height:1.8;color:var(--gold-deep)}
 .open-btn .lbl{font-family:var(--en);font-size:max(10px,calc(var(--u)*40));letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 5px rgba(220,167,76,.2)}50%{box-shadow:0 0 0 11px rgba(220,167,76,.07)}}
 
@@ -342,8 +385,11 @@ html.menu-open{overflow:hidden}
   .half,.bar,.menu,.menu li,.ham i,.toast{transition-duration:.01s;transition-delay:0s}
   .cover.opening .half.l,.cover.opening .half.r{transform:none}
   .cover.opening .half{opacity:0;transition:opacity .35s}
-  .light{transition:opacity .45s}
-  .open-btn .circ{animation:none}
+  .cv-shine::before,.tw{animation:none}
+  .saber{display:none}
+  .half,.half::before{transition-delay:0s}
+  .cover.opening .flash{animation-duration:.5s;animation-delay:0s}
+  .open-btn{animation:none}
 }
 
 /* drop-down panels (program, wishes): hidden until the guest taps the button */
@@ -457,17 +503,22 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
         <img class="crest" src="img/crest.png" alt="Wedding crest" width="692" height="808">
         <div class="cover-title goldtext">សិរីមង្គលអាពាហ៍ពិពាហ៍</div>
         <div class="cv-low">
-          <img class="cv-div" src="img/cover/divider-top.webp" alt="" width="480" height="41">
           <div class="guest-lbl">សូមគោរពអញ្ជើញ</div>
+          <img class="cv-div" src="img/cover/divider-top.webp" alt="" width="480" height="41">
           <div class="plate" data-guest>Chenda</div>
           <img class="cv-div" src="img/cover/divider-bottom.webp" alt="" width="480" height="41">
           <button class="open-btn" type="button" aria-label="Open invitation">
-            <span class="circ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5v17L21 12z"/></svg></span>
             <span class="kh">បើកសំបុត្រ</span>
             <span class="lbl">Open invitation</span>
           </button>
         </div>
       </div>
+      <div class="cv-shine"></div>
+      <i class="tw t1"></i>
+      <i class="tw t2"></i>
+      <i class="tw t3"></i>
+      <i class="tw t4"></i>
+      <i class="tw t5"></i>
     </div>
   </div>
 </template>
@@ -476,7 +527,11 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   <div class="light" aria-hidden="true"></div>
   <div class="half l"></div>
   <div class="half r" aria-hidden="true"></div>
+  <div class="beam" aria-hidden="true"></div>
+  <div class="flash" aria-hidden="true"></div>
+  <div class="saber" aria-hidden="true"></div>
   <div class="crit" id="crit" aria-hidden="true"></div>
+  <svg class="defs" width="0" height="0" aria-hidden="true" focusable="false"><defs><linearGradient id="birdGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0b0"/><stop offset=".55" stop-color="#f1c35a"/><stop offset="1" stop-color="#d79b2c"/></linearGradient></defs></svg>
 </div>
 
 <header class="bar" id="bar">
@@ -899,55 +954,65 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   var sfx=null;
   try{sfx=new Audio('img/fx/door-open.mp3');sfx.preload='auto';sfx.volume=.55}catch(e){}
   var BIRD='<svg class="bd" viewBox="0 0 60 30" aria-hidden="true"><g class="up"><path d="M30 17C24 9 15 4 3 5c8 3 17 7 27 12z"/><path d="M30 17C36 9 45 4 57 5c-8 3-17 7-27 12z"/></g><g class="dn"><path d="M30 16C24 14 14 15 3 25c10-3 18-5 27-6z"/><path d="M30 16C36 14 46 15 57 25c-10-3-18-5-27-6z"/></g><ellipse cx="30" cy="17.5" rx="3.2" ry="2.2"/></svg>';
-  /* flight paths, as fractions of the cover: start (the light in the middle), two bends, the end */
+  /* flight paths, as fractions of the cover: start OUTSIDE the cover edge, two bends, the end inside the invitation */
   var BUTTERFLIES=[
-    {d:0,   dur:4200,e:[.10,.12],c1:[.25,.62],c2:[.85,.30],s0:.30,s1:1.0, hue:0},
-    {d:350, dur:4600,e:[.92,.10],c1:[.78,.60],c2:[.12,.38],s0:.28,s1:1.15,hue:-135},
-    {d:700, dur:3800,e:[.28,-.12],c1:[.55,.46],c2:[.18,.22],s0:.30,s1:1.7, hue:150},
-    {d:1000,dur:4800,e:[.98,.52],c1:[.62,.56],c2:[.92,.14],s0:.25,s1:.9,  hue:-135},
-    {d:1500,dur:4400,e:[.02,.60],c1:[.40,.40],c2:[.10,.20],s0:.25,s1:.95, hue:0}
+    {d:0,   dur:4674,b:[-.18,.86],c1:[.20,.30],c2:[.70,.66],e:[.34,.22],s0:.9,s1:1.0},
+    {d:105, dur:5034,b:[1.18,.78],c1:[.82,.30],c2:[.30,.56],e:[.70,.34],s0:.9,s1:1.1},
+    {d:240, dur:4495,b:[.50,1.14],c1:[.10,.70],c2:[.90,.40],e:[.52,.14],s0:.8,s1:1.25},
+    {d:360,dur:4854,b:[-.16,.30],c1:[.40,.10],c2:[.30,.70],e:[.16,.52],s0:.8,s1:.95},
+    {d:510,dur:4674,b:[1.16,.22],c1:[.60,.04],c2:[.80,.74],e:[.88,.44],s0:.8,s1:.95}
   ];
   var BIRDS=[
-    {d:300, dur:3600,e:[.18,.04],c1:[.40,.40],c2:[.20,.20],s0:1,s1:.32},
-    {d:450, dur:3800,e:[.82,.02],c1:[.60,.40],c2:[.80,.18],s0:.9,s1:.30},
-    {d:650, dur:3500,e:[.50,-.06],c1:[.46,.36],c2:[.54,.14],s0:.8,s1:.26},
-    {d:900, dur:3900,e:[.06,.30],c1:[.30,.46],c2:[.10,.38],s0:.8,s1:.28},
-    {d:1100,dur:3700,e:[.95,.28],c1:[.70,.46],c2:[.90,.40],s0:.8,s1:.28},
-    {d:1300,dur:3500,e:[.34,.02],c1:[.44,.38],c2:[.36,.16],s0:.7,s1:.24}
+    {d:45, dur:3775,b:[-.14,.18],c1:[.22,.04],c2:[.34,.34],e:[.20,.12],s0:1,s1:.5},
+    {d:120, dur:3955,b:[1.14,.16],c1:[.78,.02],c2:[.66,.32],e:[.80,.10],s0:1,s1:.5},
+    {d:210, dur:3596,b:[-.14,.52],c1:[.20,.40],c2:[.10,.20],e:[.08,.28],s0:.9,s1:.45},
+    {d:285, dur:3865,b:[1.14,.54],c1:[.80,.44],c2:[.92,.24],e:[.94,.30],s0:.9,s1:.45},
+    {d:375,dur:3775,b:[.30,-.12],c1:[.36,.10],c2:[.44,.22],e:[.40,.06],s0:.8,s1:.4},
+    {d:435,dur:3865,b:[.70,-.12],c1:[.64,.10],c2:[.56,.22],e:[.62,.05],s0:.8,s1:.4}
   ];
   function bez(p0,p1,p2,p3,t){var u=1-t;return u*u*u*p0+3*u*u*t*p1+3*u*t*t*p2+t*t*t*p3}
+  /* a tiny golden spark that fades behind a flyer */
+  function spark(box,x,y,sz){
+    var e=document.createElement('i');e.className='sp';
+    e.style.width=e.style.height=sz+'px';
+    e.style.setProperty('--x',(x-sz/2)+'px');e.style.setProperty('--y',(y-sz/2)+'px');
+    e.style.setProperty('--dx',((Math.random()-.5)*26)+'px');e.style.setProperty('--dy',(8+Math.random()*22)+'px');
+    box.appendChild(e);setTimeout(function(){e.remove()},1050);
+  }
   function fly(box,spec,kind,W,H){
     var el;
     if(kind==='bf'){
       el=document.createElement('i');el.className='bf';
-      var bw=Math.max(58,W*.26);el.style.width=bw+'px';el.style.height=bw*151/200+'px';
-      if(spec.hue)el.style.filter='hue-rotate('+spec.hue+'deg) saturate(1.15)';
-      el.style.animationDuration=(.7+Math.random()*.25)+'s';
+      var bw=Math.max(42,W*.17);el.style.width=bw+'px';el.style.height=bw*187/232+'px';
+      el.style.animationDuration=(.42+Math.random()*.14)+'s';
     }else{
       var tmp=document.createElement('div');tmp.innerHTML=BIRD;el=tmp.firstChild;
-      var bw2=Math.max(46,W*.2);el.style.width=bw2+'px';el.style.height=bw2/2+'px';
+      var bw2=Math.max(50,W*.21);el.style.width=bw2+'px';el.style.height=bw2/2+'px';
       var dly=(Math.random()*.4).toFixed(2)+'s';el.firstChild.style.animationDelay=dly;el.childNodes[1].style.animationDelay=dly;
     }
     box.appendChild(el);
-    var x0=W*.5,y0=H*.5,start=performance.now()+spec.d,px=x0,py=y0,ph=Math.random()*6;
+    var x0=spec.b[0]*W,y0=spec.b[1]*H,start=performance.now()+spec.d,px=x0,py=y0,ph=Math.random()*6,last=0;
     function frame(now){
       var t=(now-start)/spec.dur;
       if(t<0){requestAnimationFrame(frame);return}
       if(t>=1){el.remove();return}
-      var x=bez(x0,spec.c1[0]*W,spec.c2[0]*W,spec.e[0]*W,t),y=bez(y0,spec.c1[1]*H,spec.c2[1]*H,spec.e[1]*H,t);
+      var te=t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;     // gentle ease so they glide in and settle
+      te=te*.6+t*.4;
+      var x=bez(x0,spec.c1[0]*W,spec.c2[0]*W,spec.e[0]*W,te),y=bez(y0,spec.c1[1]*H,spec.c2[1]*H,spec.e[1]*H,te);
       var dx=x-px,dy=y-py;px=x;py=y;
-      var sc=spec.s0+(spec.s1-spec.s0)*(kind==='bf'?Math.pow(t,.8):t);
+      var sc=spec.s0+(spec.s1-spec.s0)*t;
       var rot,flip='';
       if(kind==='bf'){
-        x+=Math.sin(t*26+ph)*W*.012;y+=Math.cos(t*19+ph)*H*.006;
+        x+=Math.sin(t*30+ph)*W*.012;y+=Math.cos(t*19+ph)*H*.006;
         rot=Math.max(-40,Math.min(40,Math.atan2(dx,-dy)*57.3))*.6+Math.sin(t*22+ph)*8;
       }else{
-        rot=0;
+        rot=Math.max(-18,Math.min(18,Math.atan2(dy,Math.abs(dx)||1)*57.3*(dx<0?-1:1)))*.5;
         flip=dx<0?' scaleX(-1)':'';
         y+=Math.sin(t*18+ph)*H*.004;
       }
       el.style.transform='translate3d('+x+'px,'+y+'px,0) translate(-50%,-50%) rotate('+rot+'deg) scale('+sc+')'+flip;
-      el.style.opacity=Math.min(1,t/.1)*Math.min(1,(1-t)/.22)*(kind==='bf'?1:.8);
+      el.style.opacity=Math.min(1,t/.08)*Math.min(1,(1-t)/.2);
+      if(now-last>(kind==='bf'?70:90)){last=now;spark(box,x,y,(kind==='bf'?5:4)+Math.random()*5)}
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
@@ -956,6 +1021,14 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     var box=$('#crit'),W=box.clientWidth,H=box.clientHeight;
     BUTTERFLIES.forEach(function(s){fly(box,s,'bf',W,H)});
     BIRDS.forEach(function(s){fly(box,s,'bd',W,H)});
+    // floating gold dust drifting upward through the light
+    for(var k=0;k<34;k++){
+      var d=document.createElement('i');d.className='dust';var z=2+Math.random()*5;
+      d.style.cssText='left:'+(Math.random()*100)+'%;top:'+(30+Math.random()*70)+'%;width:'+z+'px;height:'+z+'px';
+      d.style.setProperty('--t',(3+Math.random()*3)+'s');d.style.setProperty('--d',(Math.random()*2.2)+'s');
+      d.style.setProperty('--o',(.5+Math.random()*.5).toFixed(2));d.style.setProperty('--sx',((Math.random()-.5)*60)+'px');d.style.setProperty('--rise',(-60-Math.random()*140)+'px');
+      box.appendChild(d);
+    }
   }
   function openInvite(){
     if(opened)return;opened=true;
@@ -963,15 +1036,14 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     if(sfx){try{sfx.currentTime=0;var sp=sfx.play();if(sp&&sp.catch)sp.catch(function(){})}catch(e){}}
     cover.classList.add('opening');
     if(reduce){
-      setTimeout(function(){cover.hidden=true;root.classList.remove('locked');document.body.classList.add('opened')},450);
+      setTimeout(function(){cover.hidden=true;root.classList.remove('locked');document.body.classList.add('opened')},650);
       return;
     }
-    setTimeout(spawnCritters,1000);                               // butterflies and birds come out of the light
-    setTimeout(function(){cover.classList.add('doors-gone')},2500);   // doors are fully open: they fade away
-    setTimeout(function(){cover.classList.add('dim')},2000);          // the light dims down slowly
-    setTimeout(function(){cover.classList.add('done')},3000);         // taps go through to the page
-    setTimeout(function(){root.classList.remove('locked');document.body.classList.add('opened')},3900);
-    setTimeout(function(){cover.hidden=true},8600);                   // everything has flown away
+    setTimeout(function(){cover.classList.add('doors-gone')},3350);   // light is at its brightest: the doors are hidden in it
+    setTimeout(spawnCritters,0);                                   // golden butterflies and birds fly in from outside, as the light dims
+    setTimeout(function(){cover.classList.add('done')},3850);         // taps go through to the page
+    setTimeout(function(){root.classList.remove('locked');document.body.classList.add('opened')},4800);
+    setTimeout(function(){cover.hidden=true},8800);                   // everything has flown away
   }
   cover.addEventListener('click',openInvite);
 
