@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="km">
+<html lang="km" data-lang="km">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -466,6 +466,34 @@ html.menu-open{overflow:hidden}
   .side-place{font-family:var(--en);font-style:italic;font-size:clamp(1rem,1.3vw,1.25rem);color:var(--muted)}
 }
 @media (min-width:1000px) and (max-height:700px){.side-photo{height:min(52vh,420px)}.side-names{font-size:2rem}}
+
+/* ---- language switch: every text is written twice, only the chosen language is shown ---- */
+html[data-lang="km"] [data-l="en"],html[data-lang="en"] [data-l="km"]{display:none!important}
+.cv-lang{position:absolute;z-index:7;top:max(14px,calc(env(safe-area-inset-top,0px) + 8px));right:14px;display:flex;padding:3px;border-radius:99px;background:rgba(255,255,255,.72);border:1px solid rgba(178,128,44,.45);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 2px 10px rgba(120,90,30,.15);transition:opacity .35s}
+.cv-lang button{min-width:44px;height:30px;padding:0 10px;border-radius:99px;font-family:var(--kh-display),var(--en);font-size:.82rem;line-height:30px;color:var(--gold-deep);transition:background .25s,color .25s}
+.cv-lang button[aria-pressed="true"]{background:var(--gold-deep);color:#fff}
+.cover.opening .cv-lang{opacity:0;pointer-events:none}
+.bar-lang{height:30px;min-width:44px;padding:0 12px;margin-right:4px;border:1px solid rgba(178,128,44,.5);border-radius:99px;font-family:var(--kh-display),var(--en);font-size:.82rem;line-height:28px;color:var(--gold-deep)}
+.menu li .kh{font-size:1.3rem;line-height:1.5;color:var(--ink);text-align:left}
+.menu li button[aria-current="true"] .kh{color:var(--gold-deep)}
+html[data-lang="en"] .cover-title{font-family:var(--en);font-size:max(13px,calc(var(--u)*50));letter-spacing:.2em;text-transform:uppercase;font-weight:600}
+html[data-lang="en"] .guest-lbl{font-family:var(--en);font-size:max(12px,calc(var(--u)*42));letter-spacing:.14em;text-transform:uppercase}
+html[data-lang="en"] .open-btn .lbl{font-size:max(13px,calc(var(--u)*50));color:var(--gold-deep);font-weight:600}
+html[data-lang="en"] .k-title{font-family:var(--en);font-size:1.45rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
+html[data-lang="en"] .head .sub{font-style:normal;font-size:1.6rem;font-weight:600;letter-spacing:.06em;color:var(--gold-deep);margin-top:14px}
+html[data-lang="en"] .head-inline .sub{margin:0}
+html[data-lang="en"] .day-en{font-style:normal;font-weight:600;color:var(--gold-deep)}
+html[data-lang="en"] .sched .en{font-style:normal;font-size:1.05rem;color:var(--ink);line-height:1.45}
+html[data-lang="en"] .sched li.main .en{color:var(--gold-deep);font-weight:600}
+html[data-lang="km"] .lead,html[data-lang="km"] .drop p,html[data-lang="km"] .field label,html[data-lang="km"] .cd-sub,html[data-lang="km"] .vidtile .cap{font-family:var(--kh-body);font-style:normal;letter-spacing:0;text-transform:none}
+html[data-lang="km"] .lead{font-size:.95rem;line-height:2}
+html[data-lang="km"] .venue-card b{font-size:1.05rem}
+html[data-lang="en"] .venue-card b{display:none}
+.btn [data-l="en"],.env-hint [data-l="en"]{font-family:var(--en);letter-spacing:.06em}
+.btn [data-l="km"]{font-family:var(--kh-body)}
+html[data-lang="km"] .thanks-s{display:none}
+html[data-lang="en"] .thanks-k{display:none}
+html[data-lang="en"] .foot .by{letter-spacing:.24em}
 </style>
 
 <script>
@@ -475,7 +503,8 @@ html.menu-open{overflow:hidden}
 function set(){var nw=window.innerWidth;if(w&&nw===w)return;w=nw;d.style.setProperty('--vh',(window.innerHeight/100)+'px');
 /* freeze the safe-area insets too: in-app browsers change them whenever their toolbars slide, which resized every section */
 try{var pr=document.createElement('div');pr.style.cssText='position:fixed;top:0;left:0;visibility:hidden;pointer-events:none;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)';d.appendChild(pr);var cs=getComputedStyle(pr);d.style.setProperty('--sat',cs.paddingTop);d.style.setProperty('--sab',cs.paddingBottom);d.removeChild(pr)}catch(e){}}
-set();window.addEventListener('resize',set);window.addEventListener('orientationchange',function(){w=0;setTimeout(set,300);});})();
+set();window.addEventListener('resize',set);window.addEventListener('orientationchange',function(){w=0;setTimeout(set,300);});
+})();
 </script>
 </head>
 <body>
@@ -501,15 +530,15 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
       <img class="fl fl-br" src="img/cover/flower-br.webp" alt="" width="534" height="675" decoding="async">
       <div class="cv-content">
         <img class="crest" src="img/crest.png" alt="Wedding crest" width="692" height="808">
-        <div class="cover-title goldtext">សិរីមង្គលអាពាហ៍ពិពាហ៍</div>
+        <div class="cover-title goldtext"><span data-l="km">សិរីមង្គលអាពាហ៍ពិពាហ៍</span><span data-l="en">The Wedding Celebration</span></div>
         <div class="cv-low">
-          <div class="guest-lbl">សូមគោរពអញ្ជើញ</div>
+          <div class="guest-lbl"><span data-l="km">សូមគោរពអញ្ជើញ</span><span data-l="en">You are cordially invited</span></div>
           <img class="cv-div" src="img/cover/divider-top.webp" alt="" width="480" height="41">
           <div class="plate" data-guest>Chenda</div>
           <img class="cv-div" src="img/cover/divider-bottom.webp" alt="" width="480" height="41">
           <button class="open-btn" type="button" aria-label="Open invitation">
-            <span class="kh">បើកសំបុត្រ</span>
-            <span class="lbl">Open invitation</span>
+            <span class="kh" data-l="km">បើកសំបុត្រ</span>
+            <span class="lbl" data-l="en">Open invitation</span>
           </button>
         </div>
       </div>
@@ -531,6 +560,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   <div class="flash" aria-hidden="true"></div>
   <div class="saber" aria-hidden="true"></div>
   <div class="crit" id="crit" aria-hidden="true"></div>
+  <div class="cv-lang" role="group" aria-label="Language"><button type="button" id="cvKh" aria-pressed="true">ខ្មែរ</button><button type="button" id="cvEn" aria-pressed="false">EN</button></div>
   <svg class="defs" width="0" height="0" aria-hidden="true" focusable="false"><defs><linearGradient id="birdGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0b0"/><stop offset=".55" stop-color="#f1c35a"/><stop offset="1" stop-color="#d79b2c"/></linearGradient></defs></svg>
 </div>
 
@@ -538,6 +568,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   <div class="bar-in">
     <button type="button" class="bar-logo" id="barLogo" aria-label="Back to the top"><img src="img/crest.png" alt="" width="692" height="808"></button>
     <div class="bar-right">
+      <button type="button" class="bar-lang" id="langBtn" aria-label="Language">EN</button>
       <button type="button" class="bar-btn" id="musicBtn" aria-pressed="false" aria-label="Music">
         <svg viewBox="0 0 24 24" id="musicOn" aria-hidden="true" hidden><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>
         <svg viewBox="0 0 24 24" id="musicOff" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
@@ -553,13 +584,13 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     <button type="button" id="lgEn" aria-pressed="false">English</button>
   </div>
   <ul>
-    <li><button type="button" data-go="count"><span class="en">Countdown</span><span class="kh">រាប់ថយក្រោយ</span></button></li>
-    <li><button type="button" data-go="program"><span class="en">Program</span><span class="kh">កម្មវិធី</span></button></li>
-    <li><button type="button" data-go="location"><span class="en">Location</span><span class="kh">ទីតាំង</span></button></li>
-    <li><button type="button" data-go="gallery"><span class="en">Gallery</span><span class="kh">វិចិត្រសាល</span></button></li>
-    <li><button type="button" data-go="gift"><span class="en">Gift</span><span class="kh">ចំណងដៃ</span></button></li>
-    <li><button type="button" data-go="rsvp"><span class="en">RSVP</span><span class="kh">ការចូលរួម</span></button></li>
-    <li><button type="button" data-go="photos"><span class="en">Photos</span><span class="kh">រូបថត</span></button></li>
+    <li><button type="button" data-go="count"><span class="en" data-l="en">Countdown</span><span class="kh" data-l="km">រាប់ថយក្រោយ</span></button></li>
+    <li><button type="button" data-go="program"><span class="en" data-l="en">Program</span><span class="kh" data-l="km">កម្មវិធី</span></button></li>
+    <li><button type="button" data-go="location"><span class="en" data-l="en">Location</span><span class="kh" data-l="km">ទីតាំង</span></button></li>
+    <li><button type="button" data-go="gallery"><span class="en" data-l="en">Gallery</span><span class="kh" data-l="km">វិចិត្រសាល</span></button></li>
+    <li><button type="button" data-go="gift"><span class="en" data-l="en">Gift</span><span class="kh" data-l="km">ចំណងដៃ</span></button></li>
+    <li><button type="button" data-go="rsvp"><span class="en" data-l="en">RSVP</span><span class="kh" data-l="km">ការចូលរួម</span></button></li>
+    <li><button type="button" data-go="photos"><span class="en" data-l="en">Photos</span><span class="kh" data-l="km">រូបថត</span></button></li>
   </ul>
 </nav>
 
@@ -571,13 +602,13 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   <!-- Page 2: Khmer title and the couple -->
   <section class="page flor center" id="khmer">
     <div class="in">
-      <h1 class="k-title goldtext">សិរីមង្គលអាពាហ៍ពិពាហ៍</h1>
+      <h1 class="k-title goldtext"><span data-l="km">សិរីមង្គលអាពាហ៍ពិពាហ៍</span><span data-l="en">The Wedding Celebration</span></h1>
       <div class="arch"><img src="img/cover.jpg" alt="Ly Chhayly and Ma Meyhuy at Angkor" width="1100" height="1467"><img class="branch arch-br" src="img/leaf.svg" alt="" width="1480" height="450"></div>
     </div>
   </section>
 
   <!-- Page 3: Khmer invitation text -->
-  <section class="page flor center" id="khmer2">
+  <section class="page flor center" id="khmer2" data-l="km">
     <div class="in">
       <div class="hosts"><div>លោកស្រី លឹម សៀមម៉េង</div><div>លោកស្រី ឡើង ខេង</div></div>
       <p class="k-intro">មានកិត្តិយសសូមគោរពអញ្ជើញ</p>
@@ -592,7 +623,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   </section>
 
   <!-- Page 4: English invitation -->
-  <section class="page alt flor center" id="english">
+  <section class="page alt flor center" id="english" data-l="en">
     <div class="in">
       <img class="mini-crest" src="img/crest.png" alt="" width="692" height="808">
       <p class="e-line">Request the joy of your presence<br>at the celebration of our wedding</p>
@@ -609,17 +640,17 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     <div class="in">
       <div class="head" style="margin-bottom:22px">
         <div class="orn"><i></i></div>
-        <div class="kh">រាប់ថយក្រោយ</div>
-        <div class="sub">Counting down to the day</div>
+        <div class="kh" data-l="km">រាប់ថយក្រោយដល់ថ្ងៃមង្គល</div>
+        <div class="sub" data-l="en">Counting down to the day</div>
       </div>
       <div class="cd" id="cd" role="timer" aria-live="off">
-        <div><b id="cdD">0</b><span>ថ្ងៃ</span><em>Days</em></div>
-        <div><b id="cdH">0</b><span>ម៉ោង</span><em>Hours</em></div>
-        <div><b id="cdM">0</b><span>នាទី</span><em>Minutes</em></div>
-        <div><b id="cdS">0</b><span>វិនាទី</span><em>Seconds</em></div>
+        <div><b id="cdD">0</b><span data-l="km">ថ្ងៃ</span><em data-l="en">Days</em></div>
+        <div><b id="cdH">0</b><span data-l="km">ម៉ោង</span><em data-l="en">Hours</em></div>
+        <div><b id="cdM">0</b><span data-l="km">នាទី</span><em data-l="en">Minutes</em></div>
+        <div><b id="cdS">0</b><span data-l="km">វិនាទី</span><em data-l="en">Seconds</em></div>
       </div>
-      <div class="cd-done" id="cdDone">Today is the day</div>
-      <p class="cd-sub">Sunday, 20 December 2026 · 5:00 PM</p>
+      <div class="cd-done" id="cdDone"><span data-l="km">ថ្ងៃនេះជាថ្ងៃមង្គលការ</span><span data-l="en">Today is the day</span></div>
+      <p class="cd-sub"><span data-l="km">ថ្ងៃអាទិត្យ ទី២០ ខែធ្នូ ឆ្នាំ២០២៦ · ម៉ោង ៥:០០ ល្ងាច</span><span data-l="en">Sunday, 20 December 2026 · 5:00 PM</span></p>
     </div>
   </section>
 
@@ -628,23 +659,23 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     <div class="in">
       <div class="head tight">
         <div class="orn"><i></i></div>
-        <div class="kh">កម្មវិធីមង្គលអាពាហ៍ពិពាហ៍</div>
-        <div class="sub">Wedding program</div>
+        <div class="kh" data-l="km">កម្មវិធីមង្គលអាពាហ៍ពិពាហ៍</div>
+        <div class="sub" data-l="en">Wedding program</div>
       </div>
       <div class="cta" style="margin-top:0">
         <button type="button" class="btn fold-btn" data-fold="progFold" aria-expanded="false" aria-controls="progFold">
-          <span>មើលកម្មវិធី <small>View program</small></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          <span><span data-l="km">មើលកម្មវិធី</span><span data-l="en">View program</span></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
         </button>
       </div>
       <div class="fold" id="progFold">
         <div class="fold-in">
-      <p class="day-lbl">ថ្ងៃអាទិត្យ ទី២០ ខែធ្នូ ឆ្នាំ២០២៦</p>
-      <p class="day-en">Sunday, 20 December 2026</p>
+      <p class="day-lbl" data-l="km">ថ្ងៃអាទិត្យ ទី២០ ខែធ្នូ ឆ្នាំ២០២៦</p>
+      <p class="day-en" data-l="en">Sunday, 20 December 2026</p>
       <ul class="sched" id="sched"></ul>
       <div class="cta">
-        <button type="button" class="btn" data-toast="In the real page this adds the event to the guest's calendar.">
+        <button type="button" class="btn" id="calBtn">
           <svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M12 13v4M10 15h4"/></svg>
-          ដាក់ក្នុងប្រតិទិន <small>Add to calendar</small>
+          <span data-l="km">ដាក់ក្នុងប្រតិទិន</span><span data-l="en">Add to calendar</span>
         </button>
       </div>
         </div>
@@ -657,18 +688,18 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     <div class="in">
       <div class="head">
         <div class="orn"><i></i></div>
-        <div class="kh">ទីតាំង</div>
-        <div class="sub">Location</div>
+        <div class="kh" data-l="km">ទីតាំង</div>
+        <div class="sub" data-l="en">Location</div>
       </div>
       <div class="mapbox"><img src="img/map.png" alt="Map showing PH Grand Hall Euro 3 off National Road 1" width="1276" height="717"></div>
       <div class="venue-card">
-        <b>សាលសន្និសីទបុរីប៉េងហួត បឹងស្នោ</b>
-        <p>PH Grand Hall Euro 3<br>Peng Huoth Boeng Snor, Phnom Penh</p>
+        <b data-l="km">សាលសន្និសីទបុរីប៉េងហួត បឹងស្នោ</b>
+        <p data-l="en">PH Grand Hall Euro 3<br>Peng Huoth Boeng Snor, Phnom Penh</p>
       </div>
       <div class="cta" style="margin-top:20px">
         <a class="btn solid" href="https://maps.app.goo.gl/Juga5GsrUUwnwwsC8" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>
-          មើលទីតាំង <small>View location</small>
+          <span data-l="km">មើលទីតាំង</span><span data-l="en">View location</span>
         </a>
       </div>
     </div>
@@ -679,12 +710,12 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     <div class="in">
       <div class="head head-inline">
         <div class="orn"><i></i></div>
-        <div class="kh">វិចិត្រសាល <span class="sub">Gallery</span></div>
+        <div class="kh" data-l="km">វិចិត្រសាល</div><div class="sub" data-l="en">Gallery</div>
       </div>
       <div id="vidHost"><button type="button" class="vidtile" id="vidBtn" aria-label="Play pre-wedding video">
         <img src="img/poster.jpg" alt="" width="1500" height="1000" loading="lazy">
         <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5v17L21 12z"/></svg></span>
-        <span class="cap">Pre-wedding video</span>
+        <span class="cap"><span data-l="km">វីដេអូមុនអាពាហ៍ពិពាហ៍</span><span data-l="en">Pre-wedding video</span></span>
       </button></div>
       <div class="gal-wrap">
         <button type="button" class="gal-arrow prev" id="galPrev" aria-label="Previous photo"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
@@ -700,10 +731,10 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     <div class="in">
       <div class="head">
         <div class="orn"><i></i></div>
-        <div class="kh">ចំណងដៃ</div>
-        <div class="sub">Wedding gift</div>
+        <div class="kh" data-l="km">ចំណងដៃ</div>
+        <div class="sub" data-l="en">Wedding gift</div>
       </div>
-      <p class="lead">Your presence is the greatest gift. If you wish to send a gift, open the envelope below.</p>
+      <p class="lead"><span data-l="km">វត្តមានរបស់លោកអ្នកគឺជាកាដូដ៏ធំបំផុត។ ប្រសិនបើលោកអ្នកមានបំណងផ្ញើចំណងដៃ សូមបើកស្រោមសំបុត្រខាងក្រោម។</span><span data-l="en">Your presence is the greatest gift. If you wish to send a gift, open the envelope below.</span></p>
       <div class="env-stage" id="envStage">
         <div class="env" id="env" role="button" tabindex="0" aria-expanded="false" aria-controls="qrcard" aria-label="Open the envelope">
           <div class="env-back"></div>
@@ -715,7 +746,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
                 <div id="qr"></div>
                 <button type="button" class="btn solid qsave" id="saveQr">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
-                  រក្សាទុក QR <small>Save QR</small>
+                  <span data-l="km">រក្សាទុក QR</span><span data-l="en">Save QR</span>
                 </button>
                 <p class="save-note" id="saveNote" aria-live="polite"></p>
               </div>
@@ -728,7 +759,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
           </div>
         </div>
       </div>
-      <p class="env-hint" id="envHint">ចុចលើស្រោមសំបុត្រ <small>Tap the envelope</small></p>
+      <p class="env-hint" id="envHint"><span data-l="km">ចុចលើស្រោមសំបុត្រ</span><span data-l="en">Tap the envelope</span></p>
     </div>
   </section>
 
@@ -756,21 +787,21 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     <div class="in">
       <div class="head" style="margin-bottom:12px">
         <div class="orn"><i></i></div>
-        <div class="kh">រូបថត</div>
-        <div class="sub">Share your photos</div>
+        <div class="kh" data-l="km">រូបថត</div>
+        <div class="sub" data-l="en">Share your photos</div>
       </div>
-      <div class="lockpill" id="lockPill">នឹងបើកនៅថ្ងៃមង្គលការ<small>Opens on the wedding day</small></div>
+      <div class="lockpill" id="lockPill"><span data-l="km">នឹងបើកនៅថ្ងៃមង្គលការ</span><span data-l="en">Opens on the wedding day</span></div>
       <div class="card" id="photoCard">
-        <p class="lead" style="margin-bottom:10px">Add up to 5 photos from the day. Only the hosts can see them.</p>
+        <p class="lead" style="margin-bottom:10px"><span data-l="km">បន្ថែមរូបថតរហូតដល់ ៥ សន្លឹកពីថ្ងៃមង្គលការ។ មានតែម្ចាស់ការប៉ុណ្ណោះដែលអាចមើលឃើញ។</span><span data-l="en">Add up to 5 photos from the day. Only the hosts can see them.</span></p>
         <div class="drop">
           <svg viewBox="0 0 24 24"><path d="M12 16V5M7.5 9.5 12 5l4.5 4.5M4.5 15v4h15v-4"/></svg>
-          <p>Choose up to 5 photos</p>
-          <button type="button" class="btn" data-toast="Preview only. Nothing is uploaded here."><small style="color:var(--ink)">Choose photos</small></button>
+          <p><span data-l="km">ជ្រើសរើសរូបថតរហូតដល់ ៥ សន្លឹក</span><span data-l="en">Choose up to 5 photos</span></p>
+          <button type="button" class="btn"><span data-l="km">ជ្រើសរើសរូបថត</span><span data-l="en">Choose photos</span></button>
         </div>
         <div class="slots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
         <div class="count">0 / 5</div>
-        <div class="field"><label for="pName">Your name (optional)</label><input id="pName" type="text" placeholder="So the hosts know who shared" autocomplete="off"></div>
-        <p class="fine">Photos are resized for you and keep their quality.</p>
+        <div class="field"><label for="pName"><span data-l="km">ឈ្មោះរបស់អ្នក (ស្រេចចិត្ត)</span><span data-l="en">Your name (optional)</span></label><input id="pName" type="text" placeholder="So the hosts know who shared" autocomplete="off"></div>
+        <p class="fine"><span data-l="km">រូបថតនឹងត្រូវបានកែទំហំឱ្យដោយស្វ័យប្រវត្តិ និងរក្សាគុណភាព។</span><span data-l="en">Photos are resized for you and keep their quality.</span></p>
       </div>
     </div>
   </section>
@@ -782,9 +813,8 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
       <p class="thanks-s goldtext">Thank you</p>
       <div class="thanks-k">សូមអរគុណ</div>
       <div class="foot">
-        <div class="by">បង្កើតដោយ · Created by</div>
-        <div class="brand">BRAND NAME</div>
-        <div class="soc"><a href="#" data-toast="Brand links go here.">Facebook</a><a href="#" data-toast="Brand links go here.">Telegram</a><a href="#" data-toast="Brand links go here.">TikTok</a></div>
+        <div class="by"><span data-l="km">បង្កើតដោយ</span><span data-l="en">Created by</span></div>
+        <div class="brand">MongkulCard</div>
       </div>
     </div>
   </section>
@@ -796,6 +826,9 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var root=document.documentElement;
+  /* language: 'km' or 'en'. L(khmer, english) picks the text for the language that is on */
+  var lang='km';
+  function L(km,en){return lang==='en'?en:km}
 
   /* ---- event details (edit here) ---- */
   var EVENT={
@@ -832,8 +865,8 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     var li=document.createElement('li');if(p.main)li.className='main';
     var t=document.createElement('time');t.textContent=p.t;var s=document.createElement('small');s.textContent=p.ap;t.appendChild(s);
     var d=document.createElement('div');
-    var k=document.createElement('span');k.className='kh';k.textContent=p.kh;
-    var e=document.createElement('span');e.className='en';e.textContent=p.en;
+    var k=document.createElement('span');k.className='kh';k.setAttribute('data-l','km');k.textContent=p.kh;
+    var e=document.createElement('span');e.className='en';e.setAttribute('data-l','en');e.textContent=p.en;
     d.appendChild(k);d.appendChild(e);li.appendChild(t);li.appendChild(d);sched.appendChild(li);
   });
 
@@ -1066,8 +1099,8 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   $$('[data-go]').forEach(function(b){b.addEventListener('click',function(){goFromMenu(b.getAttribute('data-go'))})});
   $('#barLogo').addEventListener('click',function(){goFromMenu('khmer')});
   var lgKh=$('#lgKh'),lgEn=$('#lgEn');
-  lgKh.addEventListener('click',function(){goFromMenu('khmer')});
-  lgEn.addEventListener('click',function(){goFromMenu('english')});
+  lgKh.addEventListener('click',function(){setLang('km',true)});
+  lgEn.addEventListener('click',function(){setLang('en',true)});
   /* RSVP is switched off for this wedding (the guest list is counted before the day).
      Set SHOW_RSVP to true to bring the page and its menu item back. */
   var SHOW_RSVP=false;
@@ -1092,9 +1125,8 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
       var mid=window.innerHeight*.5,cur=null;
       PAGES.forEach(function(p){var r=p.getBoundingClientRect();if(r.top<=mid&&r.bottom>mid)cur=p.id});
       if(!cur)return;
-      var kh=(cur==='khmer'||cur==='khmer2'),en=(cur==='english');
-      if(kh||en){lgKh.setAttribute('aria-pressed',kh);lgEn.setAttribute('aria-pressed',en)}
-      setCurrent(kh||en?'':cur);
+      var kh=(cur==='khmer'||cur==='khmer2'||cur==='english');
+      setCurrent(kh?'':cur);
     });
   }
   window.addEventListener('scroll',onScroll,{passive:true});
@@ -1114,7 +1146,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     if(!audio){
       audio=new Audio(EVENT.music);
       audio.loop=true;audio.volume=.7;audio.preload='auto';
-      audio.addEventListener('error',function(){audio=null;setMusicUi(false);toast('The music could not be played.')});
+      audio.addEventListener('error',function(){audio=null;setMusicUi(false);toast(L('មិនអាចចាក់តន្ត្រីបានទេ។','The music could not be played.'))});
     }
     var p=audio.play();
     if(p&&p.then)p.then(function(){setMusicUi(true)}).catch(function(){setMusicUi(false)});
@@ -1155,13 +1187,12 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
 
 
   /* photo page: visible from the start, but locked until the upload window opens */
-  var LOCK_MSG='ការចែករំលែករូបថតនឹងបើកនៅថ្ងៃមង្គលការ\nPhoto sharing will be available on the wedding day.';
   if(Date.now()<new Date(EVENT.photosOpenAt).getTime()){
     var pcard=$('#photoCard');
     pcard.classList.add('is-locked');
     $('#photos').classList.add('is-locked-page');
     $$('input',pcard).forEach(function(i){i.readOnly=true});
-    pcard.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();toast(LOCK_MSG,4200)},true);
+    pcard.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();toast(L('ការចែករំលែករូបថតនឹងបើកនៅថ្ងៃមង្គលការ','Photo sharing will be available on the wedding day.'),4200)},true);
   }
 
   /* sample QR (decorative, not a real code) */
@@ -1224,7 +1255,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     if(open){sizeEnv()}else{envStage.style.height=''}
     envStage.classList.toggle('open',open);
     env.setAttribute('aria-expanded',open);
-    env.setAttribute('aria-label',open?'Close the envelope':'Open the envelope');
+    env.setAttribute('aria-label',open?L('បិទស្រោមសំបុត្រ','Close the envelope'):L('បើកស្រោមសំបុត្រ','Open the envelope'));
     if(open)$('#qrcard').removeAttribute('aria-hidden');else $('#qrcard').setAttribute('aria-hidden','true');
     $('#envHint').classList.toggle('gone',open);
     if(!open)$('#saveNote').textContent='';
@@ -1241,7 +1272,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   /* save the QR to the phone */
   function setNote(t){$('#saveNote').textContent=t;if(envStage.classList.contains('open'))sizeEnv()}
   $('#saveQr').addEventListener('click',function(){
-    var HOLD='Press and hold the QR code, then choose "Save Image".\nចុចលើ QR ឱ្យជាប់ រួចជ្រើសរើស "Save Image"។';
+    var HOLD=L('ចុចលើ QR ឱ្យជាប់ រួចជ្រើសរើស "Save Image"។','Press and hold the QR code, then choose "Save Image".');
     if(!qrBlob){setNote(HOLD);return}
     var file=null;try{file=new File([qrBlob],'gift-qr.png',{type:'image/png'})}catch(e){}
     if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
@@ -1251,8 +1282,55 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     try{
       var a=document.createElement('a');a.href=URL.createObjectURL(qrBlob);a.download='gift-qr.png';
       document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},800);
-      setNote('Saved. If nothing happened:\n'+HOLD);
+      setNote(L('បានរក្សាទុក។ ប្រសិនបើគ្មានអ្វីកើតឡើង៖\n','Saved. If nothing happened:\n')+HOLD);
     }catch(e){setNote(HOLD)}
+  });
+
+  /* ---- language switch (Khmer / English), remembered on this phone ---- */
+  var cvKh=$('#cvKh'),cvEn=$('#cvEn'),langBtn=$('#langBtn'),pName=$('#pName');
+  function setLang(l,fromUser){
+    lang=(l==='en')?'en':'km';
+    root.setAttribute('data-lang',lang);root.setAttribute('lang',lang==='en'?'en':'km');
+    [lgKh,cvKh].forEach(function(b){b.setAttribute('aria-pressed',lang==='km')});
+    [lgEn,cvEn].forEach(function(b){b.setAttribute('aria-pressed',lang==='en')});
+    langBtn.textContent=lang==='km'?'EN':'ខ្មែរ';
+    langBtn.setAttribute('aria-label',lang==='km'?'Switch to English':'ប្តូរទៅភាសាខ្មែរ');
+    if(pName)pName.placeholder=L('ដើម្បីឱ្យម្ចាស់ការដឹងថាអ្នកណាបានចែករំលែក','So the hosts know who shared');
+    env.setAttribute('aria-label',envStage.classList.contains('open')?L('បិទស្រោមសំបុត្រ','Close the envelope'):L('បើកស្រោមសំបុត្រ','Open the envelope'));
+    try{localStorage.setItem('mk_lang',lang)}catch(e){}
+    if(fromUser&&menuOpen){setMenu(false)}
+    if(fromUser&&opened){window.scrollTo(0,0)}
+  }
+  [cvKh,cvEn].forEach(function(b,i){b.addEventListener('click',function(e){e.stopPropagation();setLang(i?'en':'km',true)})});
+  langBtn.addEventListener('click',function(){setLang(lang==='km'?'en':'km',true)});
+  var saved=null;try{saved=localStorage.getItem('mk_lang')}catch(e){}
+  setLang(saved==='en'?'en':'km',false);
+
+  /* ---- add to calendar: downloads a .ics file that opens in the phone's calendar ---- */
+  function icsText(s){return String(s).replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n')}
+  function icsStamp(d){return d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'')}
+  function buildIcs(){
+    var st=new Date(EVENT.start),en=new Date(st.getTime()+4*3600*1000);
+    var title=L('មង្គលការ លី ឆាយលី និង ម៉ា មីហ៊ុយ','Wedding of Ly Chhayly & Ma Meyhuy');
+    var place=L('សាលសន្និសីទបុរីប៉េងហួត បឹងស្នោ (PH Grand Hall Euro 3), ភ្នំពេញ','PH Grand Hall Euro 3, Peng Huoth Boeng Snor, Phnom Penh');
+    var desc=L('ពិធីមង្គលការ លី ឆាយលី និង ម៉ា មីហ៊ុយ។ ពិសាអាហារពេលល្ងាចម៉ោង ៥:០០។','Wedding celebration of Ly Chhayly and Ma Meyhuy. Evening reception at 5:00 PM.')+'\n'+'https://maps.app.goo.gl/Juga5GsrUUwnwwsC8';
+    var lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//MongkulCard//Invitation//EN','CALSCALE:GREGORIAN','METHOD:PUBLISH',
+      'BEGIN:VEVENT','UID:ly-chhayly-ma-meyhuy-20261220@mongkulcard.com','DTSTAMP:'+icsStamp(new Date()),
+      'DTSTART:'+icsStamp(st),'DTEND:'+icsStamp(en),'SUMMARY:'+icsText(title),'LOCATION:'+icsText(place),'DESCRIPTION:'+icsText(desc),
+      'URL:https://maps.app.goo.gl/Juga5GsrUUwnwwsC8',
+      'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+icsText(title),'TRIGGER:-P1D','END:VALARM',
+      'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:'+icsText(title),'TRIGGER:-PT3H','END:VALARM',
+      'END:VEVENT','END:VCALENDAR'];
+    return lines.join('\r\n')+'\r\n';
+  }
+  $('#calBtn').addEventListener('click',function(){
+    try{
+      var blob=new Blob([buildIcs()],{type:'text/calendar;charset=utf-8'});
+      var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='wedding-ly-chhayly-ma-meyhuy.ics';
+      document.body.appendChild(a);a.click();
+      setTimeout(function(){a.remove();URL.revokeObjectURL(a.href)},4000);
+      toast(L('កំពុងបន្ថែមទៅប្រតិទិន…','Adding to your calendar…'));
+    }catch(e){toast(L('មិនអាចបន្ថែមទៅប្រតិទិនបានទេ។','Could not add to the calendar.'))}
   });
 })();
 </script>
