@@ -879,8 +879,17 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   var lgKh=$('#lgKh'),lgEn=$('#lgEn');
   lgKh.addEventListener('click',function(){goFromMenu('khmer')});
   lgEn.addEventListener('click',function(){goFromMenu('english')});
+  /* RSVP is switched off for this wedding (the guest list is counted before the day).
+     Set SHOW_RSVP to true to bring the page and its menu item back. */
+  var SHOW_RSVP=false;
+  if(!SHOW_RSVP){
+    var rs=document.getElementById('rsvp');if(rs)rs.parentNode.removeChild(rs);
+    var rb=document.querySelector('.menu [data-go="rsvp"]');
+    var rli=rb&&rb.closest('li');
+    if(rli&&rli.parentNode)rli.parentNode.removeChild(rli);
+  }
   var navBtns=$$('.menu [data-go]');
-  var PAGES=['khmer','khmer2','english','count','program','location','gallery','gift','rsvp','photos','thanks'].map(function(id){return document.getElementById(id)});
+  var PAGES=['khmer','khmer2','english','count','program','location','gallery','gift','rsvp','photos','thanks'].map(function(id){return document.getElementById(id)}).filter(Boolean);
   var NAVOF={};
   function setCurrent(id){
     var n=NAVOF[id]||id;
@@ -952,8 +961,8 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   });
   var g=1;
   function setG(v){g=Math.max(1,Math.min(10,v));$('#gNum').textContent=g}
-  $('#gMinus').addEventListener('click',function(){setG(g-1)});
-  $('#gPlus').addEventListener('click',function(){setG(g+1)});
+  if($('#gMinus')){$('#gMinus').addEventListener('click',function(){setG(g-1)});
+  $('#gPlus').addEventListener('click',function(){setG(g+1)})}
 
 
   /* photo page: visible from the start, but locked until the upload window opens */
