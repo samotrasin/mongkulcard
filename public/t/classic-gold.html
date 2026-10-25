@@ -2,10 +2,10 @@
 <html lang="km" data-lang="km">
 <head>
 <meta charset="utf-8">
+<meta name="theme-color" content="#4a0f1a">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="format-detection" content="telephone=no">
-<meta name="theme-color" content="#FFFCF5">
 <title>Ly Chhayly and Ma Meyhuy Wedding</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -107,8 +107,8 @@ input,textarea{font:inherit;color:inherit}
   background:linear-gradient(90deg,#fff3c2,#fff 50%,#fff3c2);box-shadow:0 0 6px 2px #fff,0 0 16px 6px rgba(255,226,130,.95),0 0 38px 14px rgba(255,200,90,.6)}
 .saber::after{content:"";position:absolute;left:-26px;width:52px;height:52px;bottom:-26px;border-radius:50%;opacity:0;
   background:radial-gradient(circle,#fff 0 18%,rgba(255,236,160,.9) 36%,rgba(255,200,90,0) 70%)}
-.cover.opening .saber::before{animation:sabline 1.2s cubic-bezier(.45,0,.25,1) forwards}
-.cover.opening .saber::after{animation:sabhead .85s cubic-bezier(.45,0,.25,1) forwards}
+.cover.opening .saber::before{animation:sabline 1.05s cubic-bezier(.3,.3,.25,1) var(--sab-in,0s) forwards}
+.cover.opening .saber::after{animation:sabhead .7s cubic-bezier(.3,.3,.25,1) var(--sab-in,0s) forwards}
 @keyframes sabline{0%{opacity:1;clip-path:inset(100% 0 0 0)}70%{opacity:1;clip-path:inset(0 0 0 0)}100%{opacity:0;clip-path:inset(0 0 0 0)}}
 @keyframes sabhead{0%{opacity:1;bottom:-26px}85%{opacity:1}100%{opacity:0;bottom:calc(100% - 26px)}}
 .flash{position:absolute;inset:0;z-index:4;pointer-events:none;opacity:0;background:radial-gradient(88% 72% at 50% 50%,#fff 0%,#fffdf6 46%,#fff3d4 82%,#fde6b0 100%)}
@@ -149,7 +149,8 @@ input,textarea{font:inherit;color:inherit}
 .gl{position:absolute;width:calc(var(--u)*402);height:auto;pointer-events:none;user-select:none}
 .gl-tr{top:0;right:0;transform:scaleX(-1)}
 .gl-bl{bottom:0;left:0;width:calc(var(--u)*287);transform:scaleY(-1)}
-.stage{position:absolute;top:0;bottom:0;left:50%;width:calc(var(--u)*1240);transform:translateX(-50%)}
+.stage{position:absolute;top:0;bottom:0;left:50%;width:calc(var(--u)*1240);transform:translateX(-50%);transition:opacity .35s ease}
+.cover:not(.ready) .stage{opacity:0}   /* the doors show their velvet and gold seam until every piece of artwork is decoded, then it all fades in together */
 .arch-card{position:absolute;left:calc(var(--u)*148);right:calc(var(--u)*160);top:calc(var(--u)*215);bottom:calc(var(--u)*213);background:#efedec;
   border:max(1.5px,calc(var(--u)*5)) solid #cfaa8e;border-radius:calc(var(--u)*466) calc(var(--u)*466) 0 0;box-shadow:0 calc(var(--u)*16) calc(var(--u)*40) rgba(110,90,70,.2)}
 .fl{position:absolute;height:auto;pointer-events:none;user-select:none}
@@ -344,6 +345,7 @@ html.menu-open{overflow:hidden}
 .page>.in{width:100%}
 #khmer{padding-top:calc(72px + var(--sat,0px))}
 #khmer2 .hosts{margin-top:0}
+#khmer2 .hosts{font-size:.8rem;gap:6px;margin-inline:-8px}
 #thanks{padding-bottom:calc(40px + var(--sab,0px))}
 .foot{margin-top:34px}
 
@@ -364,7 +366,7 @@ html.menu-open{overflow:hidden}
 .head-inline .kh{display:flex;align-items:baseline;justify-content:center;gap:12px;margin-top:8px}
 .head-inline .sub{font-size:1.2rem}
 #gallery .vidtile{margin-bottom:14px}
-.gal-wrap{position:relative;left:50%;transform:translateX(-50%);width:min(100vw,var(--colw))}
+.gal-wrap{position:relative;left:50%;margin-left:calc(min(100vw,var(--colw))/-2);width:min(100vw,var(--colw))}
 .gal-track{--sw:min(62vw,268px);display:flex;gap:12px;overflow-x:auto;overscroll-behavior-x:contain;padding:4px calc((100% - var(--sw))/2) 10px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .gal-track::-webkit-scrollbar{display:none}
 .gal-slide{flex:0 0 var(--sw);aspect-ratio:4/5;padding:0;border-radius:10px;overflow:hidden;background:#d9ccb8;box-shadow:0 6px 18px rgba(77,63,49,.15)}
@@ -386,7 +388,7 @@ html.menu-open{overflow:hidden}
   .half,.bar,.menu,.menu li,.ham i,.toast{transition-duration:.01s;transition-delay:0s}
   .cover.opening .half.l,.cover.opening .half.r{transform:none}
   .cover.opening .half{opacity:0;transition:opacity .35s}
-  .cv-shine::before,.tw{animation:none}
+  .cv-shine::before,.tw,.smoke{animation:none}
   .saber{display:none}
   .half,.half::before{transition-delay:0s}
   .cover.opening .flash{animation-duration:.5s;animation-delay:0s}
@@ -405,9 +407,19 @@ html.menu-open{overflow:hidden}
 @media (prefers-reduced-motion:reduce){.fold,.fold.open,.fold-btn .chev{transition:none}}
 
 /* gift envelope: tap it, the flap opens and the QR card slides out */
-.env-stage{--w:min(86vw,320px);--h:calc(var(--w)*.66);position:relative;width:var(--w);height:var(--h);margin:0 auto;perspective:1100px;transition:height .55s cubic-bezier(.4,0,.2,1) .75s}
+.env-stage{--w:min(86vw,320px);--h:calc(var(--w)*.66);position:relative;width:var(--w);height:var(--h);margin:0 auto}
 .env-stage.open{transition:height .65s cubic-bezier(.4,0,.2,1) .35s}
-.env{position:absolute;left:0;right:0;bottom:0;height:var(--h);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.env{position:absolute;left:0;right:0;bottom:0;height:var(--h);cursor:pointer;-webkit-tap-highlight-color:transparent;perspective:1100px}
+/* gift pop-up: the envelope lifts out of the page to the middle of the screen over a dark, blurred veil, opens there, and flies back when closed */
+.env.floating{z-index:78;transform-origin:0 0;transition:transform .6s cubic-bezier(.22,.8,.24,1)}
+.env-veil{position:absolute;left:0;right:0;z-index:75;background:rgba(18,3,7,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .45s ease}
+.env-veil.show{opacity:1}
+.env-close{position:fixed;z-index:79;transform:translateX(-50%);min-width:132px;height:44px;padding:0 26px;border-radius:99px;border:1px solid rgba(231,196,124,.7);
+  background:rgba(42,6,14,.55);color:#f4e8d6;font-family:var(--kh-body),var(--en);font-size:1rem;letter-spacing:.04em;opacity:0;pointer-events:none;transition:opacity .25s ease}
+.env-close.show{opacity:1;pointer-events:auto;transition:opacity .4s ease 1.2s}
+.env-close [data-l="en"]{font-family:var(--en);letter-spacing:.12em;text-transform:uppercase;font-size:.9rem}
+html.env-modal{overflow:hidden}
+html.env-modal #gift .in{z-index:auto}   /* let the envelope and its Close button rise above the veil (the section's own layer would hold them under it) */
 .env:focus-visible{outline:2px solid var(--gold-deep);outline-offset:8px}
 .env-back{position:absolute;inset:0;background:linear-gradient(180deg,#d6b878,#e4cb98);border-radius:3px;box-shadow:0 12px 30px rgba(77,63,49,.22)}
 .env-slot{position:absolute;inset:0;z-index:2;clip-path:inset(0);transition:clip-path .2s ease .75s}
@@ -436,7 +448,7 @@ html.menu-open{overflow:hidden}
 .qrcard .btn svg{display:inline-block;width:18px;height:18px}
 .qsave{width:100%;min-height:42px;margin-top:14px;padding:6px 10px;font-size:.9rem}
 .qrcard img{display:block;width:100%;height:auto}
-@media (prefers-reduced-motion:reduce){.env-stage,.env-stage.open,.env-slot,.env-card,.env-flapwrap,.env-stage.open .env-slot,.env-stage.open .env-card,.env-stage.open .env-flapwrap{transition-duration:.01s;transition-delay:0s}.env-stage:not(.open) .env-seal{animation:none}}
+@media (prefers-reduced-motion:reduce){.env.floating,.env-veil,.env-close.show{transition-duration:.01s;transition-delay:0s}.env-stage,.env-stage.open,.env-slot,.env-card,.env-flapwrap,.env-stage.open .env-slot,.env-stage.open .env-card,.env-stage.open .env-flapwrap{transition-duration:.01s;transition-delay:0s}.env-stage:not(.open) .env-seal{animation:none}}
 
 /* bigger screens ---------------------------------------------------------------
    tablets: a wider column with larger type.
@@ -485,7 +497,7 @@ html[data-lang="km"] [data-l="en"],html[data-lang="en"] [data-l="km"]{display:no
 .menu li .kh{font-size:1.3rem;line-height:1.5;color:var(--ink);text-align:left}
 .menu li button[aria-current="true"] .kh{color:var(--gold-deep)}
 html[data-lang="en"] .cover-title{font-family:var(--en);font-size:max(13px,calc(var(--u)*50));letter-spacing:.2em;text-transform:uppercase;font-weight:600}
-html[data-lang="en"] .guest-lbl{font-family:var(--en);font-size:max(12px,calc(var(--u)*42));letter-spacing:.14em;text-transform:uppercase}
+html[data-lang="en"] .guest-lbl{font-family:var(--en);font-size:max(12px,calc(var(--u)*36));letter-spacing:.1em;text-transform:uppercase}
 html[data-lang="en"] .open-btn .lbl{font-size:max(13px,calc(var(--u)*50));color:var(--gold-deep);font-weight:600}
 html[data-lang="en"] .k-title{font-family:var(--en);font-size:1.45rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
 html[data-lang="en"] .head .sub{font-style:normal;font-size:1.6rem;font-weight:600;letter-spacing:.06em;color:var(--gold-deep);margin-top:14px}
@@ -502,9 +514,108 @@ html[data-lang="en"] .venue-card b{display:none}
 html[data-lang="km"] .thanks-s{display:none}
 html[data-lang="en"] .thanks-k{display:none}
 html[data-lang="en"] .foot .by{letter-spacing:.24em}
+
+/* ================= burgundy velvet theme: deep wine velvet, silk drapes, cream paper cards with gold borders ================= */
+:root{--wine:#4a0f1a;--wine-deep:#2a060e;--paper:#f4ebdf}
+html{background:var(--wine-deep)}
+body{background:var(--wine-deep)}
+@media (max-width:440px){html{background:#5d232c url(img/theme/velvet.webp) 0 0/512px}body{background:transparent}}
+.phone{background:var(--wine) url(img/theme/velvet.webp) 0 0/512px;box-shadow:0 0 70px rgba(0,0,0,.55)}
+/* on velvet: light text, light gold. cream paper things switch back to the dark ink (see the next rule) */
+.page{--ink:#f4e8d6;--muted:#d6c1ad;--gold-deep:#e7c47c;--gold:#d9b25f;--line:rgba(231,196,124,.5);color:var(--ink)}
+.card,.btn,.arch,.cd div,.qrcard,.field input,.lockpill,.mapbox,.drop,.seg button,.env-card,.stepper,#khmer2 .in,#english .in{--ink:#4D3F31;--muted:#85735F;--gold-deep:#B2802C;--gold:#DCA74C;--line:rgba(220,167,76,.5);color:var(--ink)}
+.flor::before{display:none}
+.flor::after{display:none}
+.page{padding-bottom:120px}
+#thanks{padding-bottom:calc(130px + var(--sab,0px))}
+/* silk drape: stays fixed at the bottom of the screen while the page scrolls under it (swap img/theme/silk.webp for your own) */
+.silk{position:fixed;bottom:-2px;left:var(--cx);width:min(100%,var(--colw));height:calc(clamp(100px,30vw,150px) + 2px);transform:translateX(-50%);z-index:20;pointer-events:none;opacity:0;transition:opacity 1.2s ease 1s;
+  background:url(img/theme/silk.webp) center bottom/100% auto no-repeat}
+body.opened .silk{opacity:1}
+.silk{display:none}
+/* iOS 26+ Safari: the floating address bar turns solid when a coloured layer covers the bottom edge (here: the full-screen cover at load),
+   and it does not switch back by itself. A transparent 6px strip kept on top of everything at the bottom edge is what Safari samples,
+   so the bar stays see-through like on apple.com. Only shown on iOS (-webkit-touch-callout is iOS-only). */
+.sfx-fix{display:none}
+@supports (-webkit-touch-callout:none){.sfx-fix{display:block;position:sticky;left:0;bottom:-2px;width:100%;height:6px;margin-top:-6px;background:transparent;z-index:999;pointer-events:none}}
+/* Safari will not draw fixed layers under its address bar, and a fixed layer on the bottom edge makes the bar solid.
+   So on iOS the cover stops 4px short of the bottom edge, and an ordinary (scrolling) layer drawn at the top of the page,
+   full screen height, carries the cover's velvet and the gold door seam down behind the see-through bar. */
+.cv-under{display:none}
+@supports (-webkit-touch-callout:none){
+  .cover{bottom:4px}
+  html:not(:has(.cover[hidden])) .cv-under{display:block}
+}
+.cv-under{position:absolute;top:0;left:var(--cx);width:min(100%,var(--colw));height:calc(100lvh + 60px);transform:translateX(-50%);z-index:59;pointer-events:none;
+  --cw:min(100vw,var(--colw));--u:calc(min(var(--cw),calc(var(--vh)*70.94))/1240);
+  background:linear-gradient(rgba(20,2,6,.45),rgba(20,2,6,.45)),var(--wine) url(img/theme/velvet.webp) 0 0/512px}
+.cv-under::after{content:"";position:absolute;inset:0;background:#fff4dc;opacity:0}
+/* the strip under the bar follows the cover's own timeline (tap = 0s): the doors swing open into the light (0.9s to 3.2s),
+   the white-out holds (to 3.7s), then dims down to the page (to 7.15s), exactly like .flash above */
+html:has(.cover.opening) .cv-under{animation:cvuFade 7.2s linear forwards}
+html:has(.cover.opening) .cv-under::after{animation:cvuLight 7.2s linear forwards}
+html:has(.cover.opening) .cv-under::before{animation:cvuSeam 7.2s linear forwards}
+@keyframes cvuLight{0%,12.5%{opacity:0;animation-timing-function:cubic-bezier(.4,0,.3,1)}36%,100%{opacity:1}}
+@keyframes cvuSeam{0%,12.5%{opacity:1;animation-timing-function:ease-in-out}34%,100%{opacity:0}}
+@keyframes cvuFade{0%,51.7%{opacity:1;animation-timing-function:cubic-bezier(.2,.1,.25,1)}99.3%,100%{opacity:0}}
+.cv-sab{position:absolute;left:50%;top:var(--cvb,100%);bottom:60px;width:0}
+.cv-sab::before{content:"";position:absolute;left:-2px;width:4px;top:-2px;bottom:0;border-radius:2px;opacity:0;clip-path:inset(100% 0 0 0);
+  background:linear-gradient(90deg,#fff3c2,#fff 50%,#fff3c2);box-shadow:0 0 6px 2px #fff,0 0 16px 6px rgba(255,226,130,.95),0 0 38px 14px rgba(255,200,90,.6)}
+.cv-sab::after{content:"";position:absolute;left:-26px;width:52px;height:52px;bottom:-26px;border-radius:50%;opacity:0;
+  background:radial-gradient(circle,#fff 0 18%,rgba(255,236,160,.9) 36%,rgba(255,200,90,0) 70%)}
+/* the light first runs up from the very bottom of the screen (behind Safari's bar) to the cover's edge, where the cover's own line takes over */
+html:has(.cover.opening) .cv-sab::before{animation:cvSabLine 1.27s linear forwards}
+html:has(.cover.opening) .cv-sab::after{animation:cvSabHead .22s cubic-bezier(.55,0,.85,.6) forwards}
+@keyframes cvSabLine{0%{opacity:1;clip-path:inset(100% 0 0 0);animation-timing-function:cubic-bezier(.55,0,.85,.6)}17.3%{opacity:1;clip-path:inset(0 0 0 0)}75%{opacity:1;clip-path:inset(0 0 0 0)}100%{opacity:0;clip-path:inset(0 0 0 0)}}
+@keyframes cvSabHead{0%{opacity:1;bottom:-26px}99%{opacity:1}100%{opacity:0;bottom:calc(100% - 26px)}}
+@media (prefers-reduced-motion:reduce){.cv-sab{display:none}}
+.cv-under::before{content:"""";position:absolute;top:0;bottom:0;left:50%;width:calc(var(--u)*26);transform:translateX(-50%);
+  background:linear-gradient(90deg,#8f6a22,#f3d88e 34%,#fff7d6 50%,#d6aa4c 68%,#86601c) 0 0/50% 100% no-repeat,
+             linear-gradient(90deg,#8f6a22,#f3d88e 34%,#fff7d6 50%,#d6aa4c 68%,#86601c) 100% 0/50% 100% no-repeat}
+.silk::after{content:'';position:absolute;left:0;right:0;bottom:0;height:70px;background:linear-gradient(to bottom,rgba(94,16,33,0),rgba(94,16,33,.55) 55%,#5e1021)}
+/* smoky texture drifting slowly over the velvet (swap img/theme/smoke.webp for your own) */
+.smoke{position:fixed;top:0;bottom:0;left:var(--cx);width:min(100%,var(--colw));transform:translateX(-50%);z-index:0;pointer-events:none;opacity:.42;
+  background:url(img/theme/smoke.webp) 0 0/760px auto repeat;animation:smokedrift 140s linear infinite}
+@keyframes smokedrift{from{background-position:0 0}to{background-position:760px -760px}}
+/* content fades up as it scrolls into view */
+.fx .rv:not(.on){opacity:0;transform:translateY(16px)}
+/* an animation, not a transition: a 'transition' here replaced the elements' own transitions (the envelope's height, the program fold,
+   the envelope hint), so the envelope jumped instead of sliding. With no end keyframe, each element ends on its own styles. */
+.fx .rv.on{animation:rvIn .55s cubic-bezier(.2,.7,.2,1) var(--rvd,0s) backwards}
+@keyframes rvIn{from{opacity:0;transform:translateY(16px)}}
+/* the long invitation texts sit on one arched sheet of cream paper */
+#khmer2 .in,#english .in{width:auto;margin:0 16px;padding:44px 22px;border-radius:14px;
+  background:url(img/theme/paper.webp) 0 0/384px #f4ebdf;border:1px solid #d4ac5e;
+  box-shadow:inset 0 0 0 7px #f4ebdf,inset 0 0 0 8px rgba(178,128,44,.6),0 20px 44px rgba(0,0,0,.5)}
+.arch{border-color:#d4ac5e;box-shadow:0 14px 34px rgba(0,0,0,.5)}
+.k-title,.e-names{filter:drop-shadow(0 1px 8px rgba(0,0,0,.35))}
+#khmer .goldtext,#thanks .goldtext,.head .goldtext{background:linear-gradient(135deg,#d9b25f,#fff0b8 42%,#e0b95f 68%,#fbe3a0);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* cover */
+.art{background:var(--wine) url(img/theme/velvet.webp) 0 0/512px}
+.art::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 80% at 50% 38%,transparent 40%,rgba(20,2,6,.55) 100%)}
+.gl{display:none}
+.arch-card{background:url(img/theme/paper.webp) 0 0/384px #f1e8dc;border-color:#d4ac5e;
+  box-shadow:inset 0 0 0 calc(var(--u)*16) #f1e8dc,inset 0 0 0 calc(var(--u)*19) rgba(178,128,44,.6),0 calc(var(--u)*20) calc(var(--u)*60) rgba(0,0,0,.6)}
+/* bar and menu */
+.bar{background:rgba(42,6,14,.8);border-bottom:1px solid rgba(231,196,124,.28);--ink:#f4e8d6;--gold-deep:#e7c47c}
+.menu{background:rgba(42,6,14,.95);--ink:#f4e8d6;--muted:#d6c1ad;--gold-deep:#e7c47c;--line:rgba(231,196,124,.3)}
+.menu-lang button[aria-pressed="true"]{color:#2a060e}
+.cv-lang button[aria-pressed="true"]{background:#8a1f35;color:#fff}
+/* big screens */
+@media (min-width:1000px){
+  body{background:var(--wine-deep)}
+  .phone{box-shadow:0 0 0 1px rgba(231,196,124,.35),0 0 90px rgba(0,0,0,.6)}
+  .side{background:var(--wine) url(img/theme/velvet.webp) 0 0/512px}
+  .side-photo{background:#f4ebdf;border-color:#d4ac5e}
+  .side-kh,.side-names{color:#e7c47c}
+  .side-date{color:#f4e8d6}
+  .side-place{color:#d6c1ad}
+}
 </style>
 
 <script>
+/* every load and refresh starts at the top, under the closed cover (Safari otherwise restores the old scroll position on refresh) */
+try{if('scrollRestoration' in history)history.scrollRestoration='manual'}catch(e){}
 /* Freeze page height: in-app browsers (Messenger) resize the viewport as toolbars show/hide,
    which made every section re-flow and jump. Measure once; only update if the width changes. */
 (function(){var d=document.documentElement,w=0;
@@ -605,13 +716,16 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="lb" id="lb" hidden><button class="x" type="button" aria-label="Close photo">×</button><img id="lbImg" alt=""></div>
 
+
+
 <main class="phone" id="phone">
+  <div class="smoke" aria-hidden="true"></div>
 
   <!-- Page 2: Khmer title and the couple -->
   <section class="page flor center" id="khmer">
     <div class="in">
       <h1 class="k-title goldtext"><span data-l="km">សិរីមង្គលអាពាហ៍ពិពាហ៍</span><span data-l="en">The Wedding Celebration</span></h1>
-      <div class="arch"><img src="img/cover.jpg" alt="Ly Chhayly and Ma Meyhuy at Angkor" width="1100" height="1467"><img class="branch arch-br" src="img/leaf.svg" alt="" width="1480" height="450"></div>
+      <div class="arch"><img src="img/cover.jpg" alt="Ly Chhayly and Ma Meyhuy at Angkor" width="1100" height="1467"></div>
     </div>
   </section>
 
@@ -638,7 +752,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
       <div class="e-names goldtext">Ly Chhayly <span class="amp">&amp;</span> Ma Meyhuy</div>
       <div class="e-date">Sunday, 20th December 2026<br>at 5 PM</div>
       <div class="e-venue">PH Grand Hall Euro 3<br>Phnom Penh, Cambodia</div>
-      <div style="margin-top:10px"><img class="branch" src="img/leaf.svg" alt="" width="1480" height="450"></div>
+      <div style="margin-top:10px"></div>
       <div class="e-thanks goldtext">Thank you!</div>
     </div>
   </section>
@@ -766,6 +880,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
             <img class="env-seal" src="img/crest.png" alt="" width="692" height="808">
           </div>
         </div>
+        <button type="button" class="env-close" id="envClose" hidden><span data-l="km">បិទ</span><span data-l="en">Close</span></button>
       </div>
       <p class="env-hint" id="envHint"><span data-l="km">ចុចលើស្រោមសំបុត្រ</span><span data-l="en">Tap the envelope</span></p>
     </div>
@@ -817,7 +932,6 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   <!-- Page 13: Thank you -->
   <section class="page center" id="thanks">
     <div class="in">
-      <img class="branch" src="img/leaf.svg" alt="" width="1480" height="450">
       <p class="thanks-s goldtext">Thank you</p>
       <div class="thanks-k">សូមអរគុណ</div>
       <div class="foot">
@@ -938,6 +1052,15 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     galRun=true;requestAnimationFrame(galFrame);
   }
   galStart();
+  /* the photos are lazy-loaded; inside a sideways strip Safari only fetches them once they are on screen, so they popped in late.
+     When the gallery is about a screen away, ask for the middle copy (the one the guest sees first) straight away. */
+  if('IntersectionObserver' in window){
+    var galIO=new IntersectionObserver(function(es){
+      if(!es[0].isIntersecting)return;galIO.disconnect();
+      for(var k=NP;k<2*NP&&k<track.children.length;k++){var gi=track.children[k].querySelector('img');if(gi)gi.loading='eager'}
+    },{rootMargin:'0px 0px 120% 0px'});
+    galIO.observe($('#gallery'));
+  }
   window.addEventListener('load',function(){measure();if(!track.scrollLeft)galStart()});
   function closeLb(){lb.hidden=true;lbImg.removeAttribute('src')}
   lb.addEventListener('click',closeLb);
@@ -991,7 +1114,17 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   $$('button',$('.half.r',cover)).forEach(function(b){b.tabIndex=-1});
   root.classList.add('locked');
   window.scrollTo(0,0);
-  var opened=false;
+  var opened=false,coverReady=false,openWhenReady=false;
+  function coverIsReady(){if(coverReady)return;coverReady=true;cover.classList.add('ready');if(openWhenReady)openInvite()}
+  (function(){
+    function dec(im){
+      if(im.decode)return im.decode().catch(function(){});
+      return new Promise(function(r){if(im.complete)r();else{im.onload=im.onerror=function(){r()}}});
+    }
+    var list=$$('img',cover).map(dec);
+    ['img/theme/paper.webp','img/theme/velvet.webp'].forEach(function(u){var im=new Image();im.src=u;list.push(dec(im))});
+    if(window.Promise&&Promise.all)Promise.all(list).then(coverIsReady,coverIsReady);else coverIsReady();
+  })();
   /* soft sound for the doors (the background music starts at the same tap) */
   var sfx=null;
   try{sfx=new Audio('img/fx/door-open.mp3');sfx.preload='auto';sfx.volume=.55}catch(e){}
@@ -1073,19 +1206,42 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     }
   }
   function openInvite(){
-    if(opened)return;opened=true;
+    if(opened)return;
+    if(!coverReady){openWhenReady=true;startMusic();return}   /* tapped before the artwork finished loading: open the moment it is ready */
+    opened=true;
     startMusic();
     if(sfx){try{sfx.currentTime=0;var sp=sfx.play();if(sp&&sp.catch)sp.catch(function(){})}catch(e){}}
+    var cu=$('.cv-under');
+    if(cu&&getComputedStyle(cu).display!=='none'){cu.style.setProperty('--cvb',cover.getBoundingClientRect().bottom+'px');cover.style.setProperty('--sab-in','.22s')}
     cover.classList.add('opening');
     if(reduce){
       setTimeout(function(){cover.hidden=true;root.classList.remove('locked');document.body.classList.add('opened')},650);
       return;
     }
-    setTimeout(function(){cover.classList.add('doors-gone')},3350);   // light is at its brightest: the doors are hidden in it
+    setTimeout(function(){cover.classList.add('doors-gone');if(window.startFx)window.startFx()},3350);   // light is at its brightest: the doors are hidden in it
     setTimeout(spawnCritters,0);                                   // golden butterflies and birds fly in from outside, as the light dims
     setTimeout(function(){cover.classList.add('done')},3850);         // taps go through to the page
     setTimeout(function(){root.classList.remove('locked');document.body.classList.add('opened')},4800);
     setTimeout(function(){cover.hidden=true},8800);                   // everything has flown away
+  }
+
+  /* ---- content fades up as it scrolls into view (starts as the doors finish opening) ---- */
+  var fxOn=false;
+  if(!reduce&&'IntersectionObserver' in window){
+    root.classList.add('fx');
+    var rvEls=$$('.page .in > *');
+    rvEls.forEach(function(e){e.classList.add('rv')});
+    var io=new IntersectionObserver(function(entries){
+      var n=0;
+      entries.forEach(function(en){
+        if(!en.isIntersecting)return;
+        var t=en.target;io.unobserve(t);
+        t.style.setProperty('--rvd',(Math.min(n++,3)*60)+'ms');
+        t.classList.add('on');
+      });
+    },{threshold:0,rootMargin:'0px 0px 8% 0px'});
+    window.startFx=function(){if(fxOn)return;fxOn=true;rvEls.forEach(function(e){io.observe(e)})};
+    setTimeout(function(){if(!fxOn)window.startFx()},12000);   // safety: never leave the page hidden
   }
   cover.addEventListener('click',openInvite);
 
@@ -1252,34 +1408,91 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     $('#qr').innerHTML='';$('#qr').appendChild(im);
   });
 
-  /* envelope */
-  var envStage=$('#envStage'),env=$('#env'),envCard=$('#envCard');
-  function sizeEnv(){
-    var H=env.offsetHeight,cardH=envCard.offsetHeight;
-    envStage.style.setProperty('--rise',(H*.9-8)+'px');
-    envStage.style.height=(cardH+H*.9)+'px';
+  /* envelope: a pop-up. Tap it: the page darkens and blurs, the envelope floats to the middle of the screen and grows, then opens.
+     Close it (tap the envelope or the Close button): it closes, flies back to its place, and the page comes back. */
+  var envStage=$('#envStage'),env=$('#env'),envCard=$('#envCard'),envVeil=document.createElement('div'),envClose=$('#envClose');
+  envVeil.className='env-veil';envVeil.hidden=true;document.body.appendChild(envVeil);
+  var envState='closed';   /* closed -> lifting -> open -> closing -> returning -> closed */
+  function envTarget(){
+    var W=env.offsetWidth,H=env.offsetHeight,cardH=envCard.offsetHeight,vw=window.innerWidth,vh=window.innerHeight,BTN=64,PAD=24;
+    var s=Math.min(Math.min(vw*.92,440)/W,(vh-2*PAD-BTN)/(cardH+H*.9));
+    var groupTop=(vh-(s*(cardH+H*.9)+BTN))/2;
+    var top=groupTop+s*Math.max(0,cardH-H*.1),left=(vw-s*W)/2;
+    return {s:s,top:top,left:left,btnTop:top+s*H+16};
   }
-  function toggleEnv(){
-    var open=!envStage.classList.contains('open');
-    if(open){sizeEnv()}else{envStage.style.height=''}
-    envStage.classList.toggle('open',open);
-    env.setAttribute('aria-expanded',open);
-    env.setAttribute('aria-label',open?L('បិទស្រោមសំបុត្រ','Close the envelope'):L('បើកស្រោមសំបុត្រ','Open the envelope'));
-    if(open)$('#qrcard').removeAttribute('aria-hidden');else $('#qrcard').setAttribute('aria-hidden','true');
-    $('#envHint').classList.toggle('gone',open);
-    if(!open)$('#saveNote').textContent='';
+  function stopTouch(e){if(!(e.target.closest&&e.target.closest('.qrcard')))e.preventDefault()}
+  function openEnv(){
+    if(envState!=='closed')return;envState='lifting';
+    var r=env.getBoundingClientRect(),t=envTarget();
+    envStage.style.setProperty('--rise',(env.offsetHeight*.9-8)+'px');
+    root.classList.add('env-modal');
+    envVeil.style.top=(window.scrollY-200)+'px';envVeil.style.height=(window.innerHeight+600)+'px';
+    envVeil.hidden=false;
+    /* pin the envelope exactly where it is, then let it glide to the middle */
+    env.style.cssText='position:fixed;left:'+r.left+'px;top:'+r.top+'px;width:'+r.width+'px;height:'+r.height+'px;right:auto;bottom:auto;margin:0';
+    env.classList.add('floating');
+    void env.offsetWidth;
+    envVeil.classList.add('show');
+    env.style.transform='translate('+(t.left-r.left)+'px,'+(t.top-r.top)+'px) scale('+t.s+')';
+    envClose.style.top=t.btnTop+'px';envClose.style.left=(window.innerWidth/2)+'px';envClose.hidden=false;
+    env.setAttribute('aria-expanded','true');
+    env.setAttribute('aria-label',L('បិទស្រោមសំបុត្រ','Close the envelope'));
   }
-  /* tapping the envelope opens it, tapping it again closes it; tapping the card itself (or its Save button) does nothing */
-  env.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.env-card'))return;toggleEnv()});
-  env.addEventListener('keydown',function(e){if(e.target!==env)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleEnv()}});
+  function closeEnv(){
+    if(envState!=='open')return;envState='closing';
+    envClose.classList.remove('show');
+    envStage.classList.remove('open');               /* the card slides back in and the flap closes */
+    $('#qrcard').setAttribute('aria-hidden','true');$('#saveNote').textContent='';
+  }
+  env.addEventListener('transitionend',function(e){
+    if(e.target!==env||e.propertyName!=='transform')return;
+    if(envState==='lifting'){                        /* arrived in the middle: open it */
+      envState='opening';
+      envStage.classList.add('open');
+      $('#qrcard').removeAttribute('aria-hidden');
+      envClose.classList.add('show');
+    }else if(envState==='returning'){                /* back in its place: hand the page back */
+      env.classList.remove('floating');env.style.cssText='';
+      envVeil.hidden=true;envClose.hidden=true;
+      root.classList.remove('env-modal');
+      env.setAttribute('aria-expanded','false');
+      env.setAttribute('aria-label',L('បើកស្រោមសំបុត្រ','Open the envelope'));
+      envState='closed';
+      try{env.focus({preventScroll:true})}catch(x){}
+    }
+  });
+  envCard.addEventListener('transitionend',function(e){
+    if(e.target===envCard&&e.propertyName==='transform'&&envState==='opening'){envState='open';try{envClose.focus({preventScroll:true})}catch(x){}}
+  });
+  $('.env-flapwrap',env).addEventListener('transitionend',function(e){
+    if(e.propertyName!=='transform'||envState!=='closing')return;
+    envState='returning';                            /* closed: fly back and lift the veil */
+    envVeil.classList.remove('show');
+    env.style.transform='translate(0,0) scale(1)';
+  });
+  env.addEventListener('click',function(e){
+    if(e.target.closest&&e.target.closest('.env-card'))return;   /* the QR card and its Save button never close it */
+    if(envState==='closed')openEnv();else if(envState==='open')closeEnv();
+  });
+  envClose.addEventListener('click',function(e){e.stopPropagation();closeEnv()});
+  env.addEventListener('keydown',function(e){if(e.target!==env)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();if(envState==='closed')openEnv();else closeEnv()}});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeEnv()});
+  [envVeil,env,envClose].forEach(function(el){el.addEventListener('touchmove',stopTouch,{passive:false})});
   var envW=window.innerWidth;
   window.addEventListener('resize',function(){
     if(window.innerWidth===envW)return;envW=window.innerWidth;
-    if(envStage.classList.contains('open')){envStage.style.transition='none';sizeEnv();void envStage.offsetHeight;envStage.style.transition=''}
+    if(envState==='open'){                           /* phone rotated while open: re-centre without animating */
+      env.style.cssText='';env.classList.remove('floating');
+      var r=env.getBoundingClientRect(),t=envTarget();
+      env.style.cssText='position:fixed;left:'+r.left+'px;top:'+r.top+'px;width:'+r.width+'px;height:'+r.height+'px;right:auto;bottom:auto;margin:0;transform:translate('+(t.left-r.left)+'px,'+(t.top-r.top)+'px) scale('+t.s+')';
+      env.classList.add('floating');
+      envClose.style.top=t.btnTop+'px';envClose.style.left=(window.innerWidth/2)+'px';
+      envVeil.style.top=(window.scrollY-200)+'px';envVeil.style.height=(window.innerHeight+600)+'px';
+    }
   });
 
   /* save the QR to the phone */
-  function setNote(t){$('#saveNote').textContent=t;if(envStage.classList.contains('open'))sizeEnv()}
+  function setNote(t){$('#saveNote').textContent=t}
   $('#saveQr').addEventListener('click',function(){
     var HOLD=L('ចុចលើ QR ឱ្យជាប់ រួចជ្រើសរើស "Save Image"។','Press and hold the QR code, then choose "Save Image".');
     if(!qrBlob){setNote(HOLD);return}
@@ -1305,7 +1518,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     langBtn.textContent=lang==='km'?'EN':'ខ្មែរ';
     langBtn.setAttribute('aria-label',lang==='km'?'Switch to English':'ប្តូរទៅភាសាខ្មែរ');
     if(pName)pName.placeholder=L('ដើម្បីឱ្យម្ចាស់ការដឹងថាអ្នកណាបានចែករំលែក','So the hosts know who shared');
-    env.setAttribute('aria-label',envStage.classList.contains('open')?L('បិទស្រោមសំបុត្រ','Close the envelope'):L('បើកស្រោមសំបុត្រ','Open the envelope'));
+    env.setAttribute('aria-label',envState==='closed'?L('បើកស្រោមសំបុត្រ','Open the envelope'):L('បិទស្រោមសំបុត្រ','Close the envelope'));
     if(fromUser){try{localStorage.setItem(LKEY,lang)}catch(e){}}
     if(fromUser&&menuOpen){setMenu(false)}
     if(fromUser&&opened){window.scrollTo(0,0)}
@@ -1345,6 +1558,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   });
 })();
 </script>
-
+<div class="cv-under" aria-hidden="true"><div class="cv-sab"></div></div>
+<div class="sfx-fix" aria-hidden="true"></div>
 </body>
 </html>
