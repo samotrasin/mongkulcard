@@ -574,6 +574,12 @@ html:has(.cover.opening) .cv-sab::after{animation:cvSabHead .22s cubic-bezier(.5
              linear-gradient(90deg,#8f6a22,#f3d88e 34%,#fff7d6 50%,#d6aa4c 68%,#86601c) 100% 0/50% 100% no-repeat}
 .silk::after{content:'';position:absolute;left:0;right:0;bottom:0;height:70px;background:linear-gradient(to bottom,rgba(94,16,33,0),rgba(94,16,33,.55) 55%,#5e1021)}
 /* smoky texture drifting slowly over the velvet (swap img/theme/smoke.webp for your own) */
+.sky{position:fixed;top:0;height:70%;left:var(--cx);width:min(100%,var(--colw));transform:translateX(-50%);z-index:0;pointer-events:none;overflow:hidden}
+/* shooting stars: a thin silver streak with a bright head, sliding down at an angle behind the content */
+.sstar{position:absolute;width:var(--len,130px);height:2px;border-radius:2px;transform-origin:100% 50%;opacity:0;
+  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(226,232,240,.35) 55%,rgba(255,255,255,.95))}
+.sstar::after{content:"";position:absolute;right:-3px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;background:#fff;
+  box-shadow:0 0 6px 2px rgba(255,255,255,.9),0 0 14px 5px rgba(205,215,235,.45)}
 .smoke{position:fixed;top:0;bottom:0;left:var(--cx);width:min(100%,var(--colw));transform:translateX(-50%);z-index:0;pointer-events:none;opacity:.42;
   background:url(img/theme/smoke.webp) 0 0/760px auto repeat;animation:smokedrift 140s linear infinite}
 @keyframes smokedrift{from{background-position:0 0}to{background-position:760px -760px}}
@@ -720,6 +726,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
 
 <main class="phone" id="phone">
   <div class="smoke" aria-hidden="true"></div>
+  <div class="sky" id="sky" aria-hidden="true"></div>
 
   <!-- Page 2: Khmer title and the couple -->
   <section class="page flor center" id="khmer">
@@ -1225,6 +1232,31 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     setTimeout(function(){cover.hidden=true},8800);                   // everything has flown away
   }
 
+  /* ---- shooting stars on the inside pages: one every 3 to 5 seconds, behind the content ---- */
+  (function(){
+    var sky=$('#sky');if(!sky||reduce||!sky.animate)return;
+    function shoot(){
+      if(!document.hidden&&document.body.classList.contains('opened')){
+        var w=sky.clientWidth,h=sky.clientHeight,ltr=Math.random()<.5;
+        var ang=(ltr?1:-1)*(18+Math.random()*16),len=110+Math.random()*70,dist=220+Math.random()*160;
+        var x=w*(ltr?.05+Math.random()*.55:.4+Math.random()*.55),y=h*(.04+Math.random()*.5);
+        var st=document.createElement('i');st.className='sstar';
+        st.style.cssText='left:'+(x-len)+'px;top:'+y+'px;--len:'+len+'px';
+        sky.appendChild(st);
+        var rad=ang*Math.PI/180,dx=Math.cos(rad)*dist*(ltr?1:-1),dy=Math.abs(Math.sin(rad))*dist;
+        var rot=ltr?ang:180+ang;   /* the streak points the way it travels */
+        var a=st.animate([
+          {opacity:0,transform:'translate(0,0) rotate('+rot+'deg) scaleX(.3)'},
+          {opacity:1,offset:.25,transform:'translate('+dx*.25+'px,'+dy*.25+'px) rotate('+rot+'deg) scaleX(1)'},
+          {opacity:0,transform:'translate('+dx+'px,'+dy+'px) rotate('+rot+'deg) scaleX(.6)'}
+        ],{duration:900+Math.random()*500,easing:'cubic-bezier(.3,.1,.6,1)'});
+        a.onfinish=function(){st.remove()};
+      }
+      setTimeout(shoot,3000+Math.random()*2000);
+    }
+    setTimeout(shoot,3000);
+  })();
+
   /* ---- content fades up as it scrolls into view (starts as the doors finish opening) ---- */
   var fxOn=false;
   if(!reduce&&'IntersectionObserver' in window){
@@ -1420,7 +1452,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     var top=groupTop+s*Math.max(0,cardH-H*.1),left=(vw-s*W)/2;
     return {s:s,top:top,left:left,btnTop:top+s*H+16};
   }
-  function stopTouch(e){if(!(e.target.closest&&e.target.closest('.qrcard')))e.preventDefault()}
+  function stopTouch(e){if(envState==='closed')return;if(!(e.target.closest&&e.target.closest('.qrcard')))e.preventDefault()}
   function openEnv(){
     if(envState!=='closed')return;envState='lifting';
     var r=env.getBoundingClientRect(),t=envTarget();
