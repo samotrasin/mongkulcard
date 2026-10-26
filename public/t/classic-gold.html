@@ -622,6 +622,11 @@ html:has(.cover.opening) .cv-sab::after{animation:cvSabHead .22s cubic-bezier(.5
 .card,.cd div,.qrcard,.lockpill,.mapbox,.drop,.btn:not(.solid){background-image:url(img/theme/goldfleck.webp);background-size:320px}
 #khmer2 .in,#english .in{background:url(img/theme/goldfleck.webp) 0 0/320px,url(img/theme/paper.webp) 0 0/384px #f4ebdf}
 .qrcard #qr{background:#fff;padding:6px;border-radius:4px}   /* keep the QR code itself clean so it always scans */
+/* the Khmer and English wording cards: every line in burgundy (gold headings and names included) */
+#khmer2 .in,#english .in{--gold-deep:#5c1526;--gold:#5c1526}
+#khmer2 .in *,#english .in *{color:#5c1526}
+#khmer2 .in .goldtext,#english .in .goldtext{background:none;-webkit-text-fill-color:#5c1526;color:#5c1526;filter:none}
+#khmer2 .in .k-title,#english .in .e-names{filter:none}
 </style>
 
 <script>
