@@ -245,7 +245,7 @@ html.menu-open{overflow:hidden}
 .cd{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .cd div{background:var(--cream2);border:1px solid var(--line);border-radius:10px;padding:14px 4px 10px;text-align:center}
 .cd b{display:block;font-family:var(--en);font-weight:600;font-size:2.15rem;line-height:1;font-variant-numeric:tabular-nums;color:var(--ink)}
-.cd span{display:block;margin-top:8px;font-size:.8rem;line-height:1.5;color:var(--gold-deep)}
+.cd span{display:block;margin-top:8px;font-size:.8rem;line-height:1.5;color:var(--ink)}
 .cd em{display:block;font-family:var(--en);font-style:normal;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .cd-done{display:none;text-align:center;font-family:var(--script);font-size:2.2rem;color:var(--gold-deep)}
 .cd-sub{margin:14px 0 0;text-align:center;font-family:var(--en);font-size:1.05rem;color:var(--muted)}
@@ -527,8 +527,6 @@ body{background:var(--wine-deep)}
 .card,.btn,.arch,.cd div,.qrcard,.field input,.lockpill,.mapbox,.drop,.seg button,.env-card,.stepper,#khmer2 .in,#english .in{--ink:#5c1526;--muted:#83505a;--gold-deep:#B2802C;--gold:#DCA74C;--line:rgba(220,167,76,.5);color:var(--ink)}
 .flor::before{display:none}
 .flor::after{display:none}
-.page{padding-bottom:120px}
-#thanks{padding-bottom:calc(130px + var(--sab,0px))}
 /* silk drape: stays fixed at the bottom of the screen while the page scrolls under it (swap img/theme/silk.webp for your own) */
 .silk{position:fixed;bottom:-2px;left:var(--cx);width:min(100%,var(--colw));height:calc(clamp(100px,30vw,150px) + 2px);transform:translateX(-50%);z-index:20;pointer-events:none;opacity:0;transition:opacity 1.2s ease 1s;
   background:url(img/theme/silk.webp) center bottom/100% auto no-repeat}
@@ -618,9 +616,12 @@ html:has(.cover.opening) .cv-sab::after{animation:cvSabHead .22s cubic-bezier(.5
   .side-date{color:#f4e8d6}
   .side-place{color:#d6c1ad}
 }
-/* gold-leaf flecks scattered through the cream cards (img/theme/goldfleck.webp, a 320px tile) */
-.card,.cd div,.qrcard,.lockpill,.mapbox,.drop,.btn:not(.solid){background-image:url(img/theme/goldfleck.webp);background-size:320px}
-#khmer2 .in,#english .in{background:url(img/theme/goldfleck.webp) 0 0/320px,url(img/theme/paper.webp) 0 0/384px #f4ebdf}
+/* white and gold marble on the cream cards (img/theme/marble.webp, portrait photo); each small card shows a different part of it */
+.card,.cd div,.qrcard,.lockpill,.mapbox,.drop,.btn:not(.solid),#khmer2 .in,#english .in{background:url(img/theme/marble.webp) 50% 30%/cover #f7f3ef}
+.cd div,.btn:not(.solid),.lockpill{background-size:560px auto}
+.cd div:nth-child(1){background-position:12% 18%}.cd div:nth-child(2){background-position:38% 46%}
+.cd div:nth-child(3){background-position:64% 22%}.cd div:nth-child(4){background-position:86% 58%}
+.couple-names{display:block;width:min(64%,260px);height:auto;margin:-6px auto 0}   /* the couple's names in gold calligraphy, under the first photo */
 .qrcard #qr{background:#fff;padding:6px;border-radius:4px}   /* keep the QR code itself clean so it always scans */
 /* the Khmer and English wording cards: every line in burgundy (gold headings and names included) */
 #khmer2 .in,#english .in{--gold-deep:#5c1526;--gold:#5c1526}
@@ -743,6 +744,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     <div class="in">
       <h1 class="k-title goldtext"><span data-l="km">សិរីមង្គលអាពាហ៍ពិពាហ៍</span><span data-l="en">The Wedding Celebration</span></h1>
       <div class="arch"><img src="img/cover.jpg" alt="Ly Chhayly and Ma Meyhuy at Angkor" width="1100" height="1467"></div>
+      <img class="couple-names" src="img/couple-names.svg" alt="ឆាយលី · មីហ៊ុយ" width="441" height="419">
     </div>
   </section>
 
