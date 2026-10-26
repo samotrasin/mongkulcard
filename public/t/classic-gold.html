@@ -524,7 +524,7 @@ body{background:var(--wine-deep)}
 .phone{background:var(--wine) url(img/theme/velvet.webp) 0 0/512px;box-shadow:0 0 70px rgba(0,0,0,.55)}
 /* on velvet: light text, light gold. cream paper things switch back to the dark ink (see the next rule) */
 .page{--ink:#f4e8d6;--muted:#d6c1ad;--gold-deep:#e7c47c;--gold:#d9b25f;--line:rgba(231,196,124,.5);color:var(--ink)}
-.card,.btn,.arch,.cd div,.qrcard,.field input,.lockpill,.mapbox,.drop,.seg button,.env-card,.stepper,#khmer2 .in,#english .in{--ink:#4D3F31;--muted:#85735F;--gold-deep:#B2802C;--gold:#DCA74C;--line:rgba(220,167,76,.5);color:var(--ink)}
+.card,.btn,.arch,.cd div,.qrcard,.field input,.lockpill,.mapbox,.drop,.seg button,.env-card,.stepper,#khmer2 .in,#english .in{--ink:#5c1526;--muted:#83505a;--gold-deep:#B2802C;--gold:#DCA74C;--line:rgba(220,167,76,.5);color:var(--ink)}
 .flor::before{display:none}
 .flor::after{display:none}
 .page{padding-bottom:120px}
@@ -618,6 +618,10 @@ html:has(.cover.opening) .cv-sab::after{animation:cvSabHead .22s cubic-bezier(.5
   .side-date{color:#f4e8d6}
   .side-place{color:#d6c1ad}
 }
+/* gold-leaf flecks scattered through the cream cards (img/theme/goldfleck.webp, a 320px tile) */
+.card,.cd div,.qrcard,.lockpill,.mapbox,.drop,.btn:not(.solid){background-image:url(img/theme/goldfleck.webp);background-size:320px}
+#khmer2 .in,#english .in{background:url(img/theme/goldfleck.webp) 0 0/320px,url(img/theme/paper.webp) 0 0/384px #f4ebdf}
+.qrcard #qr{background:#fff;padding:6px;border-radius:4px}   /* keep the QR code itself clean so it always scans */
 </style>
 
 <script>
