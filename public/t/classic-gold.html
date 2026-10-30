@@ -420,7 +420,14 @@ html.menu-open{overflow:hidden}
 .env-close.show{opacity:1;pointer-events:auto;transition:opacity .4s ease 1.2s}
 .env-close [data-l="en"]{font-family:var(--en);letter-spacing:.12em;text-transform:uppercase;font-size:.9rem}
 html.env-modal{overflow:hidden}
-html.env-modal #gift .in{z-index:auto}   /* let the envelope and its Close button rise above the veil (the section's own layer would hold them under it) */
+html.env-modal #gift .in{z-index:auto}
+/* map pop-up: same as the envelope; inside it the map can be pinched to zoom and dragged */
+html.map-modal{overflow:hidden}
+html.map-modal #location .in{z-index:auto}
+.mapbox{cursor:zoom-in;-webkit-tap-highlight-color:transparent;overflow:hidden}
+.mapbox img{transform-origin:0 0}
+.mapbox.floating{z-index:78;transform-origin:0 0;transition:transform .55s cubic-bezier(.22,.8,.24,1);cursor:default;touch-action:none}
+.map-hint{margin-top:10px}   /* let the envelope and its Close button rise above the veil (the section's own layer would hold them under it) */
 .env:focus-visible{outline:2px solid var(--gold-deep);outline-offset:8px}
 .env-back{position:absolute;inset:0;background:linear-gradient(180deg,#d6b878,#e4cb98);border-radius:3px;box-shadow:0 12px 30px rgba(77,63,49,.22)}
 .env-slot{position:absolute;inset:0;z-index:2;clip-path:inset(0);transition:clip-path .2s ease .75s}
@@ -834,6 +841,8 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
         <div class="sub" data-l="en">Location</div>
       </div>
       <div class="mapbox"><img src="img/venue-map.webp" alt="Map to PH Grand Hall: way in and way out from Monivong Bridge and National Road 1" width="1200" height="1170"></div>
+      <p class="env-hint map-hint"><span data-l="km">ចុចលើផែនទីដើម្បីពង្រីក</span><span data-l="en">Tap the map to enlarge</span></p>
+      <button type="button" class="env-close" id="mapClose" hidden><span data-l="km">បិទ</span><span data-l="en">Close</span></button>
       <div class="venue-card">
         <b data-l="km">សាលសន្និសីទបុរីប៉េងហួត បឹងស្នោ</b>
         <p data-l="en">PH Grand Hall Euro 3<br>Peng Huoth Boeng Snor, Phnom Penh</p>
@@ -1535,6 +1544,84 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
       envVeil.style.top=(window.scrollY-200)+'px';envVeil.style.height=(window.innerHeight+600)+'px';
     }
   });
+
+  /* map: a pop-up like the envelope. Tap it: the page darkens and blurs, the map floats to the middle and grows.
+     Inside: pinch to zoom, drag to look around, tap to zoom back out. Close with the Close button or a tap on the map. */
+  (function(){
+    var box=$('.mapbox'),img=box&&$('img',box),btn=$('#mapClose');if(!box||!img||!btn)return;
+    var veil=document.createElement('div');veil.className='env-veil';veil.hidden=true;document.body.appendChild(veil);
+    var ph=document.createElement('div');ph.setAttribute('aria-hidden','true');
+    var st='closed',S=1,z=1,tx=0,ty=0,g=null,hd=null;
+    box.setAttribute('role','button');box.setAttribute('tabindex','0');
+    function label(){box.setAttribute('aria-label',st==='closed'?L('ពង្រីកផែនទី','Enlarge the map'):L('បិទផែនទី','Close the map'))}
+    label();
+    function target(){
+      var W=box.offsetWidth,H=box.offsetHeight,vw=window.innerWidth,vh=window.innerHeight,BTN=64,PAD=12;
+      var s=Math.min((vw-2*PAD)/W,(vh-2*PAD-BTN)/H),top=(vh-(s*H+BTN))/2;
+      return {s:s,top:top,left:(vw-s*W)/2,btnTop:top+s*H+16};
+    }
+    function setZoom(){img.style.transform=(z>1)?'translate('+tx+'px,'+ty+'px) scale('+z+')':''}
+    function clampPan(){var w=img.offsetWidth,h=img.offsetHeight;tx=Math.min(0,Math.max(w*(1-z),tx));ty=Math.min(0,Math.max(h*(1-z),ty))}
+    function openMap(){
+      if(st!=='closed')return;st='lifting';
+      if(!hd){hd=new Image();hd.onload=function(){img.src=hd.src};hd.src='img/venue-map-hd.webp'}   /* sharper copy for zooming, fetched on first open */
+      var r=box.getBoundingClientRect(),t=target();S=t.s;
+      ph.style.height=r.height+'px';box.parentNode.insertBefore(ph,box);
+      root.classList.add('map-modal');
+      veil.style.top=(window.scrollY-200)+'px';veil.style.height=(window.innerHeight+600)+'px';veil.hidden=false;
+      box.style.cssText='position:fixed;left:'+r.left+'px;top:'+r.top+'px;width:'+r.width+'px;height:'+r.height+'px;margin:0';
+      box.classList.add('floating');void box.offsetWidth;
+      veil.classList.add('show');
+      box.style.transform='translate('+(t.left-r.left)+'px,'+(t.top-r.top)+'px) scale('+t.s+')';
+      btn.style.top=t.btnTop+'px';btn.style.left=(window.innerWidth/2)+'px';btn.hidden=false;
+      label();
+    }
+    function closeMap(){
+      if(st!=='open')return;st='returning';
+      z=1;tx=ty=0;setZoom();
+      btn.classList.remove('show');veil.classList.remove('show');
+      box.style.transform='translate(0,0) scale(1)';
+    }
+    box.addEventListener('transitionend',function(e){
+      if(e.target!==box||e.propertyName!=='transform')return;
+      if(st==='lifting'){st='open';btn.classList.add('show');try{btn.focus({preventScroll:true})}catch(x){}}
+      else if(st==='returning'){
+        box.classList.remove('floating');box.style.cssText='';ph.remove();
+        veil.hidden=true;btn.hidden=true;root.classList.remove('map-modal');st='closed';label();
+        try{box.focus({preventScroll:true})}catch(x){}
+      }
+    });
+    box.addEventListener('click',function(){
+      if(st==='closed')openMap();
+      else if(st==='open'){if(z>1){z=1;tx=ty=0;setZoom()}else closeMap()}
+    });
+    box.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();if(st==='closed')openMap();else closeMap()}});
+    btn.addEventListener('click',function(e){e.stopPropagation();closeMap()});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMap()});
+    /* pinch to zoom and drag, only while the map is open */
+    function local(t){var r=box.getBoundingClientRect();return {x:(t.clientX-r.left)/S-img.offsetLeft,y:(t.clientY-r.top)/S-img.offsetTop}}
+    box.addEventListener('touchstart',function(e){
+      if(st!=='open')return;
+      if(e.touches.length===2){
+        var a=local(e.touches[0]),b=local(e.touches[1]);
+        g={pinch:true,d:Math.hypot(a.x-b.x,a.y-b.y)||1,z:z,tx:tx,ty:ty,mx:(a.x+b.x)/2,my:(a.y+b.y)/2};
+      }else if(e.touches.length===1&&z>1){var p=local(e.touches[0]);g={pinch:false,x:p.x,y:p.y,tx:tx,ty:ty}}
+    },{passive:true});
+    box.addEventListener('touchmove',function(e){
+      if(st==='closed')return;e.preventDefault();
+      if(!g)return;
+      if(g.pinch&&e.touches.length===2){
+        var a=local(e.touches[0]),b=local(e.touches[1]),d=Math.hypot(a.x-b.x,a.y-b.y);
+        var nz=Math.max(1,Math.min(4,g.z*d/g.d)),k=nz/g.z;
+        z=nz;tx=g.mx-(g.mx-g.tx)*k+((a.x+b.x)/2-g.mx);ty=g.my-(g.my-g.ty)*k+((a.y+b.y)/2-g.my);
+        clampPan();setZoom();
+      }else if(!g.pinch&&e.touches.length===1){
+        var p=local(e.touches[0]);tx=g.tx+(p.x-g.x);ty=g.ty+(p.y-g.y);clampPan();setZoom();
+      }
+    },{passive:false});
+    box.addEventListener('touchend',function(e){if(e.touches.length===0)g=null});
+    [veil,btn].forEach(function(el){el.addEventListener('touchmove',function(e){if(st!=='closed')e.preventDefault()},{passive:false})});
+  })();
 
   /* save the QR to the phone */
   function setNote(t){$('#saveNote').textContent=t}
