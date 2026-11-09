@@ -242,7 +242,7 @@ html.menu-open{overflow:hidden}
 #english .branch{width:170px}
 
 /* countdown */
-.cd{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.cd{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 .cd div{background:var(--cream2);border:1px solid var(--line);border-radius:10px;padding:14px 4px 10px;text-align:center}
 .cd b{display:block;font-family:var(--en);font-weight:600;font-size:2.15rem;line-height:1;font-variant-numeric:tabular-nums;color:var(--ink)}
 .cd span{display:block;margin-top:8px;font-size:.8rem;line-height:1.5;color:var(--ink)}
@@ -662,6 +662,46 @@ html:has(.cover.opening) .cv-sab::after{animation:cvSabHead .22s cubic-bezier(.5
 #khmer2 .in *,#english .in *{color:#5c1526}
 #khmer2 .in .goldtext,#english .in .goldtext{background:none;-webkit-text-fill-color:#5c1526;color:#5c1526;filter:none}
 #khmer2 .in .k-title,#english .in .e-names{filter:none}
+/* ===== motion polish: nothing should snap ===== */
+/* 1. language switch: the words fade out, swap, and fade back in (the page keeps its place) */
+html.lang-out .page>.in,html.lang-out #langBtn{opacity:0;transform:translateY(-6px);transition:opacity .18s ease,transform .18s ease}
+html.lang-out .cover .stage{opacity:0;transition:opacity .18s ease}
+html.lang-in .page>.in,html.lang-in #langBtn{animation:langIn .38s cubic-bezier(.2,.7,.2,1)}
+html.lang-in .cover .stage{animation:langFade .38s ease}
+@keyframes langFade{from{opacity:0}}
+@keyframes langIn{from{opacity:0;transform:translateY(8px)}}
+/* 2. photo viewer fades in and the photo grows into place */
+.lb{opacity:0;transition:opacity .3s ease}
+.lb.show{opacity:1}
+.lb img{transform:scale(.9);opacity:.4;transition:transform .4s cubic-bezier(.2,.8,.2,1),opacity .3s ease}
+.lb.show img{transform:none;opacity:1}
+/* 3. countdown numbers roll instead of snapping */
+.cd b{position:relative;overflow:hidden;height:1em;line-height:1}
+.cd b .cd-n{display:block;margin:0;font:inherit;line-height:inherit;color:inherit;letter-spacing:inherit}
+.cd b .cd-n.in{animation:cdIn .45s cubic-bezier(.2,.7,.2,1)}
+.cd b .cd-n.out{position:absolute;left:0;right:0;top:0;animation:cdOut .45s cubic-bezier(.4,0,.6,1) forwards}
+@keyframes cdIn{from{transform:translateY(70%);opacity:0}}
+@keyframes cdOut{to{transform:translateY(-70%);opacity:0}}
+/* 4. the save-QR note slides open instead of popping in */
+.save-note:empty{display:block}
+.save-note{max-height:0;opacity:0;overflow:hidden;margin-top:0;transition:max-height .4s ease,opacity .35s ease,margin-top .4s ease}
+.save-note.has{max-height:140px;opacity:1;margin-top:8px}
+/* 5. music icon cross-fades */
+#musicBtn svg{grid-area:1/1;transition:opacity .25s ease,transform .3s cubic-bezier(.3,1.4,.5,1)}
+#musicBtn svg[hidden]{display:block;opacity:0;transform:scale(.6)}
+/* 6. cover language switch: the highlight slides across */
+.cv-lang{display:grid;grid-template-columns:1fr 1fr;position:absolute}
+.cv-lang::before{content:"";position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:99px;background:#8a1f35;transition:transform .38s cubic-bezier(.3,1.3,.5,1)}
+html[data-lang="en"] .cv-lang::before{transform:translateX(100%)}
+.cv-lang button,.cv-lang button[aria-pressed="true"]{position:relative;z-index:1;background:transparent;transition:color .3s ease}
+.cv-lang button[aria-pressed="true"]{color:#fff}
+/* 8. a soft press on every button */
+.btn,.bar-lang,.bar-btn,.ham,.menu-lang button,.seg button,.fold-btn,.gal-arrow svg,.cv-lang button,.lb .x{transition-property:transform,background,color,border-color,opacity,box-shadow;transition-duration:.18s}
+.btn:active,.bar-lang:active,.bar-btn:active,.ham:active,.menu-lang button:active,.seg button:active,.cv-lang button:active,.lb .x:active{transform:scale(.95)}
+.gal-arrow:active svg{transform:scale(.85)}
+.env-close.show:active{transform:translateX(-50%) scale(.95)}
+@media (prefers-reduced-motion:reduce){html.lang-out .page>.in,html.lang-out .cover .stage,html.lang-out #langBtn{opacity:1;transform:none}
+  html.lang-in .page>.in,html.lang-in .cover .stage,html.lang-in #langBtn,.cd-n.in,.cd-n.out{animation:none}.lb,.lb img,.save-note,.cv-lang::before{transition:none}}
 </style>
 
 <script>
@@ -1078,7 +1118,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
       b.setAttribute('aria-label','Open photo '+(i+1));
       var im=document.createElement('img');im.src='img/g/'+p[0]+'.jpg';im.dataset.full='img/'+p[0]+'.jpg';im.width=p[1];im.height=p[2];im.alt='Pre-wedding photo '+(i+1);im.loading='lazy';im.decoding='async';
       b.appendChild(im);
-      b.addEventListener('click',function(){lbImg.src=im.dataset.full;lbImg.alt=im.alt;lb.hidden=false;});
+      b.addEventListener('click',function(){lbImg.src=im.dataset.full;lbImg.alt=im.alt;lb.hidden=false;void lb.offsetWidth;lb.classList.add('show')});
       track.appendChild(b);
     });
   }
@@ -1137,7 +1177,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     galIO.observe($('#gallery'));
   }
   window.addEventListener('load',function(){measure();if(!track.scrollLeft)galStart()});
-  function closeLb(){lb.hidden=true;lbImg.removeAttribute('src')}
+  function closeLb(){if(lb.hidden)return;lb.classList.remove('show');setTimeout(function(){if(!lb.classList.contains('show')){lb.hidden=true;lbImg.removeAttribute('src')}},reduce?0:320)}
   lb.addEventListener('click',closeLb);
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!lb.hidden)closeLb()});
 
@@ -1349,8 +1389,8 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   $$('[data-go]').forEach(function(b){b.addEventListener('click',function(){goFromMenu(b.getAttribute('data-go'))})});
   $('#barLogo').addEventListener('click',function(){goFromMenu('khmer')});
   var lgKh=$('#lgKh'),lgEn=$('#lgEn');
-  lgKh.addEventListener('click',function(){setLang('km',true)});
-  lgEn.addEventListener('click',function(){setLang('en',true)});
+  lgKh.addEventListener('click',function(){switchLang('km')});
+  lgEn.addEventListener('click',function(){switchLang('en')});
   /* RSVP is switched off for this wedding (the guest list is counted before the day).
      Set SHOW_RSVP to true to bring the page and its menu item back. */
   var SHOW_RSVP=false;
@@ -1416,10 +1456,19 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     var d=target-Date.now();
     if(d<=0){$('#cd').style.display='none';$('#cdDone').style.display='block';return}
     var s=Math.floor(d/1000);
-    $('#cdD').textContent=Math.floor(s/86400);
-    $('#cdH').textContent=pad(Math.floor(s%86400/3600));
-    $('#cdM').textContent=pad(Math.floor(s%3600/60));
-    $('#cdS').textContent=pad(s%60);
+    roll($('#cdD'),''+Math.floor(s/86400));
+    roll($('#cdH'),pad(Math.floor(s%86400/3600)));
+    roll($('#cdM'),pad(Math.floor(s%3600/60)));
+    roll($('#cdS'),pad(s%60));
+  }
+  /* the old number slides up and out while the new one slides in */
+  function roll(el,v){
+    if(el.getAttribute('data-v')===v)return;
+    var first=!el.hasAttribute('data-v');el.setAttribute('data-v',v);
+    var n=document.createElement('span');n.className='cd-n';n.textContent=v;
+    if(first){el.textContent='';el.appendChild(n);return}
+    $$('.cd-n',el).forEach(function(o){o.className='cd-n out';setTimeout(function(){o.remove()},460)});
+    n.className='cd-n in';el.appendChild(n);
   }
   tick();setInterval(tick,1000);
 
@@ -1527,7 +1576,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     if(envState!=='open')return;envState='closing';
     envClose.classList.remove('show');
     envStage.classList.remove('open');               /* the card slides back in and the flap closes */
-    $('#qrcard').setAttribute('aria-hidden','true');$('#saveNote').textContent='';
+    $('#qrcard').setAttribute('aria-hidden','true');setNote('');
   }
   env.addEventListener('transitionend',function(e){
     if(e.target!==env||e.propertyName!=='transform')return;
@@ -1585,7 +1634,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   })();
 
   /* save the QR to the phone */
-  function setNote(t){$('#saveNote').textContent=t}
+  function setNote(t){var n=$('#saveNote');if(t){n.textContent=t;n.classList.add('has')}else{n.classList.remove('has');setTimeout(function(){if(!n.classList.contains('has'))n.textContent=''},400)}}
   $('#saveQr').addEventListener('click',function(){
     var HOLD=L('ចុចលើ QR ឱ្យជាប់ រួចជ្រើសរើស "Save Image"។','Press and hold the QR code, then choose "Save Image".');
     if(!qrBlob){setNote(HOLD);return}
@@ -1614,10 +1663,31 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     env.setAttribute('aria-label',envState==='closed'?L('បើកស្រោមសំបុត្រ','Open the envelope'):L('បិទស្រោមសំបុត្រ','Close the envelope'));
     if(fromUser){try{localStorage.setItem(LKEY,lang)}catch(e){}}
     if(fromUser&&menuOpen){setMenu(false)}
-    if(fromUser&&opened){window.scrollTo(0,0)}
   }
-  [cvKh,cvEn].forEach(function(b,i){b.addEventListener('click',function(e){e.stopPropagation();setLang(i?'en':'km',true)})});
-  langBtn.addEventListener('click',function(){setLang(lang==='km'?'en':'km',true)});
+  /* switching language: fade the words out, swap them, keep the reader on the same section, fade back in */
+  var PAIR={khmer2:'english',english:'khmer2'},langBusy=false;
+  function switchLang(l){
+    if(l===lang||langBusy)return;
+    if(reduce){setLang(l,true);return}
+    langBusy=true;root.classList.remove('lang-in');root.classList.add('lang-out');
+    setTimeout(function(){
+      var anchor=null,off=0,top=($('.bar')?$('.bar').offsetHeight:0);
+      if(opened){
+        for(var i=0;i<PAGES.length;i++){var r=PAGES[i].getBoundingClientRect();if(r.height&&r.bottom>top+20){anchor=PAGES[i];off=r.top;break}}
+      }
+      setLang(l,true);
+      if(anchor){
+        var a2=anchor.getBoundingClientRect().height?anchor:document.getElementById(PAIR[anchor.id]||'')||anchor;
+        var de=root.style.scrollBehavior;root.style.scrollBehavior='auto';
+        window.scrollTo(0,window.scrollY+a2.getBoundingClientRect().top-off);
+        root.style.scrollBehavior=de;
+      }
+      root.classList.remove('lang-out');void root.offsetWidth;root.classList.add('lang-in');
+      setTimeout(function(){root.classList.remove('lang-in');langBusy=false},400);
+    },190);
+  }
+  [cvKh,cvEn].forEach(function(b,i){b.addEventListener('click',function(e){e.stopPropagation();switchLang(i?'en':'km')})});
+  langBtn.addEventListener('click',function(){switchLang(lang==='km'?'en':'km')});
   /* the host chooses the first language for each guest; if the guest switches, their choice is remembered for this link only */
   var LKEY='mk_lang:'+location.pathname;
   var saved=null;try{saved=localStorage.getItem(LKEY)}catch(e){}
