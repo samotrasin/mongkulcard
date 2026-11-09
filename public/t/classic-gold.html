@@ -1480,14 +1480,21 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     return root.classList.contains('locked')||root.classList.contains('env-modal')||root.classList.contains('menu-open')||!$('#lb').hidden||document.hidden;
   }
   function atBottom(){return window.scrollY+window.innerHeight>=document.documentElement.scrollHeight-2}
+  /* auto-scroll only ever moves the page from where IT last put it; any other movement (a finger, the glide after
+     a flick, Safari's bar, the menu) means "someone else is scrolling": it pauses and waits 5 s after that stops. */
+  auto.set=-1;auto.vh=window.innerHeight;
   function autoFrame(t){
     auto.raf=requestAnimationFrame(autoFrame);
     var dt=auto.last?Math.min(64,t-auto.last):16;auto.last=t;
-    if(!auto.on||auto.user||blocked()||Date.now()<auto.until){auto.pos=window.scrollY;return}
-    if(atBottom()){auto.on=false;autoUi();return}
-    if(Math.abs(window.scrollY-auto.pos)>3)auto.pos=window.scrollY;   /* someone else moved the page: follow it */
+    var y=window.scrollY;
+    if(window.innerHeight!==auto.vh){auto.vh=window.innerHeight;auto.until=Math.max(auto.until,Date.now()+1500)}   /* Safari's bar moved */
+    if(auto.set>=0&&Math.abs(y-auto.set)>0.5){auto.until=Math.max(auto.until,Date.now()+5000)}                       /* moved by someone else */
+    if(!auto.on||auto.user||blocked()||Date.now()<auto.until){auto.pos=y;auto.set=-1;return}
+    if(atBottom()){auto.on=false;auto.set=-1;autoUi();return}
+    if(auto.set<0)auto.pos=y;
     auto.pos+=40*dt/1000;                                              /* about 40 px per second */
-    window.scrollTo({top:auto.pos,behavior:'instant'});
+    var next=Math.round(auto.pos);
+    if(next!==y){window.scrollTo(0,next);auto.set=next}else auto.set=y;
   }
   function autoStart(){
     if(!AUTO_SCROLL)return;
@@ -1503,7 +1510,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
       if(atBottom())window.scrollTo({top:0,behavior:'smooth'});
       auto.until=Date.now()+600;autoStart();
     });
-    ['touchstart','wheel','keydown','pointerdown'].forEach(function(ev){
+    ['touchstart','touchmove','wheel','keydown','pointerdown'].forEach(function(ev){
       window.addEventListener(ev,function(e){if(e.target&&e.target.closest&&e.target.closest('#autoBtn'))return;autoNudge()},{passive:true});
     });
     window.autoAfterOpen=function(){auto.until=Date.now()+1000;autoStart()};
