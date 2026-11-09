@@ -254,9 +254,24 @@ html.menu-open{overflow:hidden}
 .day-lbl{text-align:center;font-family:var(--kh-display);font-size:.9rem;line-height:1.9;color:var(--gold-deep);margin:0 0 4px}
 .day-en{text-align:center;font-family:var(--en);font-size:1.15rem;font-style:italic;color:var(--muted);margin:0 0 22px}
 .sched{list-style:none;margin:0;padding:0;position:relative}
-.sched::before{content:"";position:absolute;left:84px;top:10px;bottom:10px;width:1px;background:var(--line)}
-.sched li{display:grid;grid-template-columns:68px 1fr;gap:34px;padding:11px 0;align-items:start;position:relative}
-.sched li::after{content:"";position:absolute;left:80px;top:21px;width:9px;height:9px;border-radius:50%;background:var(--cream2);border:1.5px solid var(--gold)}
+.sched::before{content:"";position:absolute;left:96px;top:10px;bottom:10px;width:1px;background:var(--line)}
+.sched li{display:grid;grid-template-columns:70px 1fr;gap:50px;padding:11px 0;align-items:start;position:relative}
+.sched li::after{content:none}
+/* icon badges sit on the timeline in place of the dots */
+.sched li .ic{position:absolute;left:78.5px;top:9px;width:35px;height:35px;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 35% 30%,#5e1a26,#2f070f);border:1px solid #d9b25f;box-shadow:0 0 0 3px rgba(42,6,14,.6),0 4px 10px rgba(0,0,0,.35);z-index:1}
+.sched li .ic svg{width:21px;height:21px;fill:none;stroke:#f0cf86;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.sched li{min-height:58px}
+/* motion: the line draws down, then each stop pops in, its icon traces itself and the text slides in, one after another */
+.sched.anim::before{transform:scaleY(0);transform-origin:top}
+.sched.anim li .ic{transform:scale(.3);opacity:0}
+.sched.anim li .ic svg *{stroke-dasharray:1 1;stroke-dashoffset:1}
+.sched.anim li>time,.sched.anim li>div{opacity:0;transform:translateX(14px)}
+.sched.anim.play::before{transition:transform 1.2s cubic-bezier(.45,.05,.25,1);transform:scaleY(1)}
+.sched.anim.play li .ic{transition:transform .5s cubic-bezier(.3,1.5,.5,1) calc(.15s + var(--i)*.12s),opacity .25s ease calc(.15s + var(--i)*.12s);transform:none;opacity:1}
+.sched.anim.play li .ic svg *{transition:stroke-dashoffset .7s cubic-bezier(.45,.05,.3,1) calc(.3s + var(--i)*.12s);stroke-dashoffset:0}
+.sched.anim.play li>time,.sched.anim.play li>div{transition:opacity .45s ease calc(.22s + var(--i)*.12s),transform .5s cubic-bezier(.2,.7,.2,1) calc(.22s + var(--i)*.12s);opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.sched.anim::before,.sched.anim li .ic,.sched.anim li>time,.sched.anim li>div{transform:none;opacity:1;transition:none}.sched.anim li .ic svg *{stroke-dashoffset:0;transition:none}}
 .sched li.main::after{background:var(--gold);box-shadow:0 0 0 4px rgba(220,167,76,.25)}
 .sched time{font-family:var(--en);font-size:1.45rem;font-weight:600;line-height:1.2;text-align:right;font-variant-numeric:tabular-nums}
 .sched time small{display:block;font-size:.76rem;letter-spacing:.2em;color:var(--gold-deep);font-weight:500}
@@ -347,6 +362,7 @@ html.menu-open{overflow:hidden}
 #khmer{padding-top:calc(72px + var(--sat,0px))}
 #khmer2 .hosts{margin-top:0}
 #khmer2 .hosts{font-size:.8rem;gap:6px;margin-inline:-8px}
+.hosts.hosts-one{grid-template-columns:1fr;font-size:1rem}
 #thanks{padding-bottom:calc(40px + var(--sab,0px))}
 .foot{margin-top:34px}
 
@@ -421,13 +437,31 @@ html.menu-open{overflow:hidden}
 .env-close [data-l="en"]{font-family:var(--en);letter-spacing:.12em;text-transform:uppercase;font-size:.9rem}
 html.env-modal{overflow:hidden}
 html.env-modal #gift .in{z-index:auto}
-/* map pop-up: same as the envelope; inside it the map can be pinched to zoom and dragged */
-html.map-modal{overflow:hidden}
-html.map-modal #location .in{z-index:auto}
-.mapbox{cursor:zoom-in;-webkit-tap-highlight-color:transparent;overflow:hidden}
-.mapbox img{transform-origin:0 0}
-.mapbox.floating{z-index:78;transform-origin:0 0;transition:transform .55s cubic-bezier(.22,.8,.24,1);cursor:default;touch-action:none}
-.map-hint{margin-top:10px}   /* let the envelope and its Close button rise above the veil (the section's own layer would hold them under it) */
+/* map: two glowing routes run in from National Road 1 (left into entrance 1, right into entrance 5) and meet at the hall, which then pulses */
+.map-art{position:relative;width:min(100%,360px);margin:0 auto}
+.map-art img{display:block;width:100%;height:auto}
+.map-route{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.rt{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1 1;stroke-dashoffset:1}
+.rt-glow .rt{stroke:rgba(255,206,110,.85);stroke-width:26}
+.rt-core .rt{stroke:#fff7dc;stroke-width:9}
+.rt-dot{fill:#fff7dc;stroke:#d9a441;stroke-width:5;opacity:0;transform-box:fill-box;transform-origin:center}
+.rt-pulse{fill:none;stroke:#d9a441;stroke-width:6;opacity:0;transform-box:fill-box;transform-origin:center}
+#mapbox.run .rt-l{animation:rtDraw 2s cubic-bezier(.45,.05,.3,1) .2s forwards}
+#mapbox.run .rt-r{animation:rtDraw 2s cubic-bezier(.45,.05,.3,1) .2s forwards}
+#mapbox.run .rt-dot{animation:rtDot .5s cubic-bezier(.3,1.6,.5,1) 2.1s forwards}
+#mapbox.run .rt-pulse{animation:rtPulse 1.6s ease-out 2.2s 2}
+#mapbox.run .rt-pulse.p2{animation-delay:2.7s}
+@keyframes rtDraw{to{stroke-dashoffset:0}}
+@keyframes rtDot{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:scale(1)}}
+@keyframes rtPulse{0%{opacity:.9;transform:scale(.6)}100%{opacity:0;transform:scale(3.2)}}
+@media (prefers-reduced-motion:reduce){.rt{stroke-dashoffset:0}.rt-dot{opacity:1}#mapbox.run .rt,#mapbox.run .rt-dot,#mapbox.run .rt-pulse{animation:none}}
+.map-legend{list-style:none;margin:16px auto 0;padding:0;max-width:360px;display:grid;gap:6px}
+.map-legend li{display:flex;align-items:center;gap:10px;font-size:.86rem;line-height:1.5;color:var(--ink,#f4e8d6)}
+.map-legend b{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#0f6c63;color:#fff;font-family:var(--en);font-size:.8rem;font-weight:600;box-shadow:0 0 0 2px #e7c47c}
+.map-key{display:flex;justify-content:center;gap:22px;margin:12px 0 4px;font-size:.86rem}
+.map-key>span{display:inline-flex;align-items:center;gap:8px}
+.map-key i{display:inline-block;width:30px;height:10px;border-radius:2px}
+.map-key .k-in{background:#bd9a5f}.map-key .k-out{background:#0f6c63;box-shadow:0 0 0 1px rgba(231,196,124,.6)}   /* let the envelope and its Close button rise above the veil (the section's own layer would hold them under it) */
 .env:focus-visible{outline:2px solid var(--gold-deep);outline-offset:8px}
 .env-back{position:absolute;inset:0;background:linear-gradient(180deg,#d6b878,#e4cb98);border-radius:3px;box-shadow:0 12px 30px rgba(77,63,49,.22)}
 .env-slot{position:absolute;inset:0;z-index:2;clip-path:inset(0);transition:clip-path .2s ease .75s}
@@ -759,9 +793,9 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   <!-- Page 3: Khmer invitation text -->
   <section class="page flor center" id="khmer2" data-l="km">
     <div class="in">
-      <div class="hosts"><div>លោកស្រី លឹម សៀមម៉េង</div><div>លោកស្រី ឡើង ខេង</div></div>
+      <div class="hosts hosts-one"><div>យើងខ្ញុំទាំងពីរ</div></div>
       <p class="k-intro">មានកិត្តិយសសូមគោរពអញ្ជើញ</p>
-      <p class="k-body">ឯកឧត្តម លោកឧកញ៉ា លោកជំទាវ លោក លោកស្រី អ្នកនាង កញ្ញា និងប្រិយមិត្តអញ្ជើញចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយសដើម្បីប្រសិទ្ធពរជ័យសិរីមង្គលក្នុងពិធីរៀបអាពាហ៍ពិពាហ៍ កូនប្រុស កូនស្រី របស់យើងខ្ញុំ ។</p>
+      <p class="k-body">ឯកឧត្តម លោកឧកញ៉ា លោកជំទាវ លោក លោកស្រី អ្នកនាង កញ្ញា និងប្រិយមិត្តអញ្ជើញចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយសដើម្បីប្រសិទ្ធពរជ័យសិរីមង្គលក្នុងពិធីរៀបអាពាហ៍ពិពាហ៍ របស់យើងខ្ញុំ ។</p>
       <div class="pair">
         <div><small>កូនប្រុសនាម</small><strong>លី ឆាយលី</strong></div>
         <div><small>កូនស្រីនាម</small><strong>ម៉ា មីហ៊ុយ</strong></div>
@@ -775,7 +809,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   <section class="page alt flor center" id="english" data-l="en">
     <div class="in">
       <img class="mini-crest" src="img/crest.png" alt="" width="692" height="808">
-      <p class="e-line">Request the joy of your presence<br>at the celebration of our wedding</p>
+      <p class="e-line">The two of us request the joy of your presence<br>at the celebration of our wedding</p>
       <div class="e-names goldtext">Ly Chhayly <span class="amp">&amp;</span> Ma Meyhuy</div>
       <div class="e-date">Sunday, 20th December 2026<br>at 5 PM</div>
       <div class="e-venue">PH Grand Hall Euro 3<br>Phnom Penh, Cambodia</div>
@@ -840,9 +874,25 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
         <div class="kh" data-l="km">ទីតាំង</div>
         <div class="sub" data-l="en">Location</div>
       </div>
-      <div class="mapbox"><img src="img/venue-map.webp" alt="Map to PH Grand Hall: way in and way out from Monivong Bridge and National Road 1" width="1200" height="1170"></div>
-      <p class="env-hint map-hint"><span data-l="km">ចុចលើផែនទីដើម្បីពង្រីក</span><span data-l="en">Tap the map to enlarge</span></p>
-      <button type="button" class="env-close" id="mapClose" hidden><span data-l="km">បិទ</span><span data-l="en">Close</span></button>
+      <div class="mapbox" id="mapbox">
+        <div class="map-art">
+          <img src="img/venue-map.webp" alt="Map to PH Grand Hall: from National Road 1 turn in at entrance 1, or from the other direction at entrance 5" width="1140" height="1650" loading="lazy">
+          <svg class="map-route" viewBox="0 0 1140 1650" aria-hidden="true">
+            <defs><filter id="rtGlow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="7"/></filter></defs>
+            <g class="rt-glow" filter="url(#rtGlow)"><path class="rt rt-l" pathLength="1" d="M0 527 L150 545 L280 566 L360 546 L450 506 L570 444 L594 492 L588 660 L576 900 L560 1120 L546 1212 L570 1260"/><path class="rt rt-r" pathLength="1" d="M1140 152 L1040 162 L932 176 L936 220 L934 410 L880 456 L850 840 L810 1304 L676 1314 L640 1296"/></g>
+            <g class="rt-core"><path class="rt rt-l" pathLength="1" d="M0 527 L150 545 L280 566 L360 546 L450 506 L570 444 L594 492 L588 660 L576 900 L560 1120 L546 1212 L570 1260"/><path class="rt rt-r" pathLength="1" d="M1140 152 L1040 162 L932 176 L936 220 L934 410 L880 456 L850 840 L810 1304 L676 1314 L640 1296"/></g>
+            <circle class="rt-pulse" cx="602" cy="1286" r="26"/><circle class="rt-pulse p2" cx="602" cy="1286" r="26"/><circle class="rt-dot" cx="602" cy="1286" r="13"/>
+          </svg>
+        </div>
+      </div>
+      <ol class="map-legend">
+        <li><b>1</b><span data-l="km">មហាវិថី ផ្លាទីនីម</span><span data-l="en">Platinum Boulevard</span></li>
+        <li><b>2</b><span data-l="km">មហាវិថី បូឡារីស</span><span data-l="en">Polaris Boulevard</span></li>
+        <li><b>3</b><span data-l="km">មហាវិថី ក្លាស្ទ័រ</span><span data-l="en">Cluster Boulevard</span></li>
+        <li><b>4</b><span data-l="km">ភីអេច បូឡារីស អេហ្វ អេន ប៊ី</span><span data-l="en">PH Polaris F&amp;B</span></li>
+        <li><b>5</b><span data-l="km">ច្រកចូល គម្រោង ដឹស្ដា ផ្លាទីនីម ខេភីថល វ័ន</span><span data-l="en">Entrance, The Star Platinum Capital One</span></li>
+      </ol>
+      <div class="map-key"><span><i class="k-in"></i><span data-l="km">ផ្លូវចូល</span><span data-l="en">Way in</span></span><span><i class="k-out"></i><span data-l="km">ផ្លូវចេញ</span><span data-l="en">Way out</span></span></div>
       <div class="venue-card">
         <b data-l="km">សាលសន្និសីទបុរីប៉េងហួត បឹងស្នោ</b>
         <p data-l="en">PH Grand Hall Euro 3<br>Peng Huoth Boeng Snor, Phnom Penh</p>
@@ -863,11 +913,6 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
         <div class="orn"><i></i></div>
         <div class="kh" data-l="km">វិចិត្រសាល</div><div class="sub" data-l="en">Gallery</div>
       </div>
-      <div id="vidHost"><button type="button" class="vidtile" id="vidBtn" aria-label="Play pre-wedding video">
-        <img src="img/poster.jpg" alt="" width="1500" height="1000" loading="lazy">
-        <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5v17L21 12z"/></svg></span>
-        <span class="cap"><span data-l="km">វីដេអូមុនអាពាហ៍ពិពាហ៍</span><span data-l="en">Pre-wedding video</span></span>
-      </button></div>
       <div class="gal-wrap">
         <button type="button" class="gal-arrow prev" id="galPrev" aria-label="Previous photo"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
         <div class="gal-track" id="galTrack" role="region" aria-label="Photo gallery" tabindex="0"></div>
@@ -987,16 +1032,16 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     lang:'km',
     start:'2026-12-20T17:00:00+07:00',
     program:[
-      {t:'6:30',ap:'AM',kh:'ជួបជុំភ្ញៀវកិត្តិយស',en:'Honored guests gather'},
-      {t:'7:00',ap:'AM',kh:'ពិធីហែជំនូន (កំណត់)',en:"Groom's procession (time to be confirmed)"},
-      {t:'7:30',ap:'AM',kh:'ពិធីនិយាយជើងការ រៀបរាប់ផ្លែឈើ',en:'Family introductions and fruit presentation'},
-      {t:'8:30',ap:'AM',kh:'ពិធីបំពាក់ចិញ្ចៀន និង ពិសាអាហារពេលព្រឹក',en:'Ring ceremony and breakfast'},
-      {t:'8:40',ap:'AM',kh:'ពិធីសូត្រមន្តចំរើនព្រះបរិត្ត',en:'Monks’ blessing chant'},
-      {t:'9:30',ap:'AM',kh:'ពិធីកាត់សក់បង្កក់សិរី និង ថតរូបជុំគ្រួសារ',en:'Hair-cutting ceremony and family photos'},
-      {t:'10:45',ap:'AM',kh:'ពិធីសំពះពេល បង្វិលពពិល សំពះផ្ទឹម សែនចងដៃ',en:'Candle ceremony, bowing and hand-tying'},
-      {t:'11:30',ap:'AM',kh:'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារថ្ងៃត្រង់',en:'Lunch for honored guests'},
-      {t:'12:00',ap:'PM',kh:'ពិធីចាក់ទឹកតែ',en:'Tea-pouring ceremony'},
-      {t:'5:00',ap:'PM',kh:'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារ នៅ សាលសន្និសីទបុរីប៉េងហួត បឹងស្នោ (EURO3)',en:'Evening reception at PH Grand Hall Euro 3',main:true}
+      {ic:'people',t:'6:30',ap:'AM',kh:'ជួបជុំភ្ញៀវកិត្តិយស',en:'Honored guests gather'},
+      {ic:'tray',t:'7:00',ap:'AM',kh:'ពិធីហែជំនូន (កំណត់)',en:"Groom's procession (time to be confirmed)"},
+      {ic:'fruit',t:'7:30',ap:'AM',kh:'ពិធីនិយាយជើងការ រៀបរាប់ផ្លែឈើ',en:'Family introductions and fruit presentation'},
+      {ic:'rings',t:'8:30',ap:'AM',kh:'ពិធីបំពាក់ចិញ្ចៀន និង ពិសាអាហារពេលព្រឹក',en:'Ring ceremony and breakfast'},
+      {ic:'lotus',t:'8:40',ap:'AM',kh:'ពិធីសូត្រមន្តចំរើនព្រះបរិត្ត',en:'Monks’ blessing chant'},
+      {ic:'scissors',t:'9:30',ap:'AM',kh:'ពិធីកាត់សក់បង្កក់សិរី និង ថតរូបជុំគ្រួសារ',en:'Hair-cutting ceremony and family photos'},
+      {ic:'candle',t:'10:45',ap:'AM',kh:'ពិធីសំពះពេល បង្វិលពពិល សំពះផ្ទឹម សែនចងដៃ',en:'Candle ceremony, bowing and hand-tying'},
+      {ic:'bowl',t:'11:30',ap:'AM',kh:'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារថ្ងៃត្រង់',en:'Lunch for honored guests'},
+      {ic:'tea',t:'12:00',ap:'PM',kh:'ពិធីចាក់ទឹកតែ',en:'Tea-pouring ceremony'},
+      {ic:'toast',t:'5:00',ap:'PM',kh:'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារ នៅ សាលសន្និសីទបុរីប៉េងហួត បឹងស្នោ (EURO3)',en:'Evening reception at PH Grand Hall Euro 3',main:true}
     ],
     photos:[
       ['p01',1001,1500],['p02',1500,1001],['p04',987,1500],['p03',1500,1001],['p07',1000,1500],['p06',1500,1024],
@@ -1004,7 +1049,6 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
       ['p11',1001,1500],['p15',1001,1500],['p12',988,1500],['p16',1000,1500]
     ],
     photosOpenAt:'2026-12-19T00:00:00+07:00',
-    video:'media/prewedding.mp4',
     music:'media/music.mp3'
   };
 
@@ -1012,9 +1056,27 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   $$('[data-guest]').forEach(function(el){el.textContent=EVENT.guest;if(/[\u1780-\u17FF]/.test(EVENT.guest))el.classList.add('kh-name')});
 
   /* program */
-  var sched=$('#sched');
-  EVENT.program.forEach(function(p){
+  var sched=$('#sched');sched.classList.add('anim');
+  /* little gold line icons for the programme (24x24, drawn as strokes so they can "draw themselves") */
+  var ICONS={
+    people:'<circle cx="9" cy="8" r="3"/><path d="M3.5 19.5c.5-3.6 2.8-5.6 5.5-5.6s5 2 5.5 5.6"/><circle cx="16.6" cy="9" r="2.4"/><path d="M15.6 13.7c2.7.1 4.5 2 4.9 5.2"/>',
+    tray:'<path d="M5 12h14"/><path d="M6 12c0-3.9 2.7-6.4 6-6.4s6 2.5 6 6.4"/><path d="M12 5.6V3.4"/><path d="M9.2 12l1.3 4h3l1.3-4"/><path d="M10.5 16l-1.3 3.6h5.6L13.5 16"/>',
+    fruit:'<path d="M3.5 11.5h17l-1.7 7.9a1.6 1.6 0 0 1-1.6 1.3H6.8a1.6 1.6 0 0 1-1.6-1.3z"/><circle cx="8.4" cy="8.6" r="2.6"/><circle cx="14.2" cy="7.9" r="3"/><path d="M14.2 4.9c.3-1 1-1.7 2.1-1.9"/><path d="M8 15h8"/>',
+    rings:'<circle cx="9" cy="14.5" r="5"/><circle cx="15" cy="14.5" r="5"/><path d="M15 9.5l-1.7-2 1-1.5h1.4l1 1.5z"/>',
+    lotus:'<path d="M12 19c-3.6-2-5.1-5-5.1-8.6 2.7.7 4.4 2.6 5.1 5.1.7-2.5 2.4-4.4 5.1-5.1 0 3.6-1.5 6.6-5.1 8.6z"/><path d="M12 15.4c-1.3-2.9-1.3-6.4 0-9.7 1.3 3.3 1.3 6.8 0 9.7z"/><path d="M5 21h14"/>',
+    scissors:'<circle cx="6.5" cy="17.2" r="2.6"/><circle cx="6.5" cy="6.8" r="2.6"/><path d="M8.6 8.5L20 18"/><path d="M8.6 15.5L20 6"/>',
+    candle:'<path d="M12 3.4c1.6 1.8 2.3 3.2 2.3 4.4a2.3 2.3 0 0 1-4.6 0c0-1.2.7-2.6 2.3-4.4z"/><path d="M10 12h4v6.2h-4z"/><path d="M7.5 18.2h9"/><path d="M9 21h6"/>',
+    bowl:'<path d="M3.8 12.5h16.4a8.2 8.2 0 0 1-16.4 0z"/><path d="M9 21h6"/><path d="M12.5 10l7-6.5"/><path d="M15 10.4l6-5"/>',
+    tea:'<path d="M4.6 10.5h10l-.6 4.8a4.4 4.4 0 0 1-8.8 0z"/><path d="M14.4 11.6c2 0 3 1 3 2.4s-1.1 2.3-3.1 2.3"/><path d="M4.9 12.3L2.6 9.8"/><path d="M7.6 10.5c0-1.5 1-2.6 2.4-2.6s2.4 1.1 2.4 2.6"/><path d="M17.4 18.4h4l-.6 2.6h-2.8z"/>',
+    toast:'<path d="M4.4 4.6l4.7-1.4.7 4a2.4 2.4 0 0 1-4.4 1.3z"/><path d="M8.5 9.7l1.6 6.1"/><path d="M7.8 16.3l4.3-1.1"/><path d="M19.6 4.6l-4.7-1.4-.7 4a2.4 2.4 0 0 0 4.4 1.3z"/><path d="M15.5 9.7l-1.6 6.1"/><path d="M16.2 16.3l-4.3-1.1"/><path d="M12 2.2v2.2"/>'
+  };
+  EVENT.program.forEach(function(p,idx){
     var li=document.createElement('li');if(p.main)li.className='main';
+    li.style.setProperty('--i',idx);
+    var ic=document.createElement('span');ic.className='ic';ic.setAttribute('aria-hidden','true');
+    ic.innerHTML='<svg viewBox="0 0 24 24">'+(ICONS[p.ic]||'')+'</svg>';
+    $$('path,circle',ic).forEach(function(el){el.setAttribute('pathLength','1')});
+    li.appendChild(ic);
     var t=document.createElement('time');t.textContent=p.t;var s=document.createElement('small');s.textContent=p.ap;t.appendChild(s);
     var d=document.createElement('div');
     var k=document.createElement('span');k.className='kh';k.setAttribute('data-l','km');k.textContent=p.kh;
@@ -1095,28 +1157,12 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   lb.addEventListener('click',closeLb);
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!lb.hidden)closeLb()});
 
-  /* video tile: plays media/prewedding.mp4 when the file exists */
+  /* small toast messages */
   var toastEl=$('#toast'),tt;
   function toast(msg,ms){
     toastEl.textContent=msg;toastEl.classList.add('show');
     clearTimeout(tt);tt=setTimeout(function(){toastEl.classList.remove('show')},ms||2800);
   }
-  var vidBtn=$('#vidBtn');
-  vidBtn.addEventListener('click',function(){
-    var v=document.createElement('video');
-    v.className='';v.controls=true;v.playsInline=true;v.preload='metadata';v.poster='img/poster.jpg';
-    v.setAttribute('playsinline','');
-    var wrap=document.createElement('div');wrap.className='vidtile';wrap.appendChild(v);
-    var failed=false;
-    v.addEventListener('error',function(){
-      if(failed)return;failed=true;
-      wrap.parentNode&&wrap.parentNode.replaceChild(vidBtn,wrap);
-      toast('Video file not added yet. Put it at media/prewedding.mp4.');
-    });
-    v.src=EVENT.video;
-    vidBtn.parentNode.replaceChild(wrap,vidBtn);
-    var pr=v.play();if(pr&&pr.catch)pr.catch(function(){});
-  });
 
   /* drop-down panels */
   $$('[data-fold]').forEach(function(btn){
@@ -1126,6 +1172,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
       var open=!panel.classList.contains('open');
       panel.classList.toggle('open',open);
       btn.setAttribute('aria-expanded',open);
+      var sc=$('.sched',panel);if(sc){sc.classList.remove('play');if(open){void sc.offsetWidth;sc.classList.add('play')}}
     });
   });
 
@@ -1545,82 +1592,12 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     }
   });
 
-  /* map: a pop-up like the envelope. Tap it: the page darkens and blurs, the map floats to the middle and grows.
-     Inside: pinch to zoom, drag to look around, tap to zoom back out. Close with the Close button or a tap on the map. */
+  /* map routes: start when the map is well in view */
   (function(){
-    var box=$('.mapbox'),img=box&&$('img',box),btn=$('#mapClose');if(!box||!img||!btn)return;
-    var veil=document.createElement('div');veil.className='env-veil';veil.hidden=true;document.body.appendChild(veil);
-    var ph=document.createElement('div');ph.setAttribute('aria-hidden','true');
-    var st='closed',S=1,z=1,tx=0,ty=0,g=null,hd=null;
-    box.setAttribute('role','button');box.setAttribute('tabindex','0');
-    function label(){box.setAttribute('aria-label',st==='closed'?L('ពង្រីកផែនទី','Enlarge the map'):L('បិទផែនទី','Close the map'))}
-    label();
-    function target(){
-      var W=box.offsetWidth,H=box.offsetHeight,vw=window.innerWidth,vh=window.innerHeight,BTN=64,PAD=12;
-      var s=Math.min((vw-2*PAD)/W,(vh-2*PAD-BTN)/H),top=(vh-(s*H+BTN))/2;
-      return {s:s,top:top,left:(vw-s*W)/2,btnTop:top+s*H+16};
-    }
-    function setZoom(){img.style.transform=(z>1)?'translate('+tx+'px,'+ty+'px) scale('+z+')':''}
-    function clampPan(){var w=img.offsetWidth,h=img.offsetHeight;tx=Math.min(0,Math.max(w*(1-z),tx));ty=Math.min(0,Math.max(h*(1-z),ty))}
-    function openMap(){
-      if(st!=='closed')return;st='lifting';
-      if(!hd){hd=new Image();hd.onload=function(){img.src=hd.src};hd.src='img/venue-map-hd.webp'}   /* sharper copy for zooming, fetched on first open */
-      var r=box.getBoundingClientRect(),t=target();S=t.s;
-      ph.style.height=r.height+'px';box.parentNode.insertBefore(ph,box);
-      root.classList.add('map-modal');
-      veil.style.top=(window.scrollY-200)+'px';veil.style.height=(window.innerHeight+600)+'px';veil.hidden=false;
-      box.style.cssText='position:fixed;left:'+r.left+'px;top:'+r.top+'px;width:'+r.width+'px;height:'+r.height+'px;margin:0';
-      box.classList.add('floating');void box.offsetWidth;
-      veil.classList.add('show');
-      box.style.transform='translate('+(t.left-r.left)+'px,'+(t.top-r.top)+'px) scale('+t.s+')';
-      btn.style.top=t.btnTop+'px';btn.style.left=(window.innerWidth/2)+'px';btn.hidden=false;
-      label();
-    }
-    function closeMap(){
-      if(st!=='open')return;st='returning';
-      z=1;tx=ty=0;setZoom();
-      btn.classList.remove('show');veil.classList.remove('show');
-      box.style.transform='translate(0,0) scale(1)';
-    }
-    box.addEventListener('transitionend',function(e){
-      if(e.target!==box||e.propertyName!=='transform')return;
-      if(st==='lifting'){st='open';btn.classList.add('show');try{btn.focus({preventScroll:true})}catch(x){}}
-      else if(st==='returning'){
-        box.classList.remove('floating');box.style.cssText='';ph.remove();
-        veil.hidden=true;btn.hidden=true;root.classList.remove('map-modal');st='closed';label();
-        try{box.focus({preventScroll:true})}catch(x){}
-      }
-    });
-    box.addEventListener('click',function(){
-      if(st==='closed')openMap();
-      else if(st==='open'){if(z>1){z=1;tx=ty=0;setZoom()}else closeMap()}
-    });
-    box.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();if(st==='closed')openMap();else closeMap()}});
-    btn.addEventListener('click',function(e){e.stopPropagation();closeMap()});
-    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMap()});
-    /* pinch to zoom and drag, only while the map is open */
-    function local(t){var r=box.getBoundingClientRect();return {x:(t.clientX-r.left)/S-img.offsetLeft,y:(t.clientY-r.top)/S-img.offsetTop}}
-    box.addEventListener('touchstart',function(e){
-      if(st!=='open')return;
-      if(e.touches.length===2){
-        var a=local(e.touches[0]),b=local(e.touches[1]);
-        g={pinch:true,d:Math.hypot(a.x-b.x,a.y-b.y)||1,z:z,tx:tx,ty:ty,mx:(a.x+b.x)/2,my:(a.y+b.y)/2};
-      }else if(e.touches.length===1&&z>1){var p=local(e.touches[0]);g={pinch:false,x:p.x,y:p.y,tx:tx,ty:ty}}
-    },{passive:true});
-    box.addEventListener('touchmove',function(e){
-      if(st==='closed')return;e.preventDefault();
-      if(!g)return;
-      if(g.pinch&&e.touches.length===2){
-        var a=local(e.touches[0]),b=local(e.touches[1]),d=Math.hypot(a.x-b.x,a.y-b.y);
-        var nz=Math.max(1,Math.min(4,g.z*d/g.d)),k=nz/g.z;
-        z=nz;tx=g.mx-(g.mx-g.tx)*k+((a.x+b.x)/2-g.mx);ty=g.my-(g.my-g.ty)*k+((a.y+b.y)/2-g.my);
-        clampPan();setZoom();
-      }else if(!g.pinch&&e.touches.length===1){
-        var p=local(e.touches[0]);tx=g.tx+(p.x-g.x);ty=g.ty+(p.y-g.y);clampPan();setZoom();
-      }
-    },{passive:false});
-    box.addEventListener('touchend',function(e){if(e.touches.length===0)g=null});
-    [veil,btn].forEach(function(el){el.addEventListener('touchmove',function(e){if(st!=='closed')e.preventDefault()},{passive:false})});
+    var mb=$('#mapbox');if(!mb)return;
+    if(!('IntersectionObserver' in window)){mb.classList.add('run');return}
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){mb.classList.add('run');io.disconnect()}})},{threshold:.45});
+    io.observe(mb);
   })();
 
   /* save the QR to the phone */
