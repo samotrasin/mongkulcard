@@ -687,6 +687,9 @@ html.lang-in .cover .stage{animation:langFade .38s ease}
 .save-note{max-height:0;opacity:0;overflow:hidden;margin-top:0;transition:max-height .4s ease,opacity .35s ease,margin-top .4s ease}
 .save-note.has{max-height:140px;opacity:1;margin-top:8px}
 /* 5. music icon cross-fades */
+#autoBtn svg{grid-area:1/1;transition:opacity .25s ease,transform .3s cubic-bezier(.3,1.4,.5,1)}
+#autoBtn svg[hidden]{display:block;opacity:0;transform:scale(.6)}
+#autoBtn[hidden]{display:none}
 #musicBtn svg{grid-area:1/1;transition:opacity .25s ease,transform .3s cubic-bezier(.3,1.4,.5,1)}
 #musicBtn svg[hidden]{display:block;opacity:0;transform:scale(.6)}
 /* 6. cover language switch: the highlight slides across */
@@ -779,6 +782,10 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     <button type="button" class="bar-logo" id="barLogo" aria-label="Back to the top"><img src="img/crest.png" alt="" width="692" height="808"></button>
     <div class="bar-right">
       <button type="button" class="bar-lang" id="langBtn" aria-label="Language">EN</button>
+      <button type="button" class="bar-btn" id="autoBtn" aria-pressed="false" aria-label="Auto scroll" hidden>
+        <svg viewBox="0 0 24 24" id="autoPlay" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>
+        <svg viewBox="0 0 24 24" id="autoPause" aria-hidden="true" hidden><path d="M8 5.5v13M16 5.5v13"/></svg>
+      </button>
       <button type="button" class="bar-btn" id="musicBtn" aria-pressed="false" aria-label="Music">
         <svg viewBox="0 0 24 24" id="musicOn" aria-hidden="true" hidden><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>
         <svg viewBox="0 0 24 24" id="musicOff" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18V6L7.5 9.5z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
@@ -1051,6 +1058,10 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   function L(km,en){return lang==='en'?en:km}
 
   /* ---- event details (edit here) ---- */
+  /* AUTO-SCROLL: true = the invitation drifts down by itself after opening (with a play/pause button in the top bar).
+     false = the original behaviour (guests scroll by hand), and the button is hidden. */
+  var AUTO_SCROLL=true;
+
   var EVENT={
     guest:'Chenda',
     lang:'km',
@@ -1315,13 +1326,13 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     if(cu&&getComputedStyle(cu).display!=='none'){cu.style.setProperty('--cvb',cover.getBoundingClientRect().bottom+'px');cover.style.setProperty('--sab-in','.22s')}
     cover.classList.add('opening');
     if(reduce){
-      setTimeout(function(){cover.hidden=true;root.classList.remove('locked');document.body.classList.add('opened')},650);
+      setTimeout(function(){cover.hidden=true;root.classList.remove('locked');document.body.classList.add('opened');if(window.autoAfterOpen)window.autoAfterOpen()},650);
       return;
     }
     setTimeout(function(){cover.classList.add('doors-gone');if(window.startFx)window.startFx()},3350);   // light is at its brightest: the doors are hidden in it
     setTimeout(spawnCritters,0);                                   // golden butterflies and birds fly in from outside, as the light dims
     setTimeout(function(){cover.classList.add('done')},3850);         // taps go through to the page
-    setTimeout(function(){root.classList.remove('locked');document.body.classList.add('opened')},4800);
+    setTimeout(function(){root.classList.remove('locked');document.body.classList.add('opened');if(window.autoAfterOpen)window.autoAfterOpen()},4800);
     setTimeout(function(){cover.hidden=true},8800);                   // everything has flown away
   }
 
@@ -1448,6 +1459,51 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     if(!audio)return;
     if(document.hidden)audio.pause();else if(musicOn)audio.play().catch(function(){});
   });
+
+  /* ---- auto-scroll (switch: AUTO_SCROLL at the top of this script) ----
+     A slow, even drift down the page after the doors open. A touch or scroll by the guest pauses it,
+     and it carries on by itself after 5 s. It also waits while a pop-up, the photo viewer or the menu is open,
+     and stops at the bottom. The top-bar button pauses/plays it. */
+  var auto={on:false,user:false,until:0,pos:0,last:0,raf:0};
+  var autoBtn=$('#autoBtn');
+  function autoUi(){
+    var playing=auto.on&&!auto.user;
+    autoBtn.setAttribute('aria-pressed',playing);
+    autoBtn.setAttribute('aria-label',playing?L('ផ្អាករមូរស្វ័យប្រវត្តិ','Pause auto scroll'):L('រមូរស្វ័យប្រវត្តិ','Auto scroll'));
+    setHidden($('#autoPlay'),playing);setHidden($('#autoPause'),!playing);
+  }
+  function blocked(){
+    return root.classList.contains('locked')||root.classList.contains('env-modal')||root.classList.contains('menu-open')||!$('#lb').hidden||document.hidden;
+  }
+  function atBottom(){return window.scrollY+window.innerHeight>=document.documentElement.scrollHeight-2}
+  function autoFrame(t){
+    auto.raf=requestAnimationFrame(autoFrame);
+    var dt=auto.last?Math.min(64,t-auto.last):16;auto.last=t;
+    if(!auto.on||auto.user||blocked()||Date.now()<auto.until){auto.pos=window.scrollY;return}
+    if(atBottom()){auto.on=false;autoUi();return}
+    if(Math.abs(window.scrollY-auto.pos)>3)auto.pos=window.scrollY;   /* someone else moved the page: follow it */
+    auto.pos+=40*dt/1000;                                              /* about 40 px per second */
+    window.scrollTo({top:auto.pos,behavior:'instant'});
+  }
+  function autoStart(){
+    if(!AUTO_SCROLL)return;
+    auto.on=true;auto.user=false;auto.pos=window.scrollY;auto.last=0;autoUi();
+    if(!auto.raf)auto.raf=requestAnimationFrame(autoFrame);
+  }
+  function autoNudge(){if(auto.on)auto.until=Date.now()+5000}   /* the guest is touching: wait 5 s */
+  if(AUTO_SCROLL){
+    autoBtn.hidden=false;autoUi();
+    autoBtn.addEventListener('click',function(e){
+      e.stopPropagation();
+      if(auto.on&&!auto.user){auto.user=true;autoUi();return}
+      if(atBottom())window.scrollTo({top:0,behavior:'smooth'});
+      auto.until=Date.now()+600;autoStart();
+    });
+    ['touchstart','wheel','keydown','pointerdown'].forEach(function(ev){
+      window.addEventListener(ev,function(e){if(e.target&&e.target.closest&&e.target.closest('#autoBtn'))return;autoNudge()},{passive:true});
+    });
+    window.autoAfterOpen=function(){auto.until=Date.now()+1000;autoStart()};
+  }
 
   /* countdown to the 5:00 PM reception, Cambodia time (UTC+7) */
   var target=new Date(EVENT.start).getTime();
