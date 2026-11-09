@@ -334,6 +334,13 @@ html.menu-open{overflow:hidden}
 .seg button[aria-pressed="true"] small{color:rgba(255,255,255,.88)}
 .stepper{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding:8px 10px 8px 14px;border:1px solid var(--line);border-radius:8px;background:var(--cream)}
 .stepper span{font-family:var(--en);font-size:1.1rem}
+.stepper>span [data-l="km"]{font-family:var(--kh-body);font-size:.95rem}
+.seg button [data-l="km"]{font-family:var(--kh-body)}
+.rsvp-send{width:100%}
+.rsvp-send[disabled]{opacity:.6}
+.rsvp-note{margin:0;text-align:center;font-size:.95rem;line-height:1.6;color:var(--ink);max-height:0;opacity:0;overflow:hidden;transition:max-height .4s ease,opacity .35s ease,margin-top .4s ease}
+.rsvp-note.has{max-height:120px;opacity:1;margin-top:14px}
+.rsvp-note.err{color:#a1263a}
 .stepper div{display:flex;align-items:center;gap:12px}
 .stepper button{width:34px;height:34px;border-radius:50%;border:1px solid var(--gold);font-family:var(--en);font-size:1.3rem;line-height:1;color:var(--gold-deep)}
 .stepper output{min-width:24px;text-align:center;font-family:var(--en);font-size:1.4rem;font-variant-numeric:tabular-nums}
@@ -840,7 +847,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
         <div><small>កូនស្រីនាម</small><strong>ម៉ា មីហ៊ុយ</strong></div>
       </div>
       <p class="k-when">ប្រព្រឹត្តទៅនៅ <b>ថ្ងៃអាទិត្យ ១១កើត ខែមិគសិរ ឆ្នាំមមី អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០ ត្រូវនឹងថ្ងៃទី២០ ខែធ្នូ ឆ្នាំ២០២៦ វេលាម៉ោង ០៥:០០ ល្ងាច</b> ស្ថិតនៅ សាលសន្និសីទបុរីប៉េងហួត បឹងស្នោ (PH GRAND HALL EURO 3)</p>
-      <p class="k-thanks">ដោយមេត្រីភាពៗ សូមអរគុណ!</p>
+      <p class="k-thanks">ដោយមេត្រីភាព សូមអរគុណ!</p>
     </div>
   </section>
 
@@ -884,12 +891,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
         <div class="kh" data-l="km">កម្មវិធីមង្គលអាពាហ៍ពិពាហ៍</div>
         <div class="sub" data-l="en">Wedding program</div>
       </div>
-      <div class="cta" style="margin-top:0">
-        <button type="button" class="btn fold-btn" data-fold="progFold" aria-expanded="false" aria-controls="progFold">
-          <span><span data-l="km">មើលកម្មវិធី</span><span data-l="en">View program</span></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-        </button>
-      </div>
-      <div class="fold" id="progFold">
+      <div class="fold open" id="progFold">
         <div class="fold-in">
       <p class="day-lbl" data-l="km">ថ្ងៃអាទិត្យ ទី២០ ខែធ្នូ ឆ្នាំ២០២៦</p>
       <p class="day-en" data-l="en">Sunday, 20 December 2026</p>
@@ -925,8 +927,8 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
         </div>
       </div>
       <div class="venue-card">
-        <b data-l="km">សាលសន្និសីទបុរីប៉េងហួត បឹងស្នោ</b>
-        <p data-l="en">PH Grand Hall Euro 3<br>Peng Huoth Boeng Snor, Phnom Penh</p>
+        <b data-l="km">សាលសន្និបាតប៉េងហួតបឹងស្នោ</b>
+        <p data-l="en">PENGHOUT GRAND HALL</p>
       </div>
       <div class="cta" style="margin-top:20px">
         <a class="btn solid" href="https://maps.app.goo.gl/Juga5GsrUUwnwwsC8" target="_blank" rel="noopener">
@@ -994,19 +996,19 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   <!-- Page 10: RSVP -->
   <section class="page alt" id="rsvp">
     <div class="in">
-      <div class="card">
-        <h3>ការចូលរួម</h3>
-        <p>Will you join us?</p>
+      <div class="card" id="rsvpCard">
+        <h3><span data-l="km">ការចូលរួម</span><span data-l="en">RSVP</span></h3>
+        <p><span data-l="km">សូមប្រាប់យើងខ្ញុំថា លោកអ្នកអាចចូលរួមបានឬទេ</span><span data-l="en">Will you join us?</span></p>
         <div class="seg" id="rsvpSeg">
-          <button type="button" aria-pressed="true" data-v="yes">ចូលរួម<small>Joyfully accept</small></button>
-          <button type="button" aria-pressed="false" data-v="no">មិនអាចចូលរួម<small>Regretfully decline</small></button>
+          <button type="button" aria-pressed="true" data-v="yes"><span data-l="km">ចូលរួម</span><span data-l="en">Joyfully accept</span></button>
+          <button type="button" aria-pressed="false" data-v="no"><span data-l="km">មិនអាចចូលរួម</span><span data-l="en">Regretfully decline</span></button>
         </div>
         <div class="stepper" id="guestStep">
-          <span>Number of guests</span>
+          <span><span data-l="km">ចំនួនអ្នកចូលរួម</span><span data-l="en">Number of guests</span></span>
           <div><button type="button" id="gMinus" aria-label="Fewer guests">−</button><output id="gNum">1</output><button type="button" id="gPlus" aria-label="More guests">+</button></div>
         </div>
-        <button type="button" class="btn solid" style="width:100%" data-toast="Preview only. Nothing is saved or sent.">ផ្ញើ <small>Send reply</small></button>
-      </div>
+        <button type="button" class="btn solid rsvp-send" id="rsvpSend"><span data-l="km">ផ្ញើការឆ្លើយតប</span><span data-l="en">Send reply</span></button>
+        <p class="rsvp-note" id="rsvpNote" role="status" aria-live="polite"></p>
     </div>
   </section>
 
@@ -1079,9 +1081,9 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
       {ic:'toast',t:'5:00',ap:'PM',kh:'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារ នៅ សាលសន្និសីទបុរីប៉េងហួត បឹងស្នោ (EURO3)',en:'Evening reception at PH Grand Hall Euro 3',main:true}
     ],
     photos:[
-      ['p01',1001,1500],['p02',1500,1001],['p04',987,1500],['p03',1500,1001],['p07',1000,1500],['p06',1500,1024],
-      ['p08',1000,1500],['p09',1500,1000],['p10',1001,1500],['p13',1500,1000],['p05',1000,1500],['p14',1500,1021],
-      ['p11',1001,1500],['p15',1001,1500],['p12',988,1500],['p16',1000,1500]
+      ['p01',1001,1500],['p02',1500,1001],['p04',987,1500],['p07',1000,1500],['p06',1500,1024],
+      ['p08',1000,1500],['p09',1500,1000],['p10',1001,1500],['p13',1500,1000],['p05',1000,1500],
+      ['p15',1001,1500],['p12',988,1500],['p16',1000,1500]
     ],
     photosOpenAt:'2026-12-19T00:00:00+07:00',
     music:'media/music.mp3'
@@ -1092,6 +1094,8 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
 
   /* program */
   var sched=$('#sched');sched.classList.add('anim');
+  /* the programme is always open: its motion plays when it scrolls into view */
+  if('IntersectionObserver' in window){var schIO=new IntersectionObserver(function(es){if(es[0].isIntersecting){sched.classList.add('play');schIO.disconnect()}},{threshold:.15});schIO.observe(sched)}else sched.classList.add('play');
   /* little gold line icons for the programme (24x24, drawn as strokes so they can "draw themselves") */
   var ICONS={
     people:'<circle cx="9" cy="8" r="3"/><path d="M3.5 19.5c.5-3.6 2.8-5.6 5.5-5.6s5 2 5.5 5.6"/><circle cx="16.6" cy="9" r="2.4"/><path d="M15.6 13.7c2.7.1 4.5 2 4.9 5.2"/>',
@@ -1404,7 +1408,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   lgEn.addEventListener('click',function(){switchLang('en')});
   /* RSVP is switched off for this wedding (the guest list is counted before the day).
      Set SHOW_RSVP to true to bring the page and its menu item back. */
-  var SHOW_RSVP=false;
+  var SHOW_RSVP=true;
   if(!SHOW_RSVP){
     var rs=document.getElementById('rsvp');if(rs)rs.parentNode.removeChild(rs);
     var rb=document.querySelector('.menu [data-go="rsvp"]');
@@ -1528,17 +1532,41 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   }
   tick();setInterval(tick,1000);
 
-  /* RSVP controls (visual only) */
-  $$('#rsvpSeg button').forEach(function(b){
-    b.addEventListener('click',function(){
-      $$('#rsvpSeg button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
-      $('#guestStep').style.display=b.getAttribute('data-v')==='no'?'none':'flex';
-    });
-  });
-  var g=1;
+  /* RSVP: saved against this guest's own link (/api/rsvp/<event>/<code>); the guest can change it until the day */
+  var rsvpVal='yes',g=1;
   function setG(v){g=Math.max(1,Math.min(10,v));$('#gNum').textContent=g}
-  if($('#gMinus')){$('#gMinus').addEventListener('click',function(){setG(g-1)});
-  $('#gPlus').addEventListener('click',function(){setG(g+1)})}
+  function setRsvp(v){
+    rsvpVal=v;
+    $$('#rsvpSeg button').forEach(function(x){x.setAttribute('aria-pressed',x.getAttribute('data-v')===v)});
+    var st=$('#guestStep');if(st)st.style.display=v==='no'?'none':'flex';
+  }
+  function rsvpNote(t,err){var n=$('#rsvpNote');if(!n)return;n.classList.toggle('err',!!err);if(t){n.textContent=t;n.classList.add('has')}else n.classList.remove('has')}
+  var rsvpUrl=(function(){var p=location.pathname.split('/').filter(Boolean);return p.length===2?'/api/rsvp/'+p[0]+'/'+p[1]:null})();
+  if($('#rsvpCard')){
+    $$('#rsvpSeg button').forEach(function(b){b.addEventListener('click',function(){setRsvp(b.getAttribute('data-v'));rsvpNote('')})});
+    $('#gMinus').addEventListener('click',function(){setG(g-1);rsvpNote('')});
+    $('#gPlus').addEventListener('click',function(){setG(g+1);rsvpNote('')});
+    function sentText(v,n){return v==='yes'?L('សូមអរគុណ! យើងខ្ញុំបានទទួលការឆ្លើយតបរបស់លោកអ្នក ('+n+' នាក់)។','Thank you! Your reply is saved ('+n+(n>1?' guests':' guest')+').'):L('សូមអរគុណដែលបានប្រាប់យើងខ្ញុំ។','Thank you for letting us know.')}
+    if(rsvpUrl){
+      fetch(rsvpUrl,{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null}).then(function(d){
+        if(!d||!d.status)return;
+        setRsvp(d.status);if(d.status==='yes')setG(d.party||1);
+        rsvpNote(L('ការឆ្លើយតបរបស់លោកអ្នកត្រូវបានរក្សាទុក។ លោកអ្នកអាចកែប្រែបាន។','Your reply is saved. You can change it any time.'));
+      }).catch(function(){});
+    }
+    $('#rsvpSend').addEventListener('click',function(){
+      if(!rsvpUrl){rsvpNote(L('នេះជាគំរូប៉ុណ្ណោះ។','This is a preview only.'),true);return}
+      var btn=this;btn.disabled=true;
+      fetch(rsvpUrl,{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:JSON.stringify({status:rsvpVal,party:rsvpVal==='yes'?g:0})})
+        .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d}})})
+        .then(function(x){
+          if(x.ok)rsvpNote(sentText(rsvpVal,g));
+          else rsvpNote(x.d&&x.d.closed?L('ការឆ្លើយតបមិនទាន់បើកនៅឡើយទេ។','Replies are not open yet.'):L('សូមអភ័យទោស មិនអាចផ្ញើបានទេ។ សូមព្យាយាមម្តងទៀត។','Sorry, that did not send. Please try again.'),true);
+        })
+        .catch(function(){rsvpNote(L('សូមពិនិត្យអ៊ីនធឺណិត ហើយព្យាយាមម្តងទៀត។','Please check your connection and try again.'),true)})
+        .then(function(){btn.disabled=false});
+    });
+  }
 
 
   /* photo page: visible from the start, but locked until the upload window opens */

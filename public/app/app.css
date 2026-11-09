@@ -39,6 +39,9 @@ textarea{min-height:130px;resize:vertical}
 .chip{display:inline-block;font-size:.76rem;padding:2px 9px;border-radius:99px;border:1px solid var(--line);color:var(--muted);vertical-align:middle}
 .chip.live{border-color:#b9d6bf;color:var(--green)}
 .chip.opened{border-color:#b9d6bf;color:var(--green)}
+.chip.rsvp-yes{border-color:#b9d6bf;background:#eef7f0;color:var(--green)}
+.chip.rsvp-no{border-color:#e3c3c3;color:#9b3b3b}
+.rsvp-stats{margin-top:6px;flex-wrap:wrap;row-gap:4px}
 .stats{display:flex;gap:18px;margin-top:12px;font-size:.95rem}
 .stats b{font-size:1.25rem;color:var(--ink)}
 .hint{font-size:.85rem;color:var(--muted);margin:8px 0 0}

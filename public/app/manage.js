@@ -98,6 +98,11 @@
     var list = $('list'); list.textContent = '';
     var opened = state.guests.filter(function (g) { return g.opens > 0; }).length;
     $('nGuests').textContent = state.guests.length; $('nOpened').textContent = opened;
+    var yes = state.guests.filter(function (g) { return g.rsvp === 'yes'; });
+    $('nYes').textContent = yes.length;
+    $('nPeople').textContent = yes.reduce(function (n, g) { return n + (g.party || 0); }, 0);
+    $('nNo').textContent = state.guests.filter(function (g) { return g.rsvp === 'no'; }).length;
+    $('nWait').textContent = state.guests.filter(function (g) { return !g.rsvp; }).length;
     var shown = state.guests.filter(function (g) { return !q || g.name.toLowerCase().indexOf(q) !== -1; });
     if (!shown.length) {
       list.appendChild(el('div', 'empty', state.guests.length ? 'No guest matches your search.' : 'No guests yet. Add the first name above.'));
@@ -118,6 +123,10 @@
       st.appendChild(el('span', 'chip opened', 'Opened' + (g.opens > 1 ? ' ' + g.opens + '×' : '')));
       if (g.last_opened) st.appendChild(document.createTextNode(' ' + fmtDate(g.last_opened)));
     } else st.appendChild(el('span', 'chip', 'Not opened yet'));
+    st.appendChild(document.createTextNode(' '));
+    if (g.rsvp === 'yes') st.appendChild(el('span', 'chip rsvp-yes', 'Attending · ' + (g.party || 1) + (g.party > 1 ? ' people' : ' person')));
+    else if (g.rsvp === 'no') st.appendChild(el('span', 'chip rsvp-no', 'Not attending'));
+    else st.appendChild(el('span', 'chip', 'No reply yet'));
     r.appendChild(st);
     var a = el('div', 'actions');
     var b1 = el('button', 'btn small', 'Copy link'); b1.type = 'button';

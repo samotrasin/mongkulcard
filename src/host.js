@@ -182,9 +182,15 @@ async function listGuests(env, session, url) {
   const ev = await ownedEvent(env, session, Number(url.searchParams.get('event')));
   if (!ev) return json({ error: 'Not found.' }, 404);
   const { results } = await env.DB.prepare(
-    `SELECT id, code, display_name AS name, language, open_count AS opens, first_opened_at AS first_opened, last_opened_at AS last_opened
-       FROM guests WHERE event_id = ?1 AND deleted_at IS NULL AND is_disabled = 0
-      ORDER BY id`
+    `SELECT g.id, g.code, g.display_name AS name, g.language, g.open_count AS opens,
+            g.first_opened_at AS first_opened, g.last_opened_at AS last_opened,
+            r.status AS rsvp, r.party_size AS party, r.updated_at AS rsvp_at
+       FROM guests g
+       LEFT JOIN rsvps r ON r.guest_id = g.id
+            AND r.segment_id = (SELECT s.id FROM segments s WHERE s.event_id = g.event_id
+                                 ORDER BY s.is_primary DESC, s.sort_order DESC, s.id DESC LIMIT 1)
+      WHERE g.event_id = ?1 AND g.deleted_at IS NULL AND g.is_disabled = 0
+      ORDER BY g.id`
   ).bind(ev.id).all();
   return json({ slug: ev.slug, guests: results });
 }

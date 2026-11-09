@@ -23,6 +23,9 @@ export default {
     const url = new URL(request.url);
     const parts = url.pathname.split('/').filter(Boolean);
 
+    // A guest's own RSVP: /api/rsvp/<event>/<code> (the personal link is the key).
+    if (parts[0] === 'api' && parts[1] === 'rsvp') return guestRsvp(request, env, url, parts);
+
     // The host's manage page and its data. Only /api/... may change anything.
     if (parts[0] === 'api') return api(request, env, ctx, url, parts);
 
@@ -114,6 +117,51 @@ async function guestInvitation(request, env, ctx, url, slug, code) {
   }
 
   return page(html, 200, { 'cache-control': 'private, no-store' });
+}
+
+// ---------------------------------------------------------------- RSVP
+// GET  /api/rsvp/<event>/<code>          -> { status: 'yes'|'no'|null, party }
+// POST /api/rsvp/<event>/<code>  {status, party}
+// The reply is stored for the event's main segment (the evening reception), one row per guest,
+// and the guest can change it until the link expires.
+async function guestRsvp(request, env, url, parts) {
+  const headers = { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' };
+  const out = (obj, status = 200) => new Response(JSON.stringify(obj), { status, headers });
+  if (parts.length !== 4 || !SLUG_RE.test(parts[2]) || !CODE_RE.test(parts[3].toLowerCase())) return out({ error: 'Not found.' }, 404);
+  const method = request.method;
+  if (method !== 'GET' && method !== 'POST') return out({ error: 'Method not allowed.' }, 405);
+  if (method === 'POST') {
+    if (request.headers.get('origin') !== url.origin) return out({ error: 'Not allowed.' }, 403);
+    if (!(request.headers.get('content-type') || '').toLowerCase().startsWith('application/json')) return out({ error: 'Not allowed.' }, 415);
+  }
+
+  const g = await env.DB.prepare(
+    `SELECT g.id AS guest_id, e.id AS event_id, e.status, e.rsvp_enabled,
+            (strftime('%Y-%m-%dT%H:%M:%SZ','now') > e.links_expire_at) AS expired,
+            (SELECT s.id FROM segments s WHERE s.event_id = e.id ORDER BY s.is_primary DESC, s.sort_order DESC, s.id DESC LIMIT 1) AS segment_id
+       FROM guests g JOIN events e ON e.id = g.event_id
+      WHERE e.slug = ?1 AND g.code = ?2 AND g.deleted_at IS NULL AND g.is_disabled = 0`
+  ).bind(parts[2], parts[3].toLowerCase()).first();
+  if (!g || g.status === 'archived' || !g.segment_id) return out({ error: 'Not found.' }, 404);
+
+  if (method === 'GET') {
+    const r = await env.DB.prepare(`SELECT status, party_size FROM rsvps WHERE guest_id = ?1 AND segment_id = ?2`).bind(g.guest_id, g.segment_id).first();
+    return out({ status: r ? r.status : null, party: r ? r.party_size : 0, open: g.status === 'live' && g.rsvp_enabled === 1 && !g.expired });
+  }
+
+  if (g.status !== 'live' || g.rsvp_enabled !== 1 || g.expired) return out({ error: 'Replies are not open.', closed: true }, 409);
+  let body = null;
+  try { body = await request.json(); } catch { body = null; }
+  const status = body && (body.status === 'yes' || body.status === 'no') ? body.status : null;
+  const party = status === 'yes' ? Math.trunc(Number(body.party)) : 0;
+  if (!status || (status === 'yes' && !(party >= 1 && party <= 10))) return out({ error: 'Please check your answer.' }, 400);
+
+  await env.DB.prepare(
+    `INSERT INTO rsvps (guest_id, segment_id, event_id, status, party_size) VALUES (?1, ?2, ?3, ?4, ?5)
+     ON CONFLICT (guest_id, segment_id) DO UPDATE SET status = excluded.status, party_size = excluded.party_size,
+       updated_at = strftime('%Y-%m-%dT%H:%M:%SZ','now')`
+  ).bind(g.guest_id, g.segment_id, g.event_id, status, party).run();
+  return out({ ok: true, status, party });
 }
 
 // Video and music from R2. Phones ask for the file in pieces ("Range"), which is what
