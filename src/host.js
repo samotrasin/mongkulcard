@@ -178,11 +178,16 @@ async function ownedEvent(env, session, eventId) {
   ).bind(eventId, session.customer_id).first();
 }
 
+// Chinese links: guests.lang_zh (migration 0004). The effective language is 'zh' when that flag is set.
+const LANG_COL = "CASE WHEN g.lang_zh = 1 THEN 'zh' ELSE g.language END";
+const noZhColumn = (e) => /lang_zh/.test(String(e && e.message));
+const NEED_MIGRATION = 'Chinese links need a one-time database update first (migration 0004). Khmer and English still work.';
+
 async function listGuests(env, session, url) {
   const ev = await ownedEvent(env, session, Number(url.searchParams.get('event')));
   if (!ev) return json({ error: 'Not found.' }, 404);
-  const { results } = await env.DB.prepare(
-    `SELECT g.id, g.code, g.display_name AS name, g.language, g.open_count AS opens,
+  const listSql = (zh) => env.DB.prepare(
+    `SELECT g.id, g.code, g.display_name AS name, ${zh ? LANG_COL : 'g.language'} AS language, g.open_count AS opens,
             g.first_opened_at AS first_opened, g.last_opened_at AS last_opened,
             r.status AS rsvp, r.party_size AS party, r.updated_at AS rsvp_at
        FROM guests g
@@ -192,6 +197,9 @@ async function listGuests(env, session, url) {
       WHERE g.event_id = ?1 AND g.deleted_at IS NULL AND g.is_disabled = 0
       ORDER BY g.id`
   ).bind(ev.id).all();
+  let results;
+  try { ({ results } = await listSql(true)); }
+  catch (e) { if (!noZhColumn(e)) throw e; ({ results } = await listSql(false)); }
   return json({ slug: ev.slug, guests: results });
 }
 
@@ -209,6 +217,7 @@ async function addGuests(request, env, session) {
     return json({ error: `Please add at most ${MAX_NAMES_PER_REQUEST} names at a time.` }, 400);
   }
 
+  const wantZh = body.language === 'zh';
   const language = body.language === 'en' ? 'en' : 'km';
   const names = [];
   let skipped = 0;
@@ -225,8 +234,12 @@ async function addGuests(request, env, session) {
 
   for (let attempt = 0; attempt < 4; attempt++) {
     try {
-      const statements = names.map((n) =>
-        env.DB.prepare(
+      const statements = names.map((n) => wantZh
+        ? env.DB.prepare(
+          `INSERT INTO guests (event_id, code, display_name, source, language, lang_zh) VALUES (?1, ?2, ?3, ?4, 'km', 1)
+           RETURNING id, code, display_name AS name, 'zh' AS language, open_count AS opens, first_opened_at AS first_opened, last_opened_at AS last_opened`
+        ).bind(ev.id, newCode(), n, names.length > 1 ? 'import' : 'manual')
+        : env.DB.prepare(
           `INSERT INTO guests (event_id, code, display_name, source, language) VALUES (?1, ?2, ?3, ?4, ?5)
            RETURNING id, code, display_name AS name, language, open_count AS opens, first_opened_at AS first_opened, last_opened_at AS last_opened`
         ).bind(ev.id, newCode(), n, names.length > 1 ? 'import' : 'manual', language)
@@ -236,6 +249,7 @@ async function addGuests(request, env, session) {
       const guests = out.slice(0, names.length).map((r) => r.results[0]);
       return json({ guests, skipped });
     } catch (e) {
+      if (wantZh && noZhColumn(e)) return json({ error: NEED_MIGRATION }, 400);
       // Only a repeated random code can cause this, so try again with new codes.
       if (!/UNIQUE/i.test(String(e && e.message))) throw e;
     }
@@ -251,12 +265,25 @@ async function renameGuest(request, env, session, id) {
 
   const g = await findGuest(env, session, id);
   if (!g) return json({ error: 'Not found.' }, 404);
-  const language = body.language === 'en' ? 'en' : body.language === 'km' ? 'km' : null;   // null = leave as it is
-  await env.DB.batch([
-    env.DB.prepare(`UPDATE guests SET display_name = ?1, language = COALESCE(?2, language) WHERE id = ?3`).bind(name, language, id),
-    audit(env, g.event_id, session.username, 'guest.renamed', 'guest', id, null),
-  ]);
-  const row = await env.DB.prepare(`SELECT language FROM guests WHERE id = ?1`).bind(id).first();
+  const want = ['km', 'en', 'zh'].includes(body.language) ? body.language : null;   // null = leave as it is
+  let rename;
+  if (want === 'zh') rename = env.DB.prepare(`UPDATE guests SET display_name = ?1, lang_zh = 1 WHERE id = ?2`).bind(name, id);
+  else if (want) rename = env.DB.prepare(`UPDATE guests SET display_name = ?1, language = ?2, lang_zh = 0 WHERE id = ?3`).bind(name, want, id);
+  else rename = env.DB.prepare(`UPDATE guests SET display_name = ?1 WHERE id = ?2`).bind(name, id);
+  try {
+    await env.DB.batch([rename, audit(env, g.event_id, session.username, 'guest.renamed', 'guest', id, null)]);
+  } catch (e) {
+    if (!noZhColumn(e)) throw e;
+    if (want === 'zh') return json({ error: NEED_MIGRATION }, 400);
+    // database not updated yet: the old way (Khmer / English only)
+    await env.DB.batch([
+      env.DB.prepare(`UPDATE guests SET display_name = ?1, language = COALESCE(?2, language) WHERE id = ?3`).bind(name, want, id),
+      audit(env, g.event_id, session.username, 'guest.renamed', 'guest', id, null),
+    ]);
+  }
+  let row;
+  try { row = await env.DB.prepare(`SELECT ${LANG_COL} AS language FROM guests g WHERE g.id = ?1`).bind(id).first(); }
+  catch (e) { if (!noZhColumn(e)) throw e; row = await env.DB.prepare(`SELECT language FROM guests WHERE id = ?1`).bind(id).first(); }
   return json({ ok: true, name, language: row ? row.language : 'km' });
 }
 

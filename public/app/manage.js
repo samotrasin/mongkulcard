@@ -2,8 +2,8 @@
   var $ = function (id) { return document.getElementById(id); };
   var state = { events: [], ev: null, slug: '', guests: [] };
   var lang = 'km';
-  try { if (localStorage.getItem('mc-lang') === 'en') lang = 'en'; } catch (e) {}
-  var LANG_NAME = { km: 'ខ្មែរ Khmer', en: 'English' };
+  try { var ml = localStorage.getItem('mc-lang'); if (ml === 'en' || ml === 'zh') lang = ml; } catch (e) {}
+  var LANG_NAME = { km: 'ខ្មែរ Khmer', en: 'English', zh: '中文 Chinese' };
   var DEFAULT_MSG = 'Dear {name},\nYou are warmly invited to our celebration. Please open your personal invitation here:\n{link}';
 
   // ---------- helpers
@@ -148,7 +148,7 @@
     var save = el('button', 'btn small', 'Save'); save.type = 'button';
     var cancel = el('button', 'btn small ghost', 'Cancel'); cancel.type = 'button';
     var ls = el('select'); ls.setAttribute('aria-label', 'Invitation language');
-    ['km', 'en'].forEach(function (v) { var o = el('option', null, LANG_NAME[v]); o.value = v; if (v === (g.language || 'km')) o.selected = true; ls.appendChild(o); });
+    ['km', 'en', 'zh'].forEach(function (v) { var o = el('option', null, LANG_NAME[v]); o.value = v; if (v === (g.language || 'km')) o.selected = true; ls.appendChild(o); });
     e.appendChild(inp); e.appendChild(ls); e.appendChild(save); e.appendChild(cancel);
     var err = el('div', 'err'); err.setAttribute('role', 'alert');
     r.appendChild(e); r.appendChild(err);

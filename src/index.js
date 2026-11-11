@@ -66,8 +66,9 @@ export default {
 };
 
 async function guestInvitation(request, env, ctx, url, slug, code) {
-  const guest = await env.DB.prepare(
-    `SELECT g.id, g.display_name, g.language, e.status, t.code AS template,
+  // lang_zh arrives with migration 0004; until it has been applied, read the guest without it.
+  const guestSql = (zh) => env.DB.prepare(
+    `SELECT g.id, g.display_name, ${zh ? "CASE WHEN g.lang_zh = 1 THEN 'zh' ELSE g.language END" : 'g.language'} AS language, e.status, t.code AS template,
             (strftime('%Y-%m-%dT%H:%M:%SZ','now') > e.links_expire_at) AS expired
        FROM guests g
        JOIN events e    ON e.id = g.event_id
@@ -75,6 +76,9 @@ async function guestInvitation(request, env, ctx, url, slug, code) {
       WHERE e.slug = ?1 AND g.code = ?2
         AND g.deleted_at IS NULL AND g.is_disabled = 0`
   ).bind(slug, code).first();
+  let guest;
+  try { guest = await guestSql(true); }
+  catch (e) { if (!/lang_zh/.test(String(e && e.message))) throw e; guest = await guestSql(false); }
 
   // Unknown, disabled or archived: say nothing about why.
   if (!guest || guest.status === 'archived') return page(notFound(), 404);
@@ -99,9 +103,10 @@ async function guestInvitation(request, env, ctx, url, slug, code) {
   html = html.replace(MARK, () => jsString(guest.display_name));
 
   // The language the host chose for this guest (the guest can still switch inside the invitation).
-  const lang = guest.language === 'en' ? 'en' : 'km';
+  const lang = guest.language === 'en' ? 'en' : guest.language === 'zh' ? 'zh' : 'km';
+  const langAttr = lang === 'zh' ? 'zh-Hans' : lang;
   html = html.replace("lang:'km',", () => `lang:'${lang}',`);
-  html = html.replace('<html lang="km" data-lang="km">', () => `<html lang="${lang}" data-lang="${lang}">`);
+  html = html.replace('<html lang="km" data-lang="km">', () => `<html lang="${langAttr}" data-lang="${lang}">`);
 
   // Count the open (real people only), without making the guest wait.
   if (request.method === 'GET' && !BOT_RE.test(request.headers.get('user-agent') || '')) {
