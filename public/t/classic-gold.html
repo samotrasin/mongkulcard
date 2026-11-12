@@ -30,7 +30,12 @@
   --en:'Cormorant Garamond',Georgia,serif;
   --en-display:'Cinzel','Cormorant Garamond',Georgia,serif;
   --script:'Pinyon Script','Cormorant Garamond',cursive;
-  --zh:'Cormorant Garamond','Noto Serif SC','Songti SC','STSong','SimSun',serif;
+  --zh-noto:'Cormorant Garamond','Noto Serif SC','Songti SC','STSong','SimSun',serif;
+  /* Chinese fonts chosen by the couple: 创艺繁琥珀 for headings, 创艺繁魏碑 for text (they show the characters in Traditional form).
+     To go back to the previous Chinese font, change the next two lines to var(--zh-noto). */
+  --zh-head:'Cormorant Garamond','CY HuPo','Noto Serif SC','Songti SC',serif;
+  --zh-body:'Cormorant Garamond','CY WeiBei','Noto Serif SC','Songti SC',serif;
+  --zh:var(--zh-body);
   color-scheme:light;
 }
 *{box-sizing:border-box}
@@ -713,6 +718,8 @@ html[data-lang="en"] .cv-lang::before{transform:translateX(100%)}
 @media (prefers-reduced-motion:reduce){html.lang-out .page>.in,html.lang-out .cover .stage,html.lang-out #langBtn{opacity:1;transform:none}
   html.lang-in .page>.in,html.lang-in .cover .stage,html.lang-in #langBtn,.cd-n.in,.cd-n.out{animation:none}.lb,.lb img,.save-note,.cv-lang::before{transition:none}}
 /* ================= three languages: Khmer, English, 中文 (Nov 2026) ================= */
+@font-face{font-family:'CY HuPo';src:url(img/fonts/cy-hupo.woff2) format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:'CY WeiBei';src:url(img/fonts/cy-weibei.woff2) format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
 .ord{text-transform:none;letter-spacing:.02em}
 [data-l="zh"]{font-family:var(--zh);font-style:normal;font-variant-numeric:lining-nums}
 #english .mini-crest,#chinese .mini-crest{width:92px;margin-bottom:10px}
@@ -734,17 +741,18 @@ html[data-lang="zh"] body{font-family:var(--zh)}
 .e-info dd small{display:block;font-size:.92rem;font-weight:400;font-style:italic;line-height:1.35;margin-top:2px}
 .e-warm{font-family:var(--en);font-style:italic;font-weight:600;font-size:1.1rem;line-height:1.4;margin:16px 0 4px}
 .e-bless{font-family:var(--en);font-size:1rem;line-height:1.45;margin:0}
-#chinese .e-title{font-family:var(--zh);font-size:1.3rem;font-weight:700;letter-spacing:.42em;padding-left:.42em;text-transform:none}
+#chinese .e-intro,#chinese .e-body,#chinese .e-info dd,#chinese .e-info dd small,#chinese .e-warm,#chinese .e-bless,.thx-zh .thx-line,.head .tag[data-l="zh"],.venue-card p[data-l="zh"] small,.stepper [data-l="zh"],.seg [data-l="zh"],.lead [data-l="zh"],.fine [data-l="zh"]{font-family:var(--zh);font-style:normal}
+#chinese .e-title{font-family:var(--zh-head);font-size:1.3rem;font-weight:700;letter-spacing:.42em;padding-left:.42em;text-transform:none}
 #chinese .e-intro{font-style:normal;font-size:1rem;font-weight:600;line-height:1.8;letter-spacing:.04em}
 #chinese .e-body{font-size:.94rem;line-height:1.95;letter-spacing:.03em;text-align:justify;text-align-last:center}
 #chinese .e-pair small,#chinese .e-info dt{font-family:var(--zh);font-size:.74rem;letter-spacing:.32em;padding-left:.32em}
-#chinese .e-pair strong{font-family:var(--zh);font-size:1.32rem;font-weight:700;letter-spacing:.18em;padding-left:.18em}
+#chinese .e-pair strong{font-family:var(--zh-head);font-size:1.32rem;font-weight:700;letter-spacing:.18em;padding-left:.18em}
 #chinese .e-info dd{font-size:1.02rem;letter-spacing:.03em}
 #chinese .e-info dd small{font-style:normal;font-size:.86rem}
 #chinese .e-warm{font-style:normal;font-size:1.02rem;letter-spacing:.06em}
 #chinese .e-bless{font-size:.94rem;letter-spacing:.04em}
 /* section headings and their one-line taglines */
-html[data-lang="zh"] .head .sub{font-family:var(--zh);font-style:normal;font-size:1.45rem;font-weight:700;letter-spacing:.24em;padding-left:.24em;color:var(--gold-deep);margin-top:14px}
+html[data-lang="zh"] .head .sub{font-family:var(--zh-head);font-style:normal;font-size:1.45rem;font-weight:700;letter-spacing:.24em;padding-left:.24em;color:var(--gold-deep);margin-top:14px}
 html[data-lang="zh"] .head-inline .sub{margin:0}
 html[data-lang="en"] .head .sub{font-size:1.45rem;letter-spacing:.05em}
 html[data-lang="en"] #photos .head .sub{font-size:1.18rem;letter-spacing:.04em}
@@ -755,13 +763,13 @@ html[data-lang="zh"] .field input{font-family:var(--zh)}
 .head .tag{margin:8px 0 0;font-family:var(--en);font-style:italic;font-size:1.08rem;line-height:1.45;color:var(--muted)}
 .head .tag[data-l="zh"]{font-size:.92rem;letter-spacing:.08em}
 /* cover, title page and buttons in Chinese */
-html[data-lang="zh"] .cover-title{font-family:var(--zh);font-size:max(16px,calc(var(--u)*68));font-weight:700;letter-spacing:.4em;padding-left:.4em}
+html[data-lang="zh"] .cover-title{font-family:var(--zh-head);font-size:max(16px,calc(var(--u)*68));font-weight:700;letter-spacing:.4em;padding-left:.4em}
 html[data-lang="zh"] .guest-lbl{font-family:var(--zh);font-size:max(12px,calc(var(--u)*44));font-weight:600;letter-spacing:.3em;padding-left:.3em}
 html[data-lang="zh"] .open-btn .lbl{font-size:max(13px,calc(var(--u)*50));color:var(--gold-deep);font-weight:600;letter-spacing:.3em;text-transform:none}
-html[data-lang="zh"] .k-title{font-family:var(--zh);font-size:1.6rem;font-weight:700;letter-spacing:.38em;padding-left:.38em}
+html[data-lang="zh"] .k-title{font-family:var(--zh-head);font-size:1.6rem;font-weight:700;letter-spacing:.38em;padding-left:.38em}
 .btn [data-l="zh"],.env-hint [data-l="zh"]{letter-spacing:.12em}
 .lead [data-l="zh"]{font-size:.98rem;line-height:1.9;letter-spacing:.03em}
-.card h3 [data-l="zh"]{font-weight:700;letter-spacing:.24em}
+.card h3 [data-l="zh"]{font-family:var(--zh-head);font-weight:700;letter-spacing:.24em}
 .card h3+p [data-l="zh"]{font-size:.98rem;letter-spacing:.06em}
 html[data-lang="en"] .card h3{font-family:var(--en-display);letter-spacing:.12em}
 .stepper>span [data-l="zh"],.seg button [data-l="zh"],.drop p [data-l="zh"],.fine [data-l="zh"],.field label [data-l="zh"]{font-size:.94rem;letter-spacing:.06em}
@@ -769,13 +777,13 @@ html[data-lang="en"] .card h3{font-family:var(--en-display);letter-spacing:.12em
 .cd span[data-l="zh"]{font-size:.86rem;letter-spacing:.1em}
 .cd-sub [data-l="zh"],.day-zh{font-size:1rem;letter-spacing:.06em}
 html[data-lang="zh"] .day-zh{font-weight:600;color:var(--gold-deep)}
-.cd-done [data-l="zh"]{font-size:1.5rem;font-weight:700;letter-spacing:.14em}
+.cd-done [data-l="zh"]{font-family:var(--zh-head);font-size:1.5rem;font-weight:700;letter-spacing:.14em}
 .sched .zh{display:block;font-size:.98rem;line-height:1.55;color:var(--ink);letter-spacing:.03em}
 .sched li.main .zh{color:var(--gold-deep);font-weight:600}
 .sched time small [data-l="zh"]{letter-spacing:.12em}
 .venue-card p small{display:block;font-size:.92rem;font-style:italic;line-height:1.45;opacity:.9}
 .venue-card p[data-l="zh"] small{font-style:normal;font-size:.88rem;letter-spacing:.04em}
-.menu li .en[data-l="zh"]{font-size:1.45rem;font-weight:600;letter-spacing:.14em}
+.menu li .en[data-l="zh"]{font-family:var(--zh-head);font-size:1.45rem;font-weight:600;letter-spacing:.14em}
 /* thank-you page */
 .thanks-k{font-family:var(--kh-display);font-size:1.05rem;line-height:2;color:var(--gold-deep)}
 .thx-line{font-family:var(--en);font-style:italic;font-size:1.22rem;line-height:1.45;color:var(--ink);margin:6px 0 10px}
@@ -783,7 +791,7 @@ html[data-lang="zh"] .day-zh{font-weight:600;color:var(--gold-deep)}
 .thx-names{font-family:var(--script);font-size:2.4rem;line-height:1.2;margin:2px 0 0}
 .thx-names span{white-space:nowrap}
 .thx-zh .thx-line{font-style:normal;font-size:1.12rem;letter-spacing:.1em}
-.thx-zh .thx-names{font-family:var(--zh);font-size:1.7rem;font-weight:700;letter-spacing:.24em;padding-left:.24em;margin-top:6px}
+.thx-zh .thx-names{font-family:var(--zh-head);font-size:1.7rem;font-weight:700;letter-spacing:.24em;padding-left:.24em;margin-top:6px}
 /* cover language switch: three choices, the highlight slides between them */
 .cv-lang{grid-template-columns:1fr 1fr 1fr}
 .cv-lang::before{width:calc((100% - 6px)/3)}
@@ -1925,7 +1933,8 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   }
   /* the Chinese letters come from a web font: start loading it the moment Chinese is picked, so the words never appear in a fallback font first */
   function zhFont(){
-    try{if(document.fonts&&document.fonts.load)return Promise.all([document.fonts.load('600 16px "Noto Serif SC"','婚礼'),document.fonts.load('700 16px "Noto Serif SC"','婚礼'),document.fonts.load('400 16px "Noto Serif SC"','婚礼')])}catch(e){}
+    try{if(document.fonts&&document.fonts.load){var f=getComputedStyle(root).getPropertyValue('--zh-head').indexOf('CY HuPo')>=0;
+      return Promise.all(f?[document.fonts.load('16px "CY HuPo"','婚礼'),document.fonts.load('16px "CY WeiBei"','婚礼')]:[document.fonts.load('600 16px "Noto Serif SC"','婚礼'),document.fonts.load('700 16px "Noto Serif SC"','婚礼')])}}catch(e){}
     return Promise.resolve();
   }
   /* switching language: fade the words out, swap them, keep the reader on the same section, fade back in */
