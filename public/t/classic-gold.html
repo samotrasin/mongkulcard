@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="theme-color" content="#4a131d">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>/* phones: always lay the invitation out at 390px (iPhone width) and let the phone scale it to fit,
+   so every phone shows the same lines and spacing. Tablets and computers keep their own layout. */
+(function(){try{var w=Math.min(screen.width,screen.height);if(w&&w<600){document.querySelector('meta[name="viewport"]').setAttribute('content','width=390, viewport-fit=cover')}}catch(e){}})();</script>
 <meta name="robots" content="noindex,nofollow">
 <meta name="mk-build" content="2026-11-11 migrations on deploy">
 <meta name="format-detection" content="telephone=no">
@@ -803,6 +806,12 @@ html[data-lang="zh"] .cover-title [data-l="zh"],html[data-lang="zh"] .k-title [d
 html[data-lang="zh"] .guest-lbl [data-l="zh"]{font-family:var(--zh-head);font-size:max(14px,calc(var(--u)*50));letter-spacing:.3em}
 html[data-lang="zh"] .open-btn .lbl[data-l="zh"]{font-family:var(--zh-head);font-size:max(15px,calc(var(--u)*56));letter-spacing:.3em}
 html[data-lang="zh"] #chinese .e-pair small,html[data-lang="zh"] #chinese .e-info dt{font-family:var(--zh);font-size:calc(.95rem + 1px);letter-spacing:.3em;padding-left:.3em;opacity:.9;line-height:1.5;margin-bottom:2px}
+/* fixed lines: every phone shows the Khmer card with the same line breaks */
+.ln{display:block;white-space:nowrap}
+.rsvp-note{white-space:pre-line}
+.lat{font-variant-numeric:lining-nums}
+.lat{font-family:var(--en);font-weight:600;font-size:1.05em;letter-spacing:.04em;white-space:nowrap}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 /* cover language switch: three choices, the highlight slides between them */
 .cv-lang{grid-template-columns:1fr 1fr 1fr}
 .cv-lang::before{width:calc((100% - 6px)/3)}
@@ -958,7 +967,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     <div class="in">
       <h1 class="k-title goldtext"><span data-l="km">សិរីមង្គលអាពាហ៍ពិពាហ៍</span><span data-l="en">The Wedding Celebration</span><span data-l="zh">婚礼庆典</span></h1>
       <div class="arch"><img src="img/cover.jpg" alt="Ly Chhayly and Ma Meyhuy walking through a gallery of Angkor Wat" width="1000" height="1333"></div>
-      <img class="couple-names" src="img/couple-names.svg" alt="ឆាយលី · មុីហ៊ុយ" width="441" height="419">
+      <img class="couple-names" src="img/couple-names.svg" alt="ឆាយលី · ម៉ីហ៊ុយ" width="441" height="419">
     </div>
   </section>
 
@@ -967,12 +976,12 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     <div class="in">
       <div class="hosts hosts-one"><div>យើងខ្ញុំទាំងពីរ</div></div>
       <p class="k-intro">មានកិត្តិយសសូមគោរពអញ្ជើញ</p>
-      <p class="k-body">ឯកឧត្តម លោកឧកញ៉ា លោកជំទាវ លោក លោកស្រី អ្នកនាង កញ្ញា និងប្រិយមិត្តអញ្ជើញចូលរួមជាអធិបតី និងជាភ្ញៀវកិត្តិយសដើម្បីប្រសិទ្ធពរជ័យសិរីមង្គលក្នុងពិធីរៀបអាពាហ៍ពិពាហ៍ របស់យើងខ្ញុំ ។</p>
+      <p class="k-body"><span class="ln">ឯកឧត្តម លោកឧកញ៉ា លោកជំទាវ លោក លោកស្រី</span><span class="ln">អ្នកនាង កញ្ញា និងប្រិយមិត្តអញ្ជើញចូលរួមជាអធិបតី</span><span class="ln">និងជាភ្ញៀវកិត្តិយសដើម្បីប្រសិទ្ធពរជ័យសិរីមង្គល</span><span class="ln">ក្នុងពិធីរៀបអាពាហ៍ពិពាហ៍ របស់យើងខ្ញុំ ។</span></p>
       <div class="pair">
         <div><small>កូនប្រុសនាម</small><strong>លី ឆាយលី</strong></div>
-        <div><small>កូនស្រីនាម</small><strong>ម៉ា មុីហ៊ុយ</strong></div>
+        <div><small>កូនស្រីនាម</small><strong>ម៉ា ម៉ីហ៊ុយ</strong></div>
       </div>
-      <p class="k-when">ប្រព្រឹត្តទៅនៅ <b>ថ្ងៃអាទិត្យ ១១កើត ខែមិគសិរ ឆ្នាំមមី អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០ ត្រូវនឹងថ្ងៃទី២០ ខែធ្នូ ឆ្នាំ២០២៦ វេលាម៉ោង ០៥:០០ ល្ងាច</b> ស្ថិតនៅ សាលសន្និបាតប៉េងហួតបឹងស្នោ (PH GRAND HALL EURO 3)</p>
+      <p class="k-when"><span class="ln">ប្រព្រឹត្តទៅនៅ <b>ថ្ងៃអាទិត្យ ១១កើត ខែមិគសិរ</b></span><span class="ln"><b>ឆ្នាំមមី អដ្ឋស័ក ពុទ្ធសករាជ ២៥៧០</b></span><span class="ln"><b>ត្រូវនឹងថ្ងៃទី២០ ខែធ្នូ ឆ្នាំ២០២៦</b></span><span class="ln"><b>វេលាម៉ោង ០៥:០០ ល្ងាច</b> ស្ថិតនៅ</span><span class="ln">សាលសន្និបាតប៉េងហួតបឹងស្នោ</span><span class="ln"><span class="lat">(PH GRAND HALL EURO 3)</span></span></p>
       <p class="k-thanks">ដោយមេត្រីភាព សូមអរគុណ!</p>
     </div>
   </section>
@@ -1131,7 +1140,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
         <div class="sub" data-l="en">Wedding Gift</div>
         <div class="sub" data-l="zh">新婚贺礼</div>
       </div>
-      <p class="lead"><span data-l="km">វត្តមានរបស់លោកអ្នកគឺជាកាដូដ៏ធំបំផុត។ ប្រសិនបើលោកអ្នកមានបំណងផ្ញើចំណងដៃ សូមបើកស្រោមសំបុត្រខាងក្រោម។</span><span data-l="en">Your presence is the greatest gift to us. If you wish to send your blessings and a wedding gift, please tap the envelope below.</span><span data-l="zh">您的到来就是最珍贵的礼物。如您希望送上新婚祝福与礼金，请点击下方红包。</span></p>
+      <p class="lead"><span data-l="km"><span class="ln">វត្តមានរបស់លោកអ្នកគឺជាកាដូដ៏ធំបំផុត។</span><span class="ln">ប្រសិនបើលោកអ្នកមានបំណងផ្ញើចំណងដៃ</span><span class="ln">សូមបើកស្រោមសំបុត្រខាងក្រោម។</span></span><span data-l="en">Your presence is the greatest gift to us. If you wish to send your blessings and a wedding gift, please tap the envelope below.</span><span data-l="zh">您的到来就是最珍贵的礼物。如您希望送上新婚祝福与礼金，请点击下方红包。</span></p>
       <div class="env-stage" id="envStage">
         <div class="env" id="env" role="button" tabindex="0" aria-expanded="false" aria-controls="qrcard" aria-label="Open the envelope">
           <div class="env-back"></div>
@@ -1191,7 +1200,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
       </div>
       <div class="lockpill" id="lockPill"><span data-l="km">នឹងបើកនៅថ្ងៃមង្គលការ</span><span data-l="en">Opens on the wedding day</span><span data-l="zh">婚礼当天开放</span></div>
       <div class="card" id="photoCard">
-        <p class="lead" style="margin-bottom:10px"><span data-l="km">បន្ថែមរូបថតរហូតដល់ ៥ សន្លឹកពីថ្ងៃមង្គលការ។ មានតែម្ចាស់ការប៉ុណ្ណោះដែលអាចមើលឃើញ។</span><span data-l="en">We warmly welcome you to share your beautiful photos from our wedding day and help us treasure these unforgettable memories.</span><span data-l="zh">欢迎分享婚礼当天的美好照片，与我们一起珍藏幸福回忆。</span></p>
+        <p class="lead" style="margin-bottom:10px"><span data-l="km"><span class="ln">បន្ថែមរូបថតរហូតដល់ ៥ សន្លឹកពីថ្ងៃមង្គលការ។</span><span class="ln">មានតែម្ចាស់ការប៉ុណ្ណោះដែលអាចមើលឃើញ។</span></span><span data-l="en">We warmly welcome you to share your beautiful photos from our wedding day and help us treasure these unforgettable memories.</span><span data-l="zh">欢迎分享婚礼当天的美好照片，与我们一起珍藏幸福回忆。</span></p>
         <div class="drop">
           <svg viewBox="0 0 24 24"><path d="M12 16V5M7.5 9.5 12 5l4.5 4.5M4.5 15v4h15v-4"/></svg>
           <p><span data-l="km">ជ្រើសរើសរូបថតរហូតដល់ ៥ សន្លឹក</span><span data-l="en">Choose up to 5 photos</span><span data-l="zh">最多可选择 5 张照片</span></p>
@@ -1200,7 +1209,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
         <div class="slots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
         <div class="count">0 / 5</div>
         <div class="field"><label for="pName"><span data-l="km">ឈ្មោះរបស់អ្នក (ស្រេចចិត្ត)</span><span data-l="en">Your name (optional)</span><span data-l="zh">您的姓名（选填）</span></label><input id="pName" type="text" placeholder="So the hosts know who shared" autocomplete="off"></div>
-        <p class="fine"><span data-l="km">រូបថតនឹងត្រូវបានកែទំហំឱ្យដោយស្វ័យប្រវត្តិ និងរក្សាគុណភាព។</span><span data-l="en">Only the couple can see them. Photos are resized for you and keep their quality.</span><span data-l="zh">照片仅新人可见，并会自动调整大小，保持清晰。</span></p>
+        <p class="fine"><span data-l="km"><span class="ln">រូបថតនឹងត្រូវបានកែទំហំឱ្យដោយស្វ័យប្រវត្តិ</span><span class="ln">និងរក្សាគុណភាព។</span></span><span data-l="en">Only the couple can see them. Photos are resized for you and keep their quality.</span><span data-l="zh">照片仅新人可见，并会自动调整大小，保持清晰。</span></p>
       </div>
     </div>
   </section>
@@ -1250,13 +1259,13 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
       {ic:'people',t:'6:30',ap:'AM',kh:'ជួបជុំភ្ញៀវកិត្តិយស',en:'Honored guests gather',zh:'迎接贵宾'},
       {ic:'tray',t:'7:00',ap:'AM',kh:'ពិធីហែជំនូន (កំណត់)',en:"Groom's procession (time to be confirmed)",zh:'迎亲聘礼巡游（时间待定）'},
       {ic:'fruit',t:'7:30',ap:'AM',kh:'ពិធីនិយាយជើងការ រៀបរាប់ផ្លែឈើ',en:'Family introductions and fruit presentation',zh:'双方家长介绍及献果仪式'},
-      {ic:'rings',t:'8:00',ap:'AM',kh:'ពិធីបំពាក់ចិញ្ចៀន និង ពិសាអាហារពេលព្រឹក',en:'Ring ceremony and breakfast',zh:'交换戒指仪式及早餐'},
+      {ic:'rings',t:'8:00',ap:'AM',kh:'ពិធីបំពាក់ចិញ្ចៀន និង|ពិសាអាហារពេលព្រឹក',en:'Ring ceremony and breakfast',zh:'交换戒指仪式及早餐'},
       {ic:'lotus',t:'8:40',ap:'AM',kh:'ពិធីសូត្រមន្តចំរើនព្រះបរិត្ត',en:'Monks’ blessing chant',zh:'僧侣诵经祈福'},
       {ic:'scissors',t:'9:30',ap:'AM',kh:'ពិធីកាត់សក់បង្កក់សិរី និង ថតរូបជុំគ្រួសារ',en:'Hair-cutting ceremony and family photos',zh:'剪发祈福仪式及全家福合影'},
-      {ic:'candle',t:'10:45',ap:'AM',kh:'ពិធីសំពះពេល បង្វិលពពិល សំពះផ្ទឹម សែនចងដៃ',en:'Candle ceremony, bowing and hand-tying',zh:'绕烛祈福、跪拜及系线祝福仪式'},
+      {ic:'candle',t:'10:45',ap:'AM',kh:'ពិធីសំពះពេល បង្វិលពពិល|សំពះផ្ទឹម សែនចងដៃ',en:'Candle ceremony, bowing and hand-tying',zh:'绕烛祈福、跪拜及系线祝福仪式'},
       {ic:'bowl',t:'11:30',ap:'AM',kh:'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារថ្ងៃត្រង់',en:'Lunch for honored guests',zh:'午宴款待贵宾'},
       {ic:'tea',t:'12:00',ap:'PM',zap:'中午',kh:'ពិធីចាក់ទឹកតែ',en:'Tea-pouring ceremony',zh:'敬茶仪式'},
-      {ic:'toast',t:'5:00',ap:'PM',kh:'អញ្ជើញភ្ញៀវកិត្តិយសពិសាអាហារ នៅ សាលសន្និបាតប៉េងហួតបឹងស្នោ',en:'Evening reception at PH Grand Hall Euro 3',zh:'晚宴 · PH Grand Hall Euro 3',main:true}
+      {ic:'toast',t:'5:00',ap:'PM',kh:'អញ្ជើញភ្ញៀវកិត្តិយស|ពិសាអាហារ នៅ|សាលសន្និបាតប៉េងហួតបឹងស្នោ',en:'Evening reception at PH Grand Hall Euro 3',zh:'晚宴 · PH Grand Hall Euro 3',main:true}
     ],
     photos:[
       ['p01',1001,1500],['p02',1500,1001],['p04',987,1500],['p07',1000,1500],['p06',1500,1024],
@@ -1298,7 +1307,8 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     var s1=document.createElement('span');s1.setAttribute('data-l','km');s1.textContent=p.ap;var s2=document.createElement('span');s2.setAttribute('data-l','en');s2.textContent=p.ap;
     var s3=document.createElement('span');s3.setAttribute('data-l','zh');s3.textContent=p.zap||(p.ap==='AM'?'上午':'下午');s.appendChild(s1);s.appendChild(s2);s.appendChild(s3);t.appendChild(s);
     var d=document.createElement('div');
-    var k=document.createElement('span');k.className='kh';k.setAttribute('data-l','km');k.textContent=p.kh;
+    var k=document.createElement('span');k.className='kh';k.setAttribute('data-l','km');
+    p.kh.split('|').forEach(function(t){var x=document.createElement('span');x.className='ln';x.textContent=t;k.appendChild(x)});
     var e=document.createElement('span');e.className='en';e.setAttribute('data-l','en');e.textContent=p.en;
     var z=document.createElement('span');z.className='zh';z.setAttribute('data-l','zh');z.textContent=p.zh||p.en;
     d.appendChild(k);d.appendChild(e);d.appendChild(z);li.appendChild(t);li.appendChild(d);sched.appendChild(li);
@@ -1735,12 +1745,12 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     $$('#rsvpSeg button').forEach(function(b){b.addEventListener('click',function(){setRsvp(b.getAttribute('data-v'));rsvpNote('')})});
     $('#gMinus').addEventListener('click',function(){setG(g-1);rsvpNote('')});
     $('#gPlus').addEventListener('click',function(){setG(g+1);rsvpNote('')});
-    function sentText(v,n){return v==='yes'?L('សូមអរគុណ! យើងខ្ញុំបានទទួលការឆ្លើយតបរបស់លោកអ្នក ('+n+' នាក់)។','Thank you! Your reply is saved ('+n+(n>1?' guests':' guest')+').','谢谢！您的回复已保存（'+n+' 位）。'):L('សូមអរគុណដែលបានប្រាប់យើងខ្ញុំ។','Thank you for letting us know.','感谢您告知我们。')}
+    function sentText(v,n){return v==='yes'?L('សូមអរគុណ!\nយើងខ្ញុំបានទទួលការឆ្លើយតបរបស់លោកអ្នក ('+n+' នាក់)។','Thank you! Your reply is saved ('+n+(n>1?' guests':' guest')+').','谢谢！您的回复已保存（'+n+' 位）。'):L('សូមអរគុណដែលបានប្រាប់យើងខ្ញុំ។','Thank you for letting us know.','感谢您告知我们。')}
     if(rsvpUrl){
       fetch(rsvpUrl,{credentials:'same-origin'}).then(function(r){return r.ok?r.json():null}).then(function(d){
         if(!d||!d.status)return;
         setRsvp(d.status);if(d.status==='yes')setG(d.party||1);
-        rsvpNote(L('ការឆ្លើយតបរបស់លោកអ្នកត្រូវបានរក្សាទុក។ លោកអ្នកអាចកែប្រែបាន។','Your reply is saved. You can change it any time.','您的回复已保存，可随时修改。'));
+        rsvpNote(L('ការឆ្លើយតបរបស់លោកអ្នកត្រូវបានរក្សាទុក។\nលោកអ្នកអាចកែប្រែបាន។','Your reply is saved. You can change it any time.','您的回复已保存，可随时修改。'));
       }).catch(function(){});
     }
     $('#rsvpSend').addEventListener('click',function(){
@@ -1750,7 +1760,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
         .then(function(r){return r.json().then(function(d){return {ok:r.ok,d:d}})})
         .then(function(x){
           if(x.ok)rsvpNote(sentText(rsvpVal,g));
-          else rsvpNote(x.d&&x.d.closed?L('ការឆ្លើយតបមិនទាន់បើកនៅឡើយទេ។','Replies are not open yet.','回复尚未开放。'):L('សូមអភ័យទោស មិនអាចផ្ញើបានទេ។ សូមព្យាយាមម្តងទៀត។','Sorry, that did not send. Please try again.','抱歉，发送失败，请重试。'),true);
+          else rsvpNote(x.d&&x.d.closed?L('ការឆ្លើយតបមិនទាន់បើកនៅឡើយទេ។','Replies are not open yet.','回复尚未开放。'):L('សូមអភ័យទោស មិនអាចផ្ញើបានទេ។\nសូមព្យាយាមម្តងទៀត។','Sorry, that did not send. Please try again.','抱歉，发送失败，请重试。'),true);
         })
         .catch(function(){rsvpNote(L('សូមពិនិត្យអ៊ីនធឺណិត ហើយព្យាយាមម្តងទៀត។','Please check your connection and try again.','请检查网络连接后重试。'),true)})
         .then(function(){btn.disabled=false});
@@ -2001,9 +2011,9 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
   function icsStamp(d){return d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'')}
   function buildIcs(){
     var st=new Date(EVENT.start),en=new Date(st.getTime()+4*3600*1000);
-    var title=L('មង្គលការ លី ឆាយលី និង ម៉ា មុីហ៊ុយ','Wedding of Ly Chhayly & Ma Meyhuy','财利 & 美惠 婚礼');
+    var title=L('មង្គលការ លី ឆាយលី និង ម៉ា ម៉ីហ៊ុយ','Wedding of Ly Chhayly & Ma Meyhuy','财利 & 美惠 婚礼');
     var place=L('សាលសន្និបាតប៉េងហួតបឹងស្នោ (PH Grand Hall Euro 3), ភ្នំពេញ','PH Grand Hall Euro 3, Peng Huoth Boeng Snor, Phnom Penh','PH Grand Hall Euro 3，柬埔寨金边市 Peng Huoth Boeng Snor');
-    var desc=L('ពិធីមង្គលការ លី ឆាយលី និង ម៉ា មុីហ៊ុយ។ ពិសាអាហារពេលល្ងាចម៉ោង ៥:០០។','Wedding celebration of Ly Chhayly and Ma Meyhuy. Evening reception at 5:00 PM.','财利与美惠的婚礼。晚宴于下午 5:00 开始。')+'\n'+'https://maps.app.goo.gl/Juga5GsrUUwnwwsC8';
+    var desc=L('ពិធីមង្គលការ លី ឆាយលី និង ម៉ា ម៉ីហ៊ុយ។ ពិសាអាហារពេលល្ងាចម៉ោង ៥:០០។','Wedding celebration of Ly Chhayly and Ma Meyhuy. Evening reception at 5:00 PM.','财利与美惠的婚礼。晚宴于下午 5:00 开始。')+'\n'+'https://maps.app.goo.gl/Juga5GsrUUwnwwsC8';
     var lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//MongkulCard//Invitation//EN','CALSCALE:GREGORIAN','METHOD:PUBLISH',
       'BEGIN:VEVENT','UID:ly-chhayly-ma-meyhuy-20261220@mongkulcard.com','DTSTAMP:'+icsStamp(new Date()),
       'DTSTART:'+icsStamp(st),'DTEND:'+icsStamp(en),'SUMMARY:'+icsText(title),'LOCATION:'+icsText(place),'DESCRIPTION:'+icsText(desc),
