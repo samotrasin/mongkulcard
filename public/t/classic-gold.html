@@ -808,6 +808,14 @@ html[data-lang="zh"] .open-btn .lbl[data-l="zh"]{font-family:var(--zh-head);font
 html[data-lang="zh"] #chinese .e-pair small,html[data-lang="zh"] #chinese .e-info dt{font-family:var(--zh);font-size:calc(.95rem + 1px);letter-spacing:.3em;padding-left:.3em;opacity:.9;line-height:1.5;margin-bottom:2px}
 /* fixed lines: every phone shows the Khmer card with the same line breaks */
 .page[hidden],.menu li[hidden]{display:none!important}
+/* Photo sharing: shown in English in the Khmer version too (the couple's request); Chinese stays Chinese */
+html[data-lang="km"] #photos [data-l="km"]{display:none!important}
+html[data-lang="km"] #photos [data-l="en"]{display:revert!important;font-family:var(--en);font-style:normal}
+html[data-lang="km"] #photos .head .sub[data-l="en"]{display:block!important;font-family:var(--en-display);font-size:1.18rem;font-weight:600;letter-spacing:.04em;color:var(--gold-deep);margin-top:14px}
+html[data-lang="km"] #photos .lead{font-family:var(--en);font-size:1.15rem;line-height:1.55}
+html[data-lang="km"] #photos .fine{font-family:var(--en);font-size:.98rem;line-height:1.5}
+html[data-lang="km"] #photos .field label{font-family:var(--en);letter-spacing:.18em;text-transform:uppercase}
+html[data-lang="km"] #pName{font-family:var(--en)}
 .ln{display:block;white-space:nowrap}
 .rsvp-note{white-space:pre-line}
 .lat{font-variant-numeric:lining-nums}
@@ -1196,7 +1204,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
       <div class="head" style="margin-bottom:12px">
         <div class="orn"><i></i></div>
         <div class="kh" data-l="km">រូបថត</div>
-        <div class="sub" data-l="en">Share Your Wedding Photos</div>
+        <div class="sub" data-l="en">Share Your Best Moments With Us</div>
         <div class="sub" data-l="zh">分享婚礼照片</div>
       </div>
       <div class="lockpill" id="lockPill"><span data-l="km">នឹងបើកនៅថ្ងៃមង្គលការ</span><span data-l="en">Opens on the wedding day</span><span data-l="zh">婚礼当天开放</span></div>
@@ -1209,7 +1217,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
         </div>
         <div class="slots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
         <div class="count">0 / 5</div>
-        <div class="field"><label for="pName"><span data-l="km">ឈ្មោះរបស់អ្នក (ស្រេចចិត្ត)</span><span data-l="en">Your name (optional)</span><span data-l="zh">您的姓名（选填）</span></label><input id="pName" type="text" placeholder="So the hosts know who shared" autocomplete="off"></div>
+        <div class="field"><label for="pName"><span data-l="km">ឈ្មោះរបស់អ្នក (ស្រេចចិត្ត)</span><span data-l="en">Your name (optional)</span><span data-l="zh">您的姓名（选填）</span></label><input id="pName" type="text" placeholder="So the couple knows who shared" autocomplete="off"></div>
         <p class="fine"><span data-l="km"><span class="ln">រូបថតនឹងត្រូវបានកែទំហំឱ្យដោយស្វ័យប្រវត្តិ</span><span class="ln">និងរក្សាគុណភាព។</span></span><span data-l="en">Only the couple can see them. Photos are resized for you and keep their quality.</span><span data-l="zh">照片仅新人可见，并会自动调整大小，保持清晰。</span></p>
       </div>
     </div>
@@ -1781,7 +1789,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     pcard.classList.add('is-locked');
     $('#photos').classList.add('is-locked-page');
     $$('input',pcard).forEach(function(i){i.readOnly=true});
-    pcard.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();toast(L('ការចែករំលែករូបថតនឹងបើកនៅថ្ងៃមង្គលការ','Photo sharing will be available on the wedding day.','照片分享将于婚礼当天开放。'),4200)},true);
+    pcard.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();toast(L('Photo sharing will be available on the wedding day.','Photo sharing will be available on the wedding day.','照片分享将于婚礼当天开放。'),4200)},true);
   }
 
   /* sample QR (decorative, not a real code) */
@@ -1954,7 +1962,7 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
     langCur.textContent=LNAME[lang];
     if(lang==='zh')langCur.setAttribute('data-zh','');else langCur.removeAttribute('data-zh');
     langBtn.setAttribute('aria-label',L('ប្តូរភាសា','Change language','切换语言'));
-    if(pName)pName.placeholder=L('ដើម្បីឱ្យម្ចាស់ការដឹងថាអ្នកណាបានចែករំលែក','So the hosts know who shared','让新人知道是谁分享的');
+    if(pName)pName.placeholder=L('So the couple knows who shared','So the couple knows who shared','让新人知道是谁分享的');
     env.setAttribute('aria-label',envState==='closed'?L('បើកស្រោមសំបុត្រ','Open the envelope','打开信封'):L('បិទស្រោមសំបុត្រ','Close the envelope','关闭信封'));
     if(fromUser){try{localStorage.setItem(LKEY,lang)}catch(e){}}
     if(fromUser&&menuOpen){setMenu(false)}
