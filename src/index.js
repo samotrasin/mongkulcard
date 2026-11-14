@@ -8,6 +8,7 @@
 //   /img/...             pictures (served from the public/ folder)
 //   /media/<event>/<file> video and music (served from the R2 bucket)
 //   /preview/             the new website prototype (hidden from search engines, nothing is saved)
+//   /signin, /account, /auth/telegram, /tg/webhook, /api/account/...   customer accounts (src/account.js)
 
 // Rules that match the database: 7 characters from a-z and 2-9 without i, l, o.
 const CODE_RE = /^[a-hj-km-np-z2-9]{7}$/;
@@ -18,11 +19,18 @@ const SLUG_RE = /^[a-z0-9-]{3,40}$/;
 const BOT_RE = /bot|crawler|spider|facebookexternalhit|whatsapp|preview|slurp/i;
 
 import { hostPage, appFile, api } from './host.js';
+import { siteRoute, accountApi } from './account.js';
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const parts = url.pathname.split('/').filter(Boolean);
+
+    // Customer accounts for the self-service website (src/account.js).
+    if (parts[0] === 'api' && parts[1] === 'account') return accountApi(request, env, url, parts);
+    if (['signin', 'auth', 'account', 'site', 'tg'].includes(parts[0])) {
+      return (await siteRoute(request, env, ctx, url, parts)) || page(notFound(), 404);
+    }
 
     // A guest's own RSVP: /api/rsvp/<event>/<code> (the personal link is the key).
     if (parts[0] === 'api' && parts[1] === 'rsvp') return guestRsvp(request, env, url, parts);

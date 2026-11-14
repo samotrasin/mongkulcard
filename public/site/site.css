@@ -1,0 +1,41 @@
+/* MongkulCard website pages (sign-in, account). Same look as the /preview prototype. */
+:root{--bg:#120609;--card:#221016;--line:rgba(217,178,95,.22);--line2:rgba(217,178,95,.45);--gold:#d9b25f;--gold-l:#f6e3a1;--gold-d:#a8782a;--ivory:#f5ebdc;--muted:#bba78f;
+  --kh-d:'Moul',serif;--ui:'Kantumruy Pro',system-ui,sans-serif;--caps:'Cinzel',Georgia,serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{background:radial-gradient(80% 50% at 50% 0%,rgba(92,21,38,.55),transparent 70%),var(--bg);color:var(--ivory);font:400 15px/1.6 var(--ui);-webkit-text-size-adjust:100%}
+a{color:inherit}
+[data-l]{display:none}
+html[data-lang=km] [data-l=km],html[data-lang=en] [data-l=en]{display:revert}
+.top{display:flex;align-items:center;gap:10px;max-width:520px;margin:0 auto;padding:16px 20px}
+.top .brand{font:600 14px var(--caps);letter-spacing:.2em;text-decoration:none}
+.top .sp{flex:1}
+.lang{display:flex;border:1px solid var(--line2);border-radius:30px;overflow:hidden;font-size:12.5px}
+.lang button{background:none;border:0;padding:5px 10px;color:var(--muted);font:inherit;cursor:pointer}
+.lang button.on{background:var(--gold);color:#2a0a10;font-weight:600}
+.goldtext{background:linear-gradient(100deg,var(--gold-d),var(--gold-l) 35%,var(--gold) 55%,#fff3cf 70%,var(--gold-d));-webkit-background-clip:text;background-clip:text;color:transparent}
+.wrap{max-width:520px;margin:0 auto;padding:10px 20px 50px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:30px 22px;text-align:center}
+.h{font-family:var(--kh-d);font-weight:400;font-size:20px;line-height:2}
+html[data-lang=en] .h{font-family:var(--caps);font-size:21px;letter-spacing:.1em;line-height:1.5}
+.sub{color:var(--muted);font-size:14.5px;margin-top:4px}
+.logo{width:48px;height:48px;display:block;margin:0 auto 6px}
+.tg-box{min-height:52px;margin:24px 0 8px;display:flex;justify-content:center}
+.note{font-size:12.5px;color:var(--muted);background:rgba(217,178,95,.07);border:1px dashed var(--line2);border-radius:12px;padding:10px 12px;margin-top:18px;text-align:left}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:40px;padding:12px 22px;font:500 15px var(--ui);border:1px solid var(--line2);background:transparent;color:var(--ivory);text-decoration:none;cursor:pointer}
+.btn.gold{background:linear-gradient(100deg,var(--gold-d),var(--gold-l) 50%,var(--gold-d));color:#2a0a10;border:0;font-weight:600}
+.btn.block{width:100%;margin-top:10px}
+.btn.tg{background:#2aabee;border:0;color:#fff}
+.hidden{display:none!important}
+.me{display:flex;align-items:center;gap:14px;text-align:left}
+.me img,.me .ph{width:58px;height:58px;border-radius:50%;object-fit:cover;border:1px solid var(--gold);flex:none}
+.me .ph{display:flex;align-items:center;justify-content:center;font:600 22px var(--caps);color:var(--gold-l)}
+.me b{display:block;font-size:17px;font-weight:600}
+.me small{color:var(--muted)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 2px;border-bottom:1px solid var(--line);text-align:left;font-size:14.5px}
+.ok{color:#8fe0b0}.warn{color:var(--gold-l)}
+.center-page{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.card-box{max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:30px 24px;text-align:center}
+.card-box .brand{font:600 14px var(--caps);letter-spacing:.25em;color:var(--gold-l);margin-bottom:14px}
+.card-box p{color:var(--muted);margin-bottom:8px}.card-box .km{color:var(--ivory)}
+.card-box .btn{margin-top:14px}

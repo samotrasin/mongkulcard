@@ -552,7 +552,8 @@ var root=document.documentElement;
 /* ---------- the customer's invitation, as the editor would save it ---------- */
 var INV={groom:{en:'Sovann',km:'សុវណ្ណ'},bride:{en:'Sreypov',km:'ស្រីពៅ'},date:'2027-02-14',time:'17:00',venue:'Golden Lotus Ballroom, Phnom Penh',theme:'burgundy',
   sections:{countdown:true,program:true,map:true,gallery:true,gift:true,rsvp:false,photos:true}};
-var GUESTS=[];var loggedIn=false;
+var GUESTS=[];var loggedIn=false;var ACCOUNT=null;
+var REAL=location.pathname.indexOf('/preview')===0;
 
 /* ---------- language ---------- */
 var TXT={km:{p1:'គំរូ + ព័ត៌មានរបស់អ្នក',p2:'ខ្មែរ និង English',p3:'តំណផ្ទាល់ខ្លួនសម្រាប់ភ្ញៀវ',p4:'ភ្ញៀវចែករំលែករូបថត',p5:'中文 (ភាសាចិន)',p6:'ការបើកធៀបបែបភាពយន្ត',p7:'តន្ត្រី និង RSVP',p8:'គ្រប់យ៉ាងក្នុង Premium',p9:'រចនាផ្ទាល់ខ្លួនដោយ MongkulCard',p10:'វីដេអូ AI របស់គូស្វាមីភរិយា',pop:'ពេញនិយមបំផុត',
@@ -656,7 +657,7 @@ function go(v){if(VIEWS.indexOf(v)<0)v='home';
   $$('.view').forEach(function(x){x.classList.toggle('on',x.id==='v-'+v)});
   if(location.hash!=='#'+v)history.replaceState(null,'','#'+v);
   scrollTo(0,0);$('.bbar').style.display=(v==='home'||v==='templates')?'':'none';
-  $('#loginBtn').innerHTML=loggedIn?'<span>'+(lang()==='km'?'ធៀបរបស់ខ្ញុំ':'My invitations')+'</span>':'<span data-l="km">ចូល</span><span data-l="en">Log in</span>';
+  $('#loginBtn').innerHTML=loggedIn?'<span>'+(ACCOUNT?esc(ACCOUNT.name.split(' ')[0]):(lang()==='km'?'ធៀបរបស់ខ្ញុំ':'My invitations'))+'</span>':'<span data-l="km">ចូល</span><span data-l="en">Log in</span>';
   $('#loginBtn').dataset.go=loggedIn?'dashboard':'login';
   setTimeout(push,80);
 }
@@ -665,10 +666,10 @@ document.addEventListener('click',function(e){var g=e.target.closest('[data-go]'
 addEventListener('hashchange',function(){go(location.hash.slice(1))});
 
 /* ---------- login (simulated) ---------- */
-$('#tgLogin').onclick=function(){$('#tgSheet').classList.add('on')};
+$('#tgLogin').onclick=function(){if(REAL){location.href='/signin?next='+encodeURIComponent('/preview/#editor');return}$('#tgSheet').classList.add('on')};
 $('#tgNo').onclick=function(){$('#tgSheet').classList.remove('on')};
 $('#tgYes').onclick=function(){$('#tgSheet').classList.remove('on');loggedIn=true;toast('hello');go('editor')};
-$('#ggLogin').onclick=function(){loggedIn=true;toast('hello');go('editor')};
+$('#ggLogin').onclick=function(){if(REAL){toast(lang()==='km'?'ការចូលតាម Google នឹងមានឆាប់ៗ':'Google sign-in is coming soon');return}loggedIn=true;toast('hello');go('editor')};
 
 /* ---------- editor ---------- */
 $('#etabs').onclick=function(e){var b=e.target.closest('.etab');if(!b)return;$$('.etab').forEach(function(x){x.classList.toggle('on',x===b)});$$('.epane').forEach(function(p){p.classList.toggle('on',p.dataset.p===b.dataset.t)})};
@@ -706,7 +707,13 @@ $('#gName').onkeydown=function(e){if(e.key==='Enter')$('#gAdd').click()};
 $('#glist').onclick=function(e){var b=e.target.closest('[data-copy]');if(!b)return;var t='https://'+b.dataset.copy;
   try{navigator.clipboard.writeText(t).then(function(){toast('copied')},function(){toast(t)})}catch(_){toast(t)}};
 
-setLang('km');renderGuests();go(location.hash.slice(1)||'home');
+setLang('km');renderGuests();
+if(REAL){
+  $('.proto').textContent='PREVIEW · LOGIN IS REAL';
+  var ln=$('#v-login .note');if(ln)ln.innerHTML='<b>Real now:</b> Telegram sign-in creates your MongkulCard account. The editor, payment and guest links after it are still a demo.';
+  var dt=$('#v-dashboard .dash-top');if(dt){var a=document.createElement('a');a.href='/account';a.className='btn sm';a.style.marginLeft='auto';a.textContent=(lang()==='km'?'គណនី':'Account');dt.appendChild(a)}
+  fetch('/api/account/me',{credentials:'same-origin'}).then(function(r){return r.json()}).then(function(a){if(a&&a.signedIn){loggedIn=true;ACCOUNT=a}}).catch(function(){}).then(function(){go(location.hash.slice(1)||'home')});
+}else go(location.hash.slice(1)||'home');
 })();
 </script>
 </body>
