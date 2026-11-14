@@ -7,6 +7,7 @@
 //   /login, /manage       the host's sign-in and guest manager (src/host.js)
 //   /img/...             pictures (served from the public/ folder)
 //   /media/<event>/<file> video and music (served from the R2 bucket)
+//   /preview/             the new website prototype (hidden from search engines, nothing is saved)
 
 // Rules that match the database: 7 characters from a-z and 2-9 without i, l, o.
 const CODE_RE = /^[a-hj-km-np-z2-9]{7}$/;
@@ -49,6 +50,9 @@ export default {
     if (parts[0] === 'media' && parts.length === 3 && SLUG_RE.test(parts[1])) {
       return serveMedia(request, env, parts[1], parts[2]);
     }
+
+    // The website prototype: /preview/ and /preview/invite.html (static files in public/preview).
+    if (parts[0] === 'preview') return previewFile(request, env, url, parts);
 
     // Home
     if (parts.length === 0) return page(greeting());
@@ -222,6 +226,19 @@ async function serveMedia(request, env, slug, file) {
   }
 
   return new Response(request.method === 'HEAD' ? null : obj.body, { status, headers });
+}
+
+// ---------------------------------------------------------------- website prototype
+// Only these two files; anything else under /preview is "not found".
+async function previewFile(request, env, url, parts) {
+  if (parts.length === 1 && !url.pathname.endsWith('/')) {
+    return Response.redirect(new URL('/preview/', url).toString(), 301);
+  }
+  const file = parts.length === 1 ? 'index.html' : parts.length === 2 && parts[1] === 'invite.html' ? 'invite.html' : null;
+  if (!file) return page(notFound(), 404);
+  const res = await env.ASSETS.fetch(new URL('/preview/' + file, url));
+  if (!res.ok) return page(notFound(), 404);
+  return page(await res.text(), 200, { 'cache-control': 'no-cache' });
 }
 
 // ---------------------------------------------------------------- helpers

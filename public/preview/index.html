@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="km" data-lang="km">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>MongkulCard · Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Moul&family=Kantumruy+Pro:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#120609;--bg2:#1b0a0f;--card:#221016;--line:rgba(217,178,95,.22);--line2:rgba(217,178,95,.45);
+  --gold:#d9b25f;--gold-l:#f6e3a1;--gold-d:#a8782a;--ivory:#f5ebdc;--muted:#bba78f;--wine:#5c1526;
+  --kh-d:'Moul',serif;--ui:'Kantumruy Pro',system-ui,sans-serif;--serif:'Cormorant Garamond',Georgia,serif;--caps:'Cinzel',Georgia,serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ivory);font:400 15px/1.6 var(--ui);-webkit-tap-highlight-color:transparent;padding-bottom:76px}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+[data-l]{display:none}
+html[data-lang=km] [data-l=km],html[data-lang=en] [data-l=en]{display:revert}
+.goldtext{background:linear-gradient(100deg,var(--gold-d),var(--gold-l) 35%,var(--gold) 55%,#fff3cf 70%,var(--gold-d));background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sheen 7s linear infinite}
+@keyframes sheen{to{background-position:-220% 0}}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.view{display:none}.view.on{display:block;animation:fade .45s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}}
+.h1{font-family:var(--kh-d);font-weight:400;font-size:25px;line-height:1.9}
+html[data-lang=en] .h1{font-family:var(--serif);font-size:40px;line-height:1.1;font-weight:600}
+.h2{font-family:var(--kh-d);font-weight:400;font-size:19px;line-height:2;text-align:center}
+html[data-lang=en] .h2{font-family:var(--caps);font-size:20px;letter-spacing:.12em;line-height:1.4}
+.sub{color:var(--muted);font-size:15px}
+.eyebrow{font:500 11px var(--caps);letter-spacing:.3em;color:var(--gold);text-transform:uppercase}
+.sec{padding:56px 0}
+.sec-h{text-align:center;margin-bottom:28px}
+.sec-h .sub{margin-top:6px}
+.orn{display:block;margin:10px auto 0;width:110px;height:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:40px;padding:13px 24px;font-weight:500;font-size:15px;border:1px solid var(--line2);background:transparent;text-decoration:none;white-space:nowrap}
+.btn.gold{background:linear-gradient(100deg,var(--gold-d),var(--gold-l) 50%,var(--gold-d));background-size:200% 100%;color:#2a0a10;border:0;font-weight:600;box-shadow:0 6px 24px rgba(217,178,95,.25)}
+.btn.gold:hover{background-position:100% 0}
+.btn.sm{padding:8px 16px;font-size:13.5px}
+.btn.block{width:100%}
+.tg-ic{width:18px;height:18px}
+
+/* header */
+.hdr{position:sticky;top:0;z-index:30;background:rgba(18,6,9,.86);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hdr .wrap{display:flex;align-items:center;gap:12px;height:60px}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;cursor:pointer}
+.logo svg{width:28px;height:28px}
+.logo b{font:600 15px var(--caps);letter-spacing:.2em}
+.nav{display:none;gap:22px;margin-left:24px;font-size:14px;color:var(--muted)}
+.nav a{text-decoration:none;cursor:pointer}.nav a:hover{color:var(--gold-l)}
+.hdr .sp{flex:1}
+.lang{display:flex;border:1px solid var(--line2);border-radius:30px;overflow:hidden;font-size:12.5px}
+.lang button{background:none;border:0;padding:5px 10px;color:var(--muted)}
+.lang button.on{background:var(--gold);color:#2a0a10;font-weight:600}
+@media(min-width:860px){.nav{display:flex}}
+
+/* hero */
+.hero{position:relative;overflow:hidden;padding:34px 0 40px;
+  background:radial-gradient(80% 60% at 70% 30%,rgba(92,21,38,.55),transparent 70%),radial-gradient(60% 50% at 10% 90%,rgba(92,21,38,.35),transparent 70%)}
+.hero .wrap{display:grid;gap:30px;align-items:center}
+.hero-txt{text-align:center}
+.hero-txt .sub{margin:12px auto 22px;max-width:440px}
+.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.trust{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center;margin-top:22px;font-size:12.5px;color:var(--muted)}
+.trust span::before{content:"✦ ";color:var(--gold)}
+@media(min-width:860px){.hero .wrap{grid-template-columns:1.1fr .9fr}.hero-txt{text-align:left}.hero-txt .sub{margin-left:0}.hero-btns,.trust{justify-content:flex-start}.hero{padding:60px 0}}
+
+/* phone frame */
+.phone{position:relative;width:282px;height:590px;margin:0 auto;border-radius:44px;padding:10px;background:linear-gradient(145deg,#3a2a22,#0c0606 40%,#2a1d17);
+  box-shadow:0 30px 70px rgba(0,0,0,.6),0 0 0 1px rgba(217,178,95,.35),inset 0 0 0 2px #000}
+.phone iframe{width:100%;height:100%;border:0;border-radius:35px;background:#22050c;display:block}
+.phone::before{content:"";position:absolute;top:18px;left:50%;transform:translateX(-50%);width:84px;height:22px;border-radius:20px;background:#000;z-index:2}
+.phone-cap{text-align:center;font-size:12.5px;color:var(--muted);margin-top:14px}
+.phone-cap b{color:var(--gold-l);font-weight:500}
+
+/* templates */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.tcard{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .25s,border-color .25s;text-align:left;padding:0}
+.tcard:hover{transform:translateY(-3px);border-color:var(--line2)}
+.thumb{aspect-ratio:9/14;position:relative;overflow:hidden}
+.tcard .meta{padding:11px 12px 13px}
+.tcard .nm{font:600 15px var(--serif);letter-spacing:.02em;color:var(--ivory)}
+.tcard .ty{font-size:12px;color:var(--muted)}
+.badge{position:absolute;top:10px;left:10px;font-size:10.5px;padding:3px 9px;border-radius:20px;background:rgba(0,0,0,.55);border:1px solid var(--line2);color:var(--gold-l);z-index:2}
+.badge.new{background:var(--gold);color:#2a0a10;border:0;font-weight:600}
+.soon{opacity:.7;cursor:default}.soon:hover{transform:none}
+/* CSS thumbnails */
+.th-curtain{background:radial-gradient(70% 50% at 50% 60%,#661326,#22050c)}
+.th-curtain::before,.th-curtain::after{content:"";position:absolute;top:0;bottom:0;width:18%;background:repeating-linear-gradient(90deg,#22050c 0,#661326 5px,#8c2238 8px,#3f0916 12px)}
+.th-curtain::before{left:0}.th-curtain::after{right:0}
+.th-arch{position:absolute;left:22%;right:22%;top:18%;bottom:10%;border:1.5px solid var(--gold);border-bottom:0;border-radius:50% 50% 0 0/38% 38% 0 0}
+.th-names{position:absolute;left:0;right:0;top:40%;text-align:center;font:italic 600 19px var(--serif);color:var(--gold-l);line-height:1.1}
+.th-valance{position:absolute;top:0;left:0;right:0;height:9%;background:repeating-linear-gradient(90deg,#3f0916 0,#8c2238 6px,#3f0916 12px);border-bottom:2px solid var(--gold)}
+.th-classic{background:linear-gradient(180deg,#4a0f1a,#2a060e)}
+.th-classic .paper{position:absolute;inset:14% 12%;background:#f4ebdf;border-radius:3px;box-shadow:0 8px 20px rgba(0,0,0,.5)}
+.th-classic .paper::before{content:"";position:absolute;inset:6px;border:1px solid rgba(178,128,44,.5)}
+.th-classic .paper span{position:absolute;left:0;right:0;top:38%;text-align:center;font:italic 600 18px var(--serif);color:#5c1526}
+.th-lotus{background:radial-gradient(60% 40% at 50% 65%,#24453b,#081712)}
+.th-doors{background:radial-gradient(60% 50% at 50% 50%,#5a4317,#120c03)}
+.th-bday{background:radial-gradient(60% 50% at 50% 45%,#2b2f5e,#0a0b1e)}
+.th-ic{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.th-ic svg{width:44%;height:auto}
+
+.filters{display:flex;gap:8px;justify-content:center;margin-bottom:18px}
+.chip{border:1px solid var(--line2);background:none;border-radius:30px;padding:7px 15px;font-size:13.5px;color:var(--muted)}
+.chip.on{background:rgba(217,178,95,.14);color:var(--gold-l);border-color:var(--gold)}
+
+/* try box */
+.try{background:linear-gradient(160deg,#2a0e15,#170709);border:1px solid var(--line2);border-radius:22px;padding:26px 20px;max-width:560px;margin:0 auto;text-align:center}
+.fields{display:grid;gap:10px;margin:18px 0}
+.fields.two{grid-template-columns:1fr 1fr}
+.f{display:block;text-align:left}
+.f>span{display:block;font-size:12.5px;color:var(--muted);margin:0 0 4px 4px}
+.f input,.f select{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--ivory);font:15px var(--ui);outline:none}
+.f input:focus,.f select:focus{border-color:var(--gold)}
+input[type=date]{color-scheme:dark}
+
+/* steps + features */
+.steps{display:grid;gap:14px}
+@media(min-width:760px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 20px;text-align:center}
+.step .n{width:40px;height:40px;margin:0 auto 10px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font:600 17px var(--caps);color:var(--gold-l)}
+.step b{display:block;font-weight:600;font-size:16px;margin-bottom:4px}
+.step p{font-size:13.5px;color:var(--muted)}
+.feats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:760px){.feats{grid-template-columns:repeat(4,1fr)}}
+.feat{border:1px solid var(--line);border-radius:16px;padding:18px 12px;text-align:center;background:rgba(255,255,255,.015)}
+.feat svg{width:30px;height:30px;stroke:var(--gold-l);fill:none;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;margin-bottom:6px}
+.feat b{display:block;font-weight:500;font-size:14px}
+.feat small{display:block;font-size:12px;color:var(--muted);line-height:1.5;margin-top:2px}
+
+/* pricing */
+.plans{display:grid;gap:14px}
+@media(min-width:760px){.plans{grid-template-columns:repeat(3,1fr)}}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px 20px;position:relative}
+.plan.best{border-color:var(--gold);background:linear-gradient(170deg,#2c1017,#1a080d)}
+.plan .pn{font:600 13px var(--caps);letter-spacing:.2em;color:var(--gold)}
+.plan .pr{font:600 34px var(--serif);margin:6px 0 2px}
+.plan .pr small{font:400 13px var(--ui);color:var(--muted)}
+.plan ul{list-style:none;margin:14px 0 18px;font-size:14px}
+.plan li{padding:5px 0 5px 22px;position:relative;color:#e6d7c2}
+.plan li::before{content:"✓";position:absolute;left:0;color:var(--gold)}
+.plan li.no{color:#7f6d60}.plan li.no::before{content:"–";color:#7f6d60}
+.plan .tag{position:absolute;top:-11px;right:18px;background:var(--gold);color:#2a0a10;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.tbd{font-size:12px;color:var(--muted);text-align:center;margin-top:12px}
+
+/* faq */
+.faq{max-width:680px;margin:0 auto}
+.faq details{border-bottom:1px solid var(--line);padding:4px 0}
+.faq summary{list-style:none;cursor:pointer;padding:14px 30px 14px 2px;position:relative;font-weight:500}
+.faq summary::after{content:"+";position:absolute;right:4px;top:10px;font-size:22px;color:var(--gold)}
+.faq details[open] summary::after{content:"–"}
+.faq p{color:var(--muted);font-size:14px;padding:0 2px 14px}
+
+.final{text-align:center;padding:60px 20px;background:radial-gradient(60% 80% at 50% 100%,rgba(92,21,38,.6),transparent)}
+.foot{border-top:1px solid var(--line);padding:28px 0;text-align:center;font-size:12.5px;color:var(--muted)}
+.foot .links{display:flex;gap:18px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+
+/* sticky bottom bar (phones) */
+.bbar{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(18,6,9,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+.bbar .btn{flex:1}.bbar .btn.tg{flex:none;width:52px;padding:0}
+@media(min-width:860px){.bbar{display:none}body{padding-bottom:0}}
+
+/* app screens (try / login / editor / pay / dashboard) */
+.app{padding-top:24px;padding-bottom:40px}
+.back{background:none;border:0;color:var(--muted);font-size:14px;margin-bottom:12px;display:inline-flex;gap:6px;align-items:center}
+.split{display:grid;gap:24px}.split>*,.fields>*,.addg>*{min-width:0}.f input,.f select{min-width:0}
+@media(min-width:860px){.split{grid-template-columns:1fr 340px;align-items:start}.split .stick{position:sticky;top:80px}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px}
+.panel h3{font-weight:600;font-size:17px;margin-bottom:2px}
+.panel .sub{font-size:13.5px}
+.note{font-size:12.5px;color:var(--muted);background:rgba(217,178,95,.07);border:1px dashed var(--line2);border-radius:12px;padding:10px 12px;margin-top:14px}
+.note b{color:var(--gold-l);font-weight:500}
+
+.login{max-width:400px;margin:20px auto;text-align:center}
+.login .panel{padding:30px 22px}
+.sso{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border-radius:14px;padding:13px;border:0;font-weight:500;font-size:15px;margin-top:12px}
+.sso.tg{background:#2aabee;color:#fff}.sso.gg{background:#fff;color:#222}
+.sso svg{width:20px;height:20px}
+.or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;margin:14px 0 2px}.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.sheet{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center}
+.sheet.on{display:flex}
+.sheet .box{background:#fff;color:#1b1b1b;width:100%;max-width:420px;border-radius:20px 20px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom));font-family:system-ui,sans-serif;animation:up .3s ease}
+@keyframes up{from{transform:translateY(100%)}}
+.sheet .box h4{font-size:16px;margin-bottom:6px}.sheet .box p{font-size:14px;color:#555;margin-bottom:14px}
+.sheet .row2{display:flex;gap:10px}.sheet .row2 button{flex:1;border:0;border-radius:12px;padding:12px;font-weight:600}
+
+/* editor */
+.etabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -20px 16px;padding:0 20px}
+.etabs::-webkit-scrollbar{display:none}
+.etab{flex:none;border:1px solid var(--line);background:none;border-radius:30px;padding:8px 14px;font-size:13.5px;color:var(--muted)}
+.etab.on{background:var(--gold);color:#2a0a10;border-color:var(--gold);font-weight:600}
+.epane{display:none}.epane.on{display:block}
+.swatches{display:flex;gap:10px;flex-wrap:wrap}
+.swt{border:2px solid transparent;border-radius:14px;padding:6px;background:none;text-align:center;font-size:12px;color:var(--muted)}
+.swt i{display:block;width:56px;height:56px;border-radius:10px;margin-bottom:4px;box-shadow:inset 0 0 0 1px rgba(217,178,95,.5)}
+.swt.on{border-color:var(--gold);color:var(--gold-l)}
+.fontsets{display:grid;gap:10px}
+.fs{border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;background:none;text-align:left}
+.fs.on{border-color:var(--gold);background:rgba(217,178,95,.07)}
+.fs .a{font-family:var(--kh-d);font-size:16px;line-height:1.9}.fs .b{font-family:var(--serif);font-style:italic;font-size:20px}
+.fs small{display:block;color:var(--muted);font-size:12px}
+.toggle{display:flex;align-items:center;justify-content:space-between;padding:12px 2px;border-bottom:1px solid var(--line);font-size:14.5px}
+.sw{width:44px;height:26px;border-radius:20px;background:#3a2a24;position:relative;border:0;flex:none;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+.sw.on{background:var(--gold)}.sw.on::after{transform:translateX(18px)}
+.upl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.upl label,.upl .ph{aspect-ratio:1;border-radius:12px;border:1.5px dashed var(--line2);display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--gold);cursor:pointer;overflow:hidden;background-size:cover;background-position:center}
+.upl .ph{border-style:solid}
+.music{display:grid;gap:8px}
+.mu{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;background:none;text-align:left;width:100%}
+.mu.on{border-color:var(--gold);background:rgba(217,178,95,.07)}
+.mu .pl{width:34px;height:34px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;color:var(--gold-l);font-size:12px;flex:none}
+.mu small{display:block;color:var(--muted);font-size:12px}
+.ebar{display:flex;gap:10px;margin-top:18px}
+.ebar .btn{flex:1}
+.preview-toggle{display:flex;justify-content:center;gap:8px;margin-top:12px}
+
+/* pay */
+.qr{width:190px;height:190px;margin:16px auto;background:#fff;border-radius:16px;padding:12px;position:relative}
+.qr .hd{position:absolute;top:-1px;left:-1px;right:-1px;height:36px;background:#e1232e;border-radius:16px 16px 0 0;color:#fff;font:700 13px system-ui;display:flex;align-items:center;justify-content:center;letter-spacing:.1em}
+
+/* dashboard */
+.dash-top{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.inv-card{display:flex;gap:14px;align-items:center}
+.inv-card .mini{width:62px;height:96px;border-radius:10px;flex:none;position:relative;overflow:hidden}
+.pill{display:inline-block;font-size:11.5px;padding:2px 10px;border-radius:20px;background:rgba(80,180,120,.15);color:#8fe0b0;border:1px solid rgba(80,180,120,.4)}
+.pill.draft{background:rgba(217,178,95,.12);color:var(--gold-l);border-color:var(--line2)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.stat{border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.stat b{display:block;font:600 24px var(--serif);color:var(--gold-l)}
+.stat span{font-size:12px;color:var(--muted)}
+.addg{display:grid;grid-template-columns:1fr auto auto;gap:8px;margin:12px 0}
+.addg select{width:auto}
+.glist{list-style:none}
+.glist li{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:12px 2px;border-bottom:1px solid var(--line)}
+.glist .gn{font-weight:500}
+.glist .gl{font-size:12px;color:var(--muted);word-break:break-all;grid-column:1}
+.glist .ga{grid-row:1/3;grid-column:2;display:flex;gap:6px;align-items:center}
+.glist .st{font-size:11.5px}
+.ok{color:#8fe0b0}.no{color:#7f6d60}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:var(--gold);color:#2a0a10;padding:10px 18px;border-radius:30px;font-weight:600;font-size:14px;opacity:0;transition:.3s;z-index:60;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.proto{position:fixed;top:66px;right:10px;z-index:29;font:600 10px var(--caps);letter-spacing:.15em;color:#2a0a10;background:var(--gold-l);padding:4px 9px;border-radius:20px;opacity:.85}
+</style>
+</head>
+<body>
+
+<div class="proto">PROTOTYPE</div>
+
+<header class="hdr">
+  <div class="wrap">
+    <a class="logo" data-go="home">
+      <svg viewBox="0 0 32 32"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a8782a"/><stop offset=".45" stop-color="#f6e3a1"/><stop offset="1" stop-color="#a8782a"/></linearGradient></defs>
+        <path d="M16 2c3 4 3 9 0 13-3-4-3-9 0-13z" fill="url(#lg)"/><path d="M16 15c4-5 9-6 13-4-2 5-8 7-13 4zM16 15c-4-5-9-6-13-4 2 5 8 7 13 4z" fill="none" stroke="url(#lg)" stroke-width="1.4"/>
+        <path d="M5 20h22M7 24h18M10 28h12" stroke="url(#lg)" stroke-width="1.3"/></svg>
+      <b class="goldtext">MONGKULCARD</b>
+    </a>
+    <nav class="nav">
+      <a data-go="templates"><span data-l="km">គំរូធៀប</span><span data-l="en">Templates</span></a>
+      <a data-jump="how"><span data-l="km">របៀបប្រើ</span><span data-l="en">How it works</span></a>
+      <a data-jump="pricing"><span data-l="km">តម្លៃ</span><span data-l="en">Pricing</span></a>
+      <a data-jump="faq"><span data-l="km">សំណួរ</span><span data-l="en">FAQ</span></a>
+    </nav>
+    <div class="sp"></div>
+    <div class="lang" id="langSw"><button data-v="km">ខ្មែរ</button><button data-v="en">EN</button></div>
+    <button class="btn sm" id="loginBtn" data-go="login"><span data-l="km">ចូល</span><span data-l="en">Log in</span></button>
+  </div>
+</header>
+
+<!-- =============================== HOME =============================== -->
+<section class="view" id="v-home">
+  <div class="hero">
+    <div class="wrap">
+      <div class="hero-txt">
+        <div class="eyebrow">Wedding · Birthday · E-Invitation</div>
+        <h1 class="h1" style="margin-top:10px">
+          <span data-l="km"><span class="goldtext">ធៀបអេឡិចត្រូនិច ដ៏ប្រណិត</span><br>សម្រាប់ថ្ងៃពិសេសរបស់អ្នក</span>
+          <span data-l="en">Invitations your guests<br><span class="goldtext">will remember</span></span>
+        </h1>
+        <p class="sub"><span data-l="km">ជ្រើសរើសគំរូ បំពេញព័ត៌មានដោយខ្លួនឯង ហើយផ្ញើតំណផ្ទាល់ខ្លួនទៅភ្ញៀវម្នាក់ៗ ដែលមានឈ្មោះភ្ញៀវនៅលើក្រប។</span><span data-l="en">Choose a design, fill in your details yourself, and send every guest their own link with their name on the cover.</span></p>
+        <div class="hero-btns">
+          <button class="btn gold" data-go="templates"><span data-l="km">ជ្រើសរើសគំរូ</span><span data-l="en">Choose a template</span></button>
+          <a class="btn" href="#" onclick="return false"><svg class="tg-ic" viewBox="0 0 24 24" fill="#2aabee"><path d="M21.9 4.3l-3.2 15c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.2 13l-4.8-1.5c-1-.3-1-1 .2-1.5L20.5 2.8c.9-.3 1.6.2 1.4 1.5z"/></svg><span data-l="km">ជជែកតាម Telegram</span><span data-l="en">Chat on Telegram</span></a>
+        </div>
+        <div class="trust"><span>ខ្មែរ · English · 中文</span><span data-l="km">តំណផ្ទាល់ខ្លួនសម្រាប់ភ្ញៀវម្នាក់ៗ</span><span data-l="en">A personal link for every guest</span><span data-l="km">ដំណើរការល្អក្នុង Telegram និង Messenger</span><span data-l="en">Smooth in Telegram &amp; Messenger</span></div>
+      </div>
+      <div>
+        <div class="phone"><iframe id="heroFrame" src="/preview/invite.html" scrolling="no" title="Golden Curtain demo"></iframe></div>
+        <div class="phone-cap"><span data-l="km">👆 សាកល្បង៖ <b>អូសលើអេក្រង់</b> ដើម្បីបើកធៀប</span><span data-l="en">👆 Try it: <b>brush the gold away</b> to open</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" style="padding-top:30px"><div class="wrap">
+    <div class="sec-h"><h2 class="h2"><span data-l="km">គំរូធៀបពេញនិយម</span><span data-l="en">Featured designs</span></h2><svg class="orn" viewBox="0 0 110 12"><path d="M0 6h42M68 6h42" stroke="#d9b25f" stroke-width=".8"/><path d="M55 1l5 5-5 5-5-5z" fill="none" stroke="#f6e3a1"/></svg></div>
+    <div class="tgrid" id="featGrid"></div>
+    <div style="text-align:center;margin-top:22px"><button class="btn" data-go="templates"><span data-l="km">មើលគំរូទាំងអស់</span><span data-l="en">See all templates</span> →</button></div>
+  </div></div>
+
+  <div class="sec" style="padding-top:10px"><div class="wrap">
+    <div class="try">
+      <div class="eyebrow">✦ <span data-l="km">សាកល្បងឥតគិតថ្លៃ</span><span data-l="en">Free preview</span></div>
+      <h2 class="h2" style="margin-top:6px"><span data-l="km">មើលធៀបជាមួយឈ្មោះរបស់អ្នក</span><span data-l="en">See it with your names</span></h2>
+      <div class="fields two">
+        <label class="f"><span><span data-l="km">ឈ្មោះកូនកំលោះ</span><span data-l="en">Groom</span></span><input id="hG" placeholder="Sovann" maxlength="24"></label>
+        <label class="f"><span><span data-l="km">ឈ្មោះកូនក្រមុំ</span><span data-l="en">Bride</span></span><input id="hB" placeholder="Sreypov" maxlength="24"></label>
+      </div>
+      <button class="btn gold block" id="hTry"><span data-l="km">មើលធៀបរបស់ខ្ញុំ</span><span data-l="en">Show my invitation</span> ✦</button>
+    </div>
+  </div></div>
+
+  <div class="sec" id="how"><div class="wrap">
+    <div class="sec-h"><h2 class="h2"><span data-l="km">ងាយស្រួល ៣ ជំហាន</span><span data-l="en">Three easy steps</span></h2></div>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><b><span data-l="km">ជ្រើសរើសគំរូ</span><span data-l="en">Choose a design</span></b><p><span data-l="km">មើល និងសាកល្បងគំរូនីមួយៗ មុនពេលសម្រេចចិត្ត។</span><span data-l="en">Open and try every design before you decide.</span></p></div>
+      <div class="step"><div class="n">2</div><b><span data-l="km">បំពេញព័ត៌មាន</span><span data-l="en">Make it yours</span></b><p><span data-l="km">ឈ្មោះ កាលបរិច្ឆេទ ទីកន្លែង រូបថត តន្ត្រី ពណ៌ និងពុម្ពអក្សរ — មើលឃើញភ្លាមៗ។</span><span data-l="en">Names, date, venue, photos, music, colours and fonts, with a live preview.</span></p></div>
+      <div class="step"><div class="n">3</div><b><span data-l="km">ផ្ញើទៅភ្ញៀវ</span><span data-l="en">Send to guests</span></b><p><span data-l="km">បង្កើតតំណផ្ទាល់ខ្លួនសម្រាប់ភ្ញៀវម្នាក់ៗ ហើយផ្ញើតាម Telegram ឬ Messenger។</span><span data-l="en">Create a personal link for each guest and send it on Telegram or Messenger.</span></p></div>
+    </div>
+  </div></div>
+
+  <div class="sec" style="padding-top:10px"><div class="wrap">
+    <div class="sec-h"><h2 class="h2"><span data-l="km">អ្វីៗដែលអ្នកត្រូវការ</span><span data-l="en">Everything in one invitation</span></h2></div>
+    <div class="feats" id="feats"></div>
+  </div></div>
+
+  <div class="sec" id="pricing"><div class="wrap">
+    <div class="sec-h"><h2 class="h2"><span data-l="km">កញ្ចប់តម្លៃ</span><span data-l="en">Packages</span></h2><p class="sub"><span data-l="km">បង់ប្រាក់ងាយៗ តាម KHQR គ្រប់ធនាគារ</span><span data-l="en">Pay easily with KHQR from any bank app</span></p></div>
+    <div class="plans">
+      <div class="plan"><div class="pn">ESSENTIAL</div><div class="pr">$ — <small>/ <span data-l="km">ធៀប</span><span data-l="en">invitation</span></small></div>
+        <ul><li data-i="p1">Template + your details</li><li data-i="p2">Khmer &amp; English</li><li data-i="p3">Guest links</li><li class="no" data-i="p4">Guest photo sharing</li><li class="no" data-i="p5">中文</li></ul>
+        <button class="btn block" data-go="templates"><span data-l="km">ចាប់ផ្ដើម</span><span data-l="en">Start</span></button></div>
+      <div class="plan best"><div class="tag" data-i="pop">Most popular</div><div class="pn">PREMIUM</div><div class="pr">$ — <small>/ <span data-l="km">ធៀប</span><span data-l="en">invitation</span></small></div>
+        <ul><li data-i="p1">Template + your details</li><li data-i="p6">Cinematic opening</li><li data-i="p3">Guest links</li><li data-i="p4">Guest photo sharing</li><li data-i="p7">Music &amp; RSVP</li></ul>
+        <button class="btn gold block" data-go="templates"><span data-l="km">ជ្រើសរើស</span><span data-l="en">Choose</span></button></div>
+      <div class="plan"><div class="pn">SIGNATURE</div><div class="pr">$ — <small>/ <span data-l="km">ធៀប</span><span data-l="en">invitation</span></small></div>
+        <ul><li data-i="p8">Everything in Premium</li><li data-i="p5">中文</li><li data-i="p9">Custom design by MongkulCard</li><li data-i="p10">AI video of the couple</li></ul>
+        <button class="btn block"><span data-l="km">ជជែកជាមួយយើង</span><span data-l="en">Talk to us</span></button></div>
+    </div>
+    <p class="tbd">Prototype: prices and package contents are placeholders, still to decide.</p>
+  </div></div>
+
+  <div class="sec" id="faq" style="padding-top:10px"><div class="wrap">
+    <div class="sec-h"><h2 class="h2"><span data-l="km">សំណួរញឹកញាប់</span><span data-l="en">Questions</span></h2></div>
+    <div class="faq" id="faqList"></div>
+  </div></div>
+
+  <div class="final">
+    <h2 class="h2"><span data-l="km">ចាប់ផ្ដើមបង្កើតធៀបរបស់អ្នកថ្ងៃនេះ</span><span data-l="en">Create your invitation today</span></h2>
+    <p class="sub" style="margin:6px 0 20px"><span data-l="km">សាកល្បងដោយឥតគិតថ្លៃ — បង់ប្រាក់តែពេលចង់ផ្ញើ</span><span data-l="en">Design for free. Pay only when you're ready to send.</span></p>
+    <button class="btn gold" data-go="templates"><span data-l="km">ជ្រើសរើសគំរូ</span><span data-l="en">Choose a template</span></button>
+  </div>
+  <footer class="foot"><div class="wrap">
+    <div class="links"><span data-l="km">លក្ខខណ្ឌប្រើប្រាស់</span><span data-l="en">Terms</span><span data-l="km">ឯកជនភាព</span><span data-l="en">Privacy</span><span>Telegram</span><span>Facebook</span></div>
+    © 2026 MongkulCard · Phnom Penh
+  </div></footer>
+</section>
+
+<!-- =============================== TEMPLATES =============================== -->
+<section class="view" id="v-templates"><div class="wrap app">
+  <button class="back" data-go="home">← <span data-l="km">ទំព័រដើម</span><span data-l="en">Home</span></button>
+  <div class="sec-h"><h2 class="h2"><span data-l="km">គំរូធៀបទាំងអស់</span><span data-l="en">All templates</span></h2></div>
+  <div class="filters" id="filters">
+    <button class="chip on" data-f="all"><span data-l="km">ទាំងអស់</span><span data-l="en">All</span></button>
+    <button class="chip" data-f="wedding"><span data-l="km">អាពាហ៍ពិពាហ៍</span><span data-l="en">Wedding</span></button>
+    <button class="chip" data-f="birthday"><span data-l="km">ខួបកំណើត</span><span data-l="en">Birthday</span></button>
+  </div>
+  <div class="tgrid" id="allGrid"></div>
+</div></section>
+
+<!-- =============================== TRY / DEMO =============================== -->
+<section class="view" id="v-try"><div class="wrap app">
+  <button class="back" data-go="templates">← <span data-l="km">គំរូធៀប</span><span data-l="en">Templates</span></button>
+  <div class="split">
+    <div>
+      <div class="eyebrow">Golden Curtain · <span data-l="km">អាពាហ៍ពិពាហ៍</span><span data-l="en">Wedding</span></div>
+      <h2 class="h1" style="margin:6px 0 4px"><span data-l="km">សាកល្បងជាមួយឈ្មោះរបស់អ្នក</span><span data-l="en">Try it with your names</span></h2>
+      <p class="sub"><span data-l="km">វាយបញ្ចូល ហើយមើលធៀបផ្លាស់ប្ដូរភ្លាមៗ។ មិនចាំបាច់ចុះឈ្មោះទេ។</span><span data-l="en">Type below and watch the invitation change. No sign-up needed.</span></p>
+      <div class="fields two">
+        <label class="f"><span><span data-l="km">ឈ្មោះកូនកំលោះ (EN)</span><span data-l="en">Groom</span></span><input data-k="groom.en" placeholder="Sovann"></label>
+        <label class="f"><span><span data-l="km">ឈ្មោះកូនក្រមុំ (EN)</span><span data-l="en">Bride</span></span><input data-k="bride.en" placeholder="Sreypov"></label>
+        <label class="f"><span><span data-l="km">ឈ្មោះខ្មែរ កូនកំលោះ</span><span data-l="en">Groom in Khmer</span></span><input data-k="groom.km" placeholder="សុវណ្ណ"></label>
+        <label class="f"><span><span data-l="km">ឈ្មោះខ្មែរ កូនក្រមុំ</span><span data-l="en">Bride in Khmer</span></span><input data-k="bride.km" placeholder="ស្រីពៅ"></label>
+        <label class="f"><span><span data-l="km">កាលបរិច្ឆេទ</span><span data-l="en">Date</span></span><input type="date" data-k="date" value="2027-02-14"></label>
+        <label class="f"><span><span data-l="km">ទីកន្លែង</span><span data-l="en">Venue</span></span><input data-k="venue" placeholder="Golden Lotus Ballroom"></label>
+      </div>
+      <div class="hero-btns" style="justify-content:flex-start">
+        <button class="btn gold" data-go="login"><span data-l="km">ប្រើគំរូនេះ</span><span data-l="en">Use this template</span> →</button>
+        <button class="btn" data-replay><span data-l="km">↻ មើលការបើកម្ដងទៀត</span><span data-l="en">↻ Replay opening</span></button>
+      </div>
+    </div>
+    <div class="stick"><div class="phone"><iframe class="pv" src="/preview/invite.html" title="Preview"></iframe></div></div>
+  </div>
+</div></section>
+
+<!-- =============================== LOGIN =============================== -->
+<section class="view" id="v-login"><div class="wrap app">
+  <div class="login"><div class="panel">
+    <svg viewBox="0 0 32 32" width="44" height="44"><path d="M16 2c3 4 3 9 0 13-3-4-3-9 0-13z" fill="url(#lg)"/><path d="M16 15c4-5 9-6 13-4-2 5-8 7-13 4zM16 15c-4-5-9-6-13-4 2 5 8 7 13 4z" fill="none" stroke="url(#lg)" stroke-width="1.4"/><path d="M5 20h22M7 24h18M10 28h12" stroke="url(#lg)" stroke-width="1.3"/></svg>
+    <h2 class="h2" style="margin-top:6px"><span data-l="km">ចូលគណនី</span><span data-l="en">Sign in</span></h2>
+    <p class="sub"><span data-l="km">ដើម្បីរក្សាទុក និងផ្ញើធៀបរបស់អ្នក។ ការរចនារបស់អ្នកនៅដដែល។</span><span data-l="en">To save and send your invitation. Your design is kept.</span></p>
+    <button class="sso tg" id="tgLogin"><svg viewBox="0 0 24 24" fill="#fff"><path d="M21.9 4.3l-3.2 15c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.2 13l-4.8-1.5c-1-.3-1-1 .2-1.5L20.5 2.8c.9-.3 1.6.2 1.4 1.5z"/></svg><span data-l="km">បន្តជាមួយ Telegram</span><span data-l="en">Continue with Telegram</span></button>
+    <div class="or"><span data-l="km">ឬ</span><span data-l="en">or</span></div>
+    <button class="sso gg" id="ggLogin"><svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.6 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9c-.3 1.4-1 2.5-2.2 3.3v2.7h3.6c2.1-1.9 3.3-4.8 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8C3.9 20.6 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.8 14.2c-.2-.7-.4-1.4-.4-2.2s.1-1.5.4-2.2V7H2.1C1.4 8.5 1 10.2 1 12s.4 3.5 1.1 5l3.7-2.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2C17.5 2.1 15 1 12 1 7.7 1 3.9 3.4 2.1 7l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4z"/></svg><span data-l="km">បន្តជាមួយ Google</span><span data-l="en">Continue with Google</span></button>
+    <div class="note"><b>How it would work:</b> Telegram shows a "Log in to MongkulCard" confirmation. Then the MongkulCard bot asks the customer to tap "Share my phone number", so you have their number for support. No passwords, and no SMS costs.</div>
+  </div></div>
+</div></section>
+<div class="sheet" id="tgSheet"><div class="box">
+  <h4>Telegram</h4><p><b>mongkulcard.com</b> wants to log you in with your Telegram account. Then <b>@MongkulCardBot</b> will ask to see your phone number.</p>
+  <div class="row2"><button style="background:#eee" id="tgNo">Cancel</button><button style="background:#2aabee;color:#fff" id="tgYes">Accept</button></div>
+</div></div>
+
+<!-- =============================== EDITOR =============================== -->
+<section class="view" id="v-editor"><div class="wrap app">
+  <div class="split">
+    <div>
+      <div class="eyebrow"><span data-l="km">កំពុងកែប្រែ</span><span data-l="en">Editing</span> · Golden Curtain · <span class="pill draft"><span data-l="km">ព្រាង</span><span data-l="en">Draft</span></span></div>
+      <h2 class="h1" style="margin:6px 0 14px;font-size:22px" id="edTitle"></h2>
+      <div class="etabs" id="etabs">
+        <button class="etab on" data-t="details"><span data-l="km">ព័ត៌មាន</span><span data-l="en">Details</span></button>
+        <button class="etab" data-t="design"><span data-l="km">រចនា</span><span data-l="en">Design</span></button>
+        <button class="etab" data-t="photos"><span data-l="km">រូបថត</span><span data-l="en">Photos</span></button>
+        <button class="etab" data-t="music"><span data-l="km">តន្ត្រី</span><span data-l="en">Music</span></button>
+        <button class="etab" data-t="sections"><span data-l="km">ផ្នែកនានា</span><span data-l="en">Sections</span></button>
+      </div>
+      <div class="panel">
+        <div class="epane on" data-p="details">
+          <div class="fields two">
+            <label class="f"><span><span data-l="km">កូនកំលោះ (EN)</span><span data-l="en">Groom (English)</span></span><input data-k="groom.en"></label>
+            <label class="f"><span><span data-l="km">កូនក្រមុំ (EN)</span><span data-l="en">Bride (English)</span></span><input data-k="bride.en"></label>
+            <label class="f"><span><span data-l="km">កូនកំលោះ (ខ្មែរ)</span><span data-l="en">Groom (Khmer)</span></span><input data-k="groom.km"></label>
+            <label class="f"><span><span data-l="km">កូនក្រមុំ (ខ្មែរ)</span><span data-l="en">Bride (Khmer)</span></span><input data-k="bride.km"></label>
+            <label class="f"><span><span data-l="km">កាលបរិច្ឆេទ</span><span data-l="en">Date</span></span><input type="date" data-k="date"></label>
+            <label class="f"><span><span data-l="km">ម៉ោង</span><span data-l="en">Time</span></span><input type="time" data-k="time" value="17:00"></label>
+          </div>
+          <label class="f"><span><span data-l="km">ទីកន្លែង</span><span data-l="en">Venue</span></span><input data-k="venue"></label>
+          <label class="f" style="margin-top:10px"><span><span data-l="km">តំណ Google Maps</span><span data-l="en">Google Maps link</span></span><input placeholder="https://maps.app.goo.gl/…"></label>
+        </div>
+        <div class="epane" data-p="design">
+          <div class="f"><span><span data-l="km">ពណ៌</span><span data-l="en">Colour theme</span></span></div>
+          <div class="swatches" id="swatches">
+            <button class="swt on" data-v="burgundy"><i style="background:linear-gradient(135deg,#8c2238,#22050c)"></i>Burgundy</button>
+            <button class="swt" data-v="emerald"><i style="background:linear-gradient(135deg,#1b6a48,#03170f)"></i>Emerald</button>
+            <button class="swt" data-v="navy"><i style="background:linear-gradient(135deg,#22397c,#050a1e)"></i>Midnight</button>
+          </div>
+          <div class="f" style="margin-top:16px"><span><span data-l="km">ពុម្ពអក្សរ</span><span data-l="en">Font set</span></span></div>
+          <div class="fontsets" id="fontsets">
+            <button class="fs on"><div class="a">សុវណ្ណ · ស្រីពៅ</div><div class="b">Sovann &amp; Sreypov</div><small>Classic · Moul + Great Vibes</small></button>
+            <button class="fs"><div class="a" style="font-family:'Kantumruy Pro';font-weight:600">សុវណ្ណ · ស្រីពៅ</div><div class="b" style="font-family:Cinzel;font-style:normal;font-size:16px;letter-spacing:.15em">SOVANN &amp; SREYPOV</div><small>Modern · Kantumruy Pro + Cinzel</small></button>
+          </div>
+          <div class="f" style="margin-top:16px"><span><span data-l="km">ការបើកធៀប</span><span data-l="en">Opening animation</span></span></div>
+          <div class="swatches"><button class="swt on"><i style="background:radial-gradient(circle,#f6e3a1 1px,transparent 1.5px) 0 0/7px 7px,#3f0916"></i>Gold glitter</button><button class="swt"><i style="background:linear-gradient(90deg,#661326 0 45%,#000 45% 55%,#661326 55%)"></i>Curtain only</button></div>
+        </div>
+        <div class="epane" data-p="photos">
+          <p class="sub" style="margin-bottom:10px"><span data-l="km">រូបថតរហូតដល់ ១២ សន្លឹក។ យើងបង្រួមទំហំឲ្យស្រាប់ ដោយរក្សាគុណភាព។</span><span data-l="en">Up to 12 photos. We resize them automatically and keep the quality.</span></p>
+          <div class="upl" id="upl"><label>+<input type="file" accept="image/*" multiple hidden id="upIn"></label></div>
+        </div>
+        <div class="epane" data-p="music">
+          <div class="music" id="musicList">
+            <button class="mu on"><span class="pl">▶</span><div>Golden Morning<small>MongkulCard library · piano</small></div></button>
+            <button class="mu"><span class="pl">▶</span><div>Khmer Wedding Strings<small>MongkulCard library · traditional</small></div></button>
+            <button class="mu"><span class="pl">▶</span><div>Forever Waltz<small>MongkulCard library · orchestra</small></div></button>
+            <label class="mu" style="cursor:pointer"><span class="pl">⇪</span><div><span data-l="km">បញ្ចូលបទផ្ទាល់ខ្លួន</span><span data-l="en">Upload your own song</span><small>MP3 · max 8 MB</small></div><input type="file" accept="audio/*" hidden></label>
+          </div>
+        </div>
+        <div class="epane" data-p="sections">
+          <div id="secToggles"></div>
+        </div>
+      </div>
+      <div class="ebar">
+        <button class="btn" id="saveBtn"><span data-l="km">រក្សាទុកព្រាង</span><span data-l="en">Save draft</span></button>
+        <button class="btn gold" data-go="pay"><span data-l="km">ផ្សព្វផ្សាយ</span><span data-l="en">Publish</span> →</button>
+      </div>
+      <div class="note"><b>Real site:</b> every change saves to the database automatically. The guest page is the same template filled with these settings.</div>
+    </div>
+    <div class="stick"><div class="phone"><iframe class="pv" src="/preview/invite.html" title="Live preview"></iframe></div>
+      <div class="preview-toggle"><button class="btn sm" data-replay>↻ <span data-l="km">មើលការបើក</span><span data-l="en">Replay opening</span></button></div></div>
+  </div>
+</div></section>
+
+<!-- =============================== PAY =============================== -->
+<section class="view" id="v-pay"><div class="wrap app">
+  <button class="back" data-go="editor">← <span data-l="km">ត្រឡប់ទៅកែប្រែ</span><span data-l="en">Back to editor</span></button>
+  <div style="max-width:440px;margin:0 auto">
+    <h2 class="h2"><span data-l="km">ជ្រើសរើសកញ្ចប់ ហើយបង់ប្រាក់</span><span data-l="en">Choose a package and pay</span></h2>
+    <div class="fontsets" style="margin:18px 0" id="pkgs">
+      <button class="fs"><b>Essential</b> <small>Price to be decided</small></button>
+      <button class="fs on"><b>Premium</b> <small>Price to be decided · cinematic opening, photos, music</small></button>
+    </div>
+    <div class="panel" style="text-align:center">
+      <p class="sub"><span data-l="km">ស្កេនដោយកម្មវិធីធនាគារណាមួយ</span><span data-l="en">Scan with any bank app</span></p>
+      <div class="qr"><div class="hd">KHQR</div><svg viewBox="0 0 21 21" style="width:100%;height:100%;padding-top:26px" shape-rendering="crispEdges" id="qrSvg"></svg></div>
+      <div style="font:600 22px var(--serif)">$ —</div>
+      <p class="sub" style="font-size:13px"><span data-l="km">កំពុងរង់ចាំការបង់ប្រាក់…</span><span data-l="en">Waiting for payment…</span></p>
+      <button class="btn gold block" style="margin-top:14px" id="paidBtn">✓ <span data-l="km">ក្លែងធ្វើថាបានបង់</span><span data-l="en">Simulate payment</span></button>
+    </div>
+    <div class="note"><b>Later:</b> Cloudflare creates a KHQR for each order, checks Bakong every few seconds, and unlocks the invitation by itself. <b>At launch:</b> you unlock it by hand from your admin page.</div>
+  </div>
+</div></section>
+
+<!-- =============================== DASHBOARD =============================== -->
+<section class="view" id="v-dashboard"><div class="wrap app">
+  <div class="dash-top" style="margin-bottom:18px">
+    <div><div class="eyebrow"><span data-l="km">គណនីរបស់ខ្ញុំ</span><span data-l="en">My account</span></div><h2 class="h1" style="font-size:22px"><span data-l="km">ធៀបរបស់ខ្ញុំ</span><span data-l="en">My invitations</span></h2></div>
+  </div>
+  <div class="split">
+    <div>
+      <div class="panel">
+        <div class="inv-card">
+          <div class="mini th-curtain"><div class="th-arch" style="left:18%;right:18%"></div></div>
+          <div style="flex:1;min-width:0">
+            <b id="dashTitle" style="font:600 18px var(--serif)"></b><br>
+            <span class="pill"><span data-l="km">បានផ្សព្វផ្សាយ</span><span data-l="en">Published</span></span>
+            <div class="sub" style="font-size:12.5px;margin-top:4px" id="dashUrl"></div>
+          </div>
+          <button class="btn sm" data-go="editor"><span data-l="km">កែ</span><span data-l="en">Edit</span></button>
+        </div>
+        <div class="stats">
+          <div class="stat"><b id="sG">0</b><span data-l="km">ភ្ញៀវ</span><span data-l="en">Guests</span></div>
+          <div class="stat"><b id="sO">0</b><span data-l="km">បានបើក</span><span data-l="en">Opened</span></div>
+          <div class="stat"><b id="sR">0</b><span data-l="km">ឆ្លើយតប</span><span data-l="en">RSVP yes</span></div>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h3><span data-l="km">បញ្ជីភ្ញៀវ</span><span data-l="en">Guest list</span></h3>
+        <p class="sub"><span data-l="km">ភ្ញៀវម្នាក់ៗទទួលបានតំណផ្ទាល់ខ្លួន ដែលមានឈ្មោះគាត់នៅលើក្រប។</span><span data-l="en">Each guest gets their own link with their name on the cover.</span></p>
+        <div class="addg f">
+          <input id="gName" placeholder="លោក ដារ៉ា / Mr. Dara">
+          <select id="gLang"><option value="km">ខ្មែរ</option><option value="en">EN</option><option value="zh">中文</option></select>
+          <button class="btn gold sm" id="gAdd">+</button>
+        </div>
+        <ul class="glist" id="glist"></ul>
+      </div>
+    </div>
+    <div class="stick"><div class="phone"><iframe class="pv" src="/preview/invite.html" title="Guest view"></iframe></div>
+      <div class="phone-cap" id="dashCap"></div></div>
+  </div>
+</div></section>
+
+<div class="bbar">
+  <button class="btn gold" data-go="templates"><span data-l="km">បង្កើតធៀប</span><span data-l="en">Create invitation</span></button>
+  <a class="btn tg" href="#" onclick="return false" aria-label="Telegram"><svg class="tg-ic" viewBox="0 0 24 24" fill="#2aabee"><path d="M21.9 4.3l-3.2 15c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.2 13l-4.8-1.5c-1-.3-1-1 .2-1.5L20.5 2.8c.9-.3 1.6.2 1.4 1.5z"/></svg></a>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+var $=function(s,r){return(r||document).querySelector(s)},$$=function(s,r){return[].slice.call((r||document).querySelectorAll(s))};
+var root=document.documentElement;
+
+/* ---------- the customer's invitation, as the editor would save it ---------- */
+var INV={groom:{en:'Sovann',km:'សុវណ្ណ'},bride:{en:'Sreypov',km:'ស្រីពៅ'},date:'2027-02-14',time:'17:00',venue:'Golden Lotus Ballroom, Phnom Penh',theme:'burgundy',
+  sections:{countdown:true,program:true,map:true,gallery:true,gift:true,rsvp:false,photos:true}};
+var GUESTS=[];var loggedIn=false;
+
+/* ---------- language ---------- */
+var TXT={km:{p1:'គំរូ + ព័ត៌មានរបស់អ្នក',p2:'ខ្មែរ និង English',p3:'តំណផ្ទាល់ខ្លួនសម្រាប់ភ្ញៀវ',p4:'ភ្ញៀវចែករំលែករូបថត',p5:'中文 (ភាសាចិន)',p6:'ការបើកធៀបបែបភាពយន្ត',p7:'តន្ត្រី និង RSVP',p8:'គ្រប់យ៉ាងក្នុង Premium',p9:'រចនាផ្ទាល់ខ្លួនដោយ MongkulCard',p10:'វីដេអូ AI របស់គូស្វាមីភរិយា',pop:'ពេញនិយមបំផុត',
+   copied:'បានចម្លង ✓',saved:'បានរក្សាទុក ✓',paid:'បានបង់ប្រាក់ ✓ ធៀបរបស់អ្នកដំណើរការហើយ',hello:'សួស្ដី! បានចូលគណនី'},
+ en:{p1:'Template + your details',p2:'Khmer & English',p3:'Personal guest links',p4:'Guest photo sharing',p5:'中文 (Chinese)',p6:'Cinematic opening',p7:'Music & RSVP',p8:'Everything in Premium',p9:'Custom design by MongkulCard',p10:'AI video of the couple',pop:'Most popular',
+   copied:'Copied ✓',saved:'Saved ✓',paid:'Paid ✓ Your invitation is live',hello:'Welcome! You are signed in'}};
+function lang(){return root.dataset.lang}
+function setLang(l){root.dataset.lang=l;root.lang=l;$$('#langSw button').forEach(function(b){b.classList.toggle('on',b.dataset.v===l)});
+  $$('[data-i]').forEach(function(e){e.textContent=TXT[l][e.dataset.i]});renderFaq();renderFeats();renderGrids();push()}
+$('#langSw').onclick=function(e){var b=e.target.closest('button');if(b)setLang(b.dataset.v)};
+function toast(k){var t=$('#toast');t.textContent=TXT[lang()][k]||k;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('on')},1800)}
+
+/* ---------- templates catalogue ---------- */
+var TPL=[
+ {id:'golden-curtain',name:'Golden Curtain',type:'wedding',th:'curtain',badge:'new',live:true},
+ {id:'classic-gold',name:'Classic Gold',type:'wedding',th:'classic',badge:'',live:false},
+ {id:'lotus-bloom',name:'Lotus Bloom',type:'wedding',th:'lotus',soon:true},
+ {id:'golden-doors',name:'Golden Doors',type:'wedding',th:'doors',soon:true},
+ {id:'starlight',name:'Starlight Birthday',type:'birthday',th:'bday',soon:true}];
+var ICON={lotus:'<svg viewBox="0 0 40 30" fill="none" stroke="#f6e3a1" stroke-width="1.1"><path d="M20 2c4 5 4 13 0 20-4-7-4-15 0-20z"/><path d="M20 22c5-6 11-8 17-6-3 6-10 8-17 6zM20 22c-5-6-11-8-17-6 3 6 10 8 17 6z"/><path d="M8 27h24" opacity=".6"/></svg>',
+ doors:'<svg viewBox="0 0 40 50" fill="none" stroke="#f6e3a1" stroke-width="1.1"><path d="M4 48V18C4 9 12 3 20 1c8 2 16 8 16 17v30z"/><path d="M20 6v42M9 24h7M24 24h7"/><circle cx="17" cy="30" r="1"/><circle cx="23" cy="30" r="1"/></svg>',
+ bday:'<svg viewBox="0 0 40 40" fill="none" stroke="#f6e3a1" stroke-width="1.1"><rect x="7" y="20" width="26" height="14" rx="2"/><path d="M7 26c4 2 8-2 13 0s9 2 13 0M14 20v-6M20 20v-7M26 20v-6"/><path d="M14 11c-1 1-1 2 0 3 1-1 1-2 0-3zM20 10c-1 1-1 2 0 3 1-1 1-2 0-3zM26 11c-1 1-1 2 0 3 1-1 1-2 0-3z" fill="#f6e3a1"/></svg>'};
+function thumb(t){
+  if(t.th==='curtain')return '<div class="thumb th-curtain"><div class="th-valance"></div><div class="th-arch"></div><div class="th-names">'+esc(INV.groom.en)+'<br>&amp;<br>'+esc(INV.bride.en)+'</div></div>';
+  if(t.th==='classic')return '<div class="thumb th-classic"><div class="paper"><span>'+esc(INV.groom.en)+'<br>&amp;<br>'+esc(INV.bride.en)+'</span></div></div>';
+  return '<div class="thumb th-'+t.th+'"><div class="th-ic">'+ICON[t.th]+'</div></div>';
+}
+function card(t){
+  var b=t.soon?'<span class="badge">'+(lang()==='km'?'ឆាប់ៗនេះ':'Coming soon')+'</span>':t.badge==='new'?'<span class="badge new">NEW</span>':'';
+  var ty=t.type==='wedding'?(lang()==='km'?'អាពាហ៍ពិពាហ៍':'Wedding'):(lang()==='km'?'ខួបកំណើត':'Birthday');
+  return '<button class="tcard'+(t.soon?' soon':'')+'" data-t="'+t.id+'">'+thumb(t).replace('<div class="thumb','<div class="thumb').replace('">','">'+b)+'<div class="meta"><div class="nm">'+t.name+'</div><div class="ty">'+ty+'</div></div></button>';
+}
+var filt='all';
+function renderGrids(){
+  $('#featGrid').innerHTML=TPL.slice(0,4).map(card).join('');
+  $('#allGrid').innerHTML=TPL.filter(function(t){return filt==='all'||t.type===filt}).map(card).join('');
+}
+document.addEventListener('click',function(e){var c=e.target.closest('.tcard');if(!c)return;var t=TPL.find(function(x){return x.id===c.dataset.t});
+  if(t.soon)return toast(lang()==='km'?'គំរូនេះកំពុងរចនា ✦':'This design is coming soon ✦');
+  if(!t.live)return toast(lang()==='km'?'Classic Gold កំពុងបំប្លែងជាគំរូ':'Classic Gold is being turned into a template');
+  go('try')});
+$('#filters').onclick=function(e){var b=e.target.closest('.chip');if(!b)return;filt=b.dataset.f;$$('#filters .chip').forEach(function(x){x.classList.toggle('on',x===b)});renderGrids()};
+
+/* ---------- features + faq ---------- */
+var FE=[['M12 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6zM5 20c1-4 4-6 7-6s6 2 7 6','ឈ្មោះភ្ញៀវលើក្រប','Guest name on cover','ភ្ញៀវម្នាក់ៗ តំណមួយ','One link per guest'],
+ ['M12 3v3M12 12l4 2M4 12a8 8 0 1 0 16 0 8 8 0 0 0-16 0','រាប់ថយក្រោយ','Countdown','ដល់ម៉ោងកម្មវិធី','To the minute'],
+ ['M12 21s-7-7-7-12a7 7 0 0 1 14 0c0 5-7 12-7 12zM12 7a2 2 0 1 1 0 4 2 2 0 0 1 0-4','ផែនទី','Map','បើក Google Maps','Opens Google Maps'],
+ ['M4 6h16M4 12h16M4 18h10','កម្មវិធីពិធី','Programme','ម៉ោង និងពិធីនីមួយៗ','Every ceremony and time'],
+ ['M3 8h18v12H3zM3 8l9 6 9-6','QR ចំណងដៃ','Gift QR','ក្នុងស្រោមសំបុត្រ','In an envelope'],
+ ['M9 18V6l10-2v12M9 18a2 2 0 1 1-4 0 2 2 0 0 1 4 0zM19 16a2 2 0 1 1-4 0 2 2 0 0 1 4 0z','តន្ត្រី','Music','បណ្ណាល័យ ឬបទរបស់អ្នក','Library or your own song'],
+ ['M4 7h4l2-3h4l2 3h4v12H4zM12 10a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7','ចែករំលែករូបថត','Photo sharing','ភ្ញៀវផ្ញើរូបនៅថ្ងៃពិធី','Guests upload on the day'],
+ ['M5 12l4 4 10-10','ឆ្លើយតប (RSVP)','RSVP','ចំនួនភ្ញៀវដែលមក','See who is coming']];
+function renderFeats(){var k=lang()==='km';$('#feats').innerHTML=FE.map(function(f){return '<div class="feat"><svg viewBox="0 0 24 24"><path d="'+f[0]+'"/></svg><b>'+(k?f[1]:f[2])+'</b><small>'+(k?f[3]:f[4])+'</small></div>'}).join('')}
+var FQ=[['តើភ្ញៀវត្រូវដំឡើងកម្មវិធីទេ?','Do guests need to install an app?','មិនត្រូវទេ។ គ្រាន់តែចុចតំណ ក៏បើកបានភ្លាម។','No. They just tap the link and it opens.'],
+ ['តើខ្ញុំអាចកែប្រែបានទេ ក្រោយពេលផ្ញើ?','Can I make changes after sending?','បាន។ ការកែប្រែបង្ហាញភ្លាមៗ ក្នុងតំណភ្ញៀវទាំងអស់។','Yes. Changes show instantly on every guest link.'],
+ ['តំណដំណើរការរហូតដល់ពេលណា?','How long do the links work?','រហូតដល់មួយសប្ដាហ៍ ក្រោយថ្ងៃកម្មវិធី។','Until one week after your event.'],
+ ['បង់ប្រាក់ដោយរបៀបណា?','How do I pay?','ស្កេន KHQR តាមកម្មវិធីធនាគារណាមួយ។ អ្នកអាចរចនាដោយឥតគិតថ្លៃ ហើយបង់តែពេលចង់ផ្ញើ។','Scan the KHQR with any bank app. Designing is free; you pay only when you publish.'],
+ ['តើមានភាសាអ្វីខ្លះ?','Which languages?','ខ្មែរ អង់គ្លេស និងចិន។ ភ្ញៀវអាចប្ដូរភាសាក្នុងធៀបបាន។','Khmer, English and Chinese. Guests can switch inside the invitation.']];
+function renderFaq(){var k=lang()==='km';$('#faqList').innerHTML=FQ.map(function(q){return '<details><summary>'+(k?q[0]:q[1])+'</summary><p>'+(k?q[2]:q[3])+'</p></details>'}).join('')}
+
+/* ---------- send settings to every invitation preview ---------- */
+var KM_M=['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'],KM_D=['អាទិត្យ','ចន្ទ','អង្គារ','ពុធ','ព្រហស្បតិ៍','សុក្រ','សៅរ៍'],EN_M=['January','February','March','April','May','June','July','August','September','October','November','December'],EN_D=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+function khNum(n){return String(n).replace(/\d/g,function(d){return '០១២៣៤៥៦៧៨៩'[d]})}
+function settings(guest){
+  var d=new Date(INV.date+'T12:00:00'),ok=!isNaN(d),t=(INV.time||'17:00').split(':'),h=+t[0],m=t[1]||'00',h12=((h+11)%12)+1;
+  var kmPart=h<12?'ព្រឹក':h<17?'រសៀល':'ល្ងាច',enPart=h<12?'in the morning':h<17?'in the afternoon':'in the evening';
+  return {theme:INV.theme,lang:guest?guest.lang==='zh'?'en':guest.lang:lang(),
+    guest:guest?{km:guest.name,en:guest.name}:{km:'លោក សុខា និង ភរិយា',en:'Mr. & Mrs. Sokha'},
+    groom:{en:INV.groom.en||'Groom',km:INV.groom.km||'កូនកំលោះ',full_km:INV.groom.km||'កូនកំលោះ'},
+    bride:{en:INV.bride.en||'Bride',km:INV.bride.km||'កូនក្រមុំ',full_km:INV.bride.km||'កូនក្រមុំ'},
+    start:INV.date+'T'+(INV.time||'17:00')+':00+07:00',
+    dateShort:ok?String(d.getDate()).padStart(2,'0')+' · '+String(d.getMonth()+1).padStart(2,'0')+' · '+d.getFullYear():'',
+    dateLong:ok?{km:'ថ្ងៃ'+KM_D[d.getDay()]+' ទី'+khNum(d.getDate())+' ខែ'+KM_M[d.getMonth()]+' ឆ្នាំ'+khNum(d.getFullYear()),en:EN_D[d.getDay()]+', '+d.getDate()+' '+EN_M[d.getMonth()]+' '+d.getFullYear()}:{km:'',en:''},
+    time:{km:'វេលាម៉ោង '+khNum(h12)+':'+khNum(m)+' '+kmPart,en:h12+':'+m+' '+enPart},
+    venue:{km:INV.venue||'',en:INV.venue||''}};
+}
+function post(f,msg){try{f.contentWindow.postMessage(msg,'*')}catch(e){}}
+function push(){
+  var s=settings();
+  $$('iframe.pv,#heroFrame').forEach(function(f){if(f.closest('#v-dashboard'))return;post(f,{type:'settings',data:s})});
+  var dg=GUESTS[GUESTS.length-1];var df=$('#v-dashboard iframe');post(df,{type:'settings',data:settings(dg||null)});
+  var title=(INV.groom.en||'')+' & '+(INV.bride.en||'');$('#edTitle').textContent=title;$('#dashTitle').textContent=title;
+  $('#dashUrl').textContent='mongkulcard.com/'+slug();
+  $('#dashCap').innerHTML=dg?(lang()==='km'?'ធៀបដែល <b>'+esc(dg.name)+'</b> ឃើញ':'What <b>'+esc(dg.name)+'</b> sees'):(lang()==='km'?'បន្ថែមភ្ញៀវ ដើម្បីមើលធៀបរបស់គាត់':'Add a guest to see their invitation');
+  renderGrids();
+}
+$$('iframe').forEach(function(f){f.addEventListener('load',function(){setTimeout(push,60)})});
+$('#heroFrame').addEventListener('load',function(){post(this,{type:'noscroll'})});
+function bindInputs(){$$('[data-k]').forEach(function(inp){
+  var k=inp.dataset.k.split('.');inp.value=k.length>1?INV[k[0]][k[1]]:INV[k[0]];
+  inp.oninput=function(){if(k.length>1)INV[k[0]][k[1]]=inp.value;else INV[k[0]]=inp.value;
+    $$('[data-k="'+inp.dataset.k+'"]').forEach(function(o){if(o!==inp)o.value=inp.value});push()}})}
+bindInputs();
+$('#hTry').onclick=function(){if($('#hG').value)INV.groom.en=$('#hG').value;if($('#hB').value)INV.bride.en=$('#hB').value;bindInputs();go('try')};
+$$('[data-replay]').forEach(function(b){b.onclick=function(){var f=b.closest('.split').querySelector('iframe');post(f,{type:'replay'})}});
+
+/* ---------- views ---------- */
+var VIEWS=['home','templates','try','login','editor','pay','dashboard'];
+function go(v){if(VIEWS.indexOf(v)<0)v='home';
+  if((v==='editor'||v==='pay'||v==='dashboard')&&!loggedIn)v='login';
+  $$('.view').forEach(function(x){x.classList.toggle('on',x.id==='v-'+v)});
+  if(location.hash!=='#'+v)history.replaceState(null,'','#'+v);
+  scrollTo(0,0);$('.bbar').style.display=(v==='home'||v==='templates')?'':'none';
+  $('#loginBtn').innerHTML=loggedIn?'<span>'+(lang()==='km'?'ធៀបរបស់ខ្ញុំ':'My invitations')+'</span>':'<span data-l="km">ចូល</span><span data-l="en">Log in</span>';
+  $('#loginBtn').dataset.go=loggedIn?'dashboard':'login';
+  setTimeout(push,80);
+}
+document.addEventListener('click',function(e){var g=e.target.closest('[data-go]');if(g){e.preventDefault();go(g.dataset.go)}
+  var j=e.target.closest('[data-jump]');if(j){go('home');setTimeout(function(){document.getElementById(j.dataset.jump).scrollIntoView({behavior:'smooth'})},120)}});
+addEventListener('hashchange',function(){go(location.hash.slice(1))});
+
+/* ---------- login (simulated) ---------- */
+$('#tgLogin').onclick=function(){$('#tgSheet').classList.add('on')};
+$('#tgNo').onclick=function(){$('#tgSheet').classList.remove('on')};
+$('#tgYes').onclick=function(){$('#tgSheet').classList.remove('on');loggedIn=true;toast('hello');go('editor')};
+$('#ggLogin').onclick=function(){loggedIn=true;toast('hello');go('editor')};
+
+/* ---------- editor ---------- */
+$('#etabs').onclick=function(e){var b=e.target.closest('.etab');if(!b)return;$$('.etab').forEach(function(x){x.classList.toggle('on',x===b)});$$('.epane').forEach(function(p){p.classList.toggle('on',p.dataset.p===b.dataset.t)})};
+$('#swatches').onclick=function(e){var b=e.target.closest('.swt');if(!b)return;INV.theme=b.dataset.v;$$('#swatches .swt').forEach(function(x){x.classList.toggle('on',x===b)});push()};
+function pick(sel){$(sel).onclick=function(e){var b=e.target.closest('button');if(!b)return;$$(sel+' button').forEach(function(x){x.classList.toggle('on',x===b)})}}
+pick('#fontsets');pick('#musicList');pick('#pkgs');
+var SEC=[['countdown','រាប់ថយក្រោយ','Countdown'],['program','កម្មវិធីពិធី','Programme'],['map','ផែនទី','Map'],['gallery','រូបថត','Gallery'],['gift','QR ចំណងដៃ','Gift QR'],['rsvp','ឆ្លើយតប (RSVP)','RSVP'],['photos','ភ្ញៀវចែករំលែករូបថត','Guest photo sharing']];
+function renderSec(){$('#secToggles').innerHTML=SEC.map(function(s){return '<div class="toggle"><span><span data-l="km">'+s[1]+'</span><span data-l="en">'+s[2]+'</span></span><button class="sw'+(INV.sections[s[0]]?' on':'')+'" data-s="'+s[0]+'" aria-label="'+s[2]+'"></button></div>'}).join('')}
+renderSec();
+$('#secToggles').onclick=function(e){var b=e.target.closest('.sw');if(!b)return;INV.sections[b.dataset.s]=!INV.sections[b.dataset.s];b.classList.toggle('on')};
+$('#upIn').onchange=function(){[].slice.call(this.files,0,12).forEach(function(f){var d=document.createElement('div');d.className='ph';d.style.backgroundImage='url('+URL.createObjectURL(f)+')';$('#upl').appendChild(d)})};
+$('#saveBtn').onclick=function(){toast('saved')};
+
+/* ---------- pay ---------- */
+(function(){var s='',r=function(){return Math.random()<.5};for(var y=0;y<21;y++)for(var x=0;x<21;x++){var f=(x<7&&y<7)||(x>13&&y<7)||(x<7&&y>13);
+  var on=f?((x%7===0||x%7===6||y%7===0||y%7===6)||((x%7>1&&x%7<5)&&(y%7>1&&y%7<5))):r();if(f&&x>13)on=((x-14===0||x-14===6||y===0||y===6)||(x-14>1&&x-14<5&&y>1&&y<5));if(f&&y>13)on=((x===0||x===6||y-14===0||y-14===6)||(x>1&&x<5&&y-14>1&&y-14<5));
+  if(on)s+='<rect x="'+x+'" y="'+y+'" width="1" height="1"/>'}$('#qrSvg').innerHTML=s})();
+$('#paidBtn').onclick=function(){toast('paid');go('dashboard')};
+
+/* ---------- dashboard: guests and links ---------- */
+var AL='abcdefghjkmnpqrstuvwxyz23456789';
+function code(){var c='';for(var i=0;i<7;i++)c+=AL[Math.random()*AL.length|0];return c}
+function slug(){return ((INV.groom.en||'groom')+'-'+(INV.bride.en||'bride')).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function renderGuests(){
+  $('#glist').innerHTML=GUESTS.slice().reverse().map(function(g){var url='mongkulcard.com/'+slug()+'/'+g.code;
+    return '<li><div class="gn">'+esc(g.name)+' <small style="color:var(--muted)">· '+({km:'ខ្មែរ',en:'EN',zh:'中文'})[g.lang]+'</small></div><div class="gl">'+url+'</div>'+
+    '<div class="ga"><span class="st '+(g.opened?'ok':'no')+'">'+(g.opened?'● '+(lang()==='km'?'បានបើក':'Opened'):'○ '+(lang()==='km'?'មិនទាន់បើក':'Not yet'))+'</span><button class="btn sm" data-copy="'+url+'">⧉</button></div></li>'}).join('')||
+    '<li style="display:block;color:var(--muted);font-size:13.5px">'+(lang()==='km'?'មិនទាន់មានភ្ញៀវ។ សាកបន្ថែមឈ្មោះខាងលើ។':'No guests yet. Try adding a name above.')+'</li>';
+  $('#sG').textContent=GUESTS.length;$('#sO').textContent=GUESTS.filter(function(g){return g.opened}).length;$('#sR').textContent=GUESTS.filter(function(g){return g.rsvp}).length;
+}
+$('#gAdd').onclick=function(){var n=$('#gName').value.trim();if(!n)return $('#gName').focus();
+  GUESTS.push({name:n,lang:$('#gLang').value,code:code(),opened:Math.random()<.5,rsvp:Math.random()<.4});$('#gName').value='';renderGuests();push()};
+$('#gName').onkeydown=function(e){if(e.key==='Enter')$('#gAdd').click()};
+$('#glist').onclick=function(e){var b=e.target.closest('[data-copy]');if(!b)return;var t='https://'+b.dataset.copy;
+  try{navigator.clipboard.writeText(t).then(function(){toast('copied')},function(){toast(t)})}catch(_){toast(t)}};
+
+setLang('km');renderGuests();go(location.hash.slice(1)||'home');
+})();
+</script>
+</body>
+</html>

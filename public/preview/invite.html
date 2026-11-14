@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="km" data-lang="km" data-theme="burgundy" class="locked">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>MongkulCard · Golden Curtain (demo template)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Moul&family=Content:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cinzel:wght@400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+/* ============ THEMES (a customer picks one) ============ */
+:root{--vh:1svh;--gold:#d9b25f;--gold-l:#f6e3a1;--gold-d:#a8782a;--paper:#f7efe3;--ink:#5a1424;
+  --kh-d:'Moul',serif;--kh:'Content','Cormorant Garamond',serif;--en:'Cormorant Garamond',Georgia,serif;--en-d:'Cinzel',Georgia,serif;--script:'Great Vibes',cursive}
+[data-theme=burgundy]{--v1:#22050c;--v2:#3f0916;--v3:#661326;--v4:#8c2238;--ink:#5a1424}
+[data-theme=emerald]{--v1:#03170f;--v2:#08301f;--v3:#0f4a31;--v4:#1b6a48;--ink:#12402c}
+[data-theme=navy]{--v1:#050a1e;--v2:#0b1638;--v3:#152759;--v4:#22397c;--ink:#18285a}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--v1);color:#f3e6d2;overflow-anchor:none;-webkit-tap-highlight-color:transparent}
+html.locked,html.locked body{overflow:hidden;height:100%}
+body{font-family:var(--en);transition:background .6s}
+[data-l]{display:none}
+html[data-lang=km] [data-l=km],html[data-lang=en] [data-l=en]{display:revert}
+.kh{font-family:var(--kh)}
+.goldtext{background:linear-gradient(100deg,var(--gold-d) 0%,var(--gold-l) 30%,var(--gold) 50%,#fff3cf 68%,var(--gold-d) 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sheen 6s linear infinite}
+@keyframes sheen{to{background-position:-220% 0}}
+
+/* column: phone width, centred on big screens */
+.col{position:relative;width:100%;max-width:440px;margin:0 auto}
+
+/* ============ HERO: the stage behind the curtains ============ */
+.hero{position:relative;height:calc(var(--vh)*100);min-height:600px;overflow:hidden;
+  background:radial-gradient(120% 70% at 50% 60%,var(--v3) 0%,var(--v2) 45%,var(--v1) 100%)}
+.beam{position:absolute;top:-12%;left:4%;width:62%;height:118%;opacity:0;transform:rotate(-13deg);transform-origin:20% 0;
+  background:linear-gradient(to bottom,rgba(255,236,196,.42),rgba(255,224,170,.12) 60%,transparent 92%);
+  clip-path:polygon(38% 0,62% 0,100% 100%,0 100%);filter:blur(7px);mix-blend-mode:screen;transition:opacity 2.2s ease}
+.floor{position:absolute;left:50%;bottom:5%;width:78%;height:9%;transform:translateX(-50%);opacity:0;transition:opacity 2s 1s;
+  background:radial-gradient(50% 50% at 50% 50%,rgba(255,226,170,.42),rgba(255,210,150,.12) 55%,transparent 72%)}
+.floor::after{content:"";position:absolute;inset:18% 12%;border-radius:50%;border:1px solid rgba(246,227,161,.55);box-shadow:0 0 18px rgba(246,227,161,.45)}
+.arch{position:absolute;left:50%;top:5%;width:90%;height:90%;transform:translateX(-50%)}
+.arch svg{width:100%;height:100%;overflow:visible}
+.arch .ln{fill:none;stroke:url(#gg);stroke-width:1.5;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 2.6s cubic-bezier(.5,0,.2,1)}
+.arch .fl{fill:url(#gg);opacity:0;transition:opacity .8s}
+.show-arch .arch .ln{stroke-dashoffset:0}
+.show-arch .arch .fl{opacity:.9}
+.lit .beam{opacity:1}.lit .floor{opacity:1}
+
+.names{position:absolute;left:0;right:0;top:30%;text-align:center;padding:0 14%}
+.names>*{opacity:0;transform:translateY(8px);transition:opacity 1.2s,transform 1.2s}
+.show-text .names>*{opacity:1;transform:none}
+.names .t1{font-family:var(--kh-d);font-size:14px;line-height:2;transition-delay:0s}
+.names .t2{font-family:var(--en);font-style:italic;font-size:15px;color:#ead9bf;margin-top:2px;transition-delay:.3s}
+.script{font-family:var(--script);font-size:clamp(40px,12vw,52px);line-height:1.05;display:block;padding:0 .12em;
+  clip-path:inset(-30% 100% -30% 0);opacity:1!important;transform:none!important}
+.show-text .script{animation:write 1.7s cubic-bezier(.5,0,.3,1) forwards}
+.show-text .script.b{animation-delay:1.4s}
+.amp{font-family:var(--script);font-size:30px;line-height:1;transition-delay:1.1s!important}
+@keyframes write{to{clip-path:inset(-30% -8% -30% 0)}}
+.names .khn{font-family:var(--kh-d);font-size:15px;margin-top:10px;transition-delay:2.6s}
+.names .inv{font-size:14px;color:#ead9bf;margin-top:8px;transition-delay:2.9s;font-family:var(--kh)}
+html[data-lang=en] .names .inv{font-family:var(--en);font-style:italic;font-size:15px}
+.names .date{font-family:var(--en-d);letter-spacing:.32em;font-size:17px;margin-top:12px;transition-delay:3.2s;padding-left:.32em}
+.names .venue{font-size:13px;color:#d9c3a6;margin-top:4px;transition-delay:3.4s}
+
+/* ============ CURTAINS ============ */
+.curtains{position:absolute;inset:0;pointer-events:none;z-index:3}
+.curtain{position:absolute;top:0;bottom:0;width:51%;transition:transform 3s cubic-bezier(.55,.05,.2,1);
+  background:linear-gradient(180deg,rgba(0,0,0,.45),transparent 22%,transparent 72%,rgba(0,0,0,.55)),
+   repeating-linear-gradient(90deg,var(--v1) 0,var(--v2) 7px,var(--v3) 13px,var(--v4) 18px,var(--v3) 23px,var(--v2) 30px,var(--v1) 37px)}
+.curtain::after{content:"";position:absolute;bottom:0;left:0;right:0;height:16px;
+  background:repeating-linear-gradient(90deg,var(--gold) 0 2px,transparent 2px 5px);-webkit-mask:linear-gradient(transparent,#000 40%);mask:linear-gradient(transparent,#000 40%);opacity:.85}
+.curtain.l{left:0;transform-origin:0 50%;box-shadow:inset -3px 0 0 rgba(217,178,95,.7),12px 0 30px rgba(0,0,0,.5)}
+.curtain.r{right:0;transform-origin:100% 50%;box-shadow:inset 3px 0 0 rgba(217,178,95,.7),-12px 0 30px rgba(0,0,0,.5)}
+.open .curtain.l{transform:scaleX(.14) skewY(2deg)}
+.open .curtain.r{transform:scaleX(.14) skewY(-2deg)}
+.tie{position:absolute;top:56%;width:20px;height:44px;opacity:0;transition:opacity .9s 2.6s}
+.tie.l{left:4.5%}.tie.r{right:4.5%}
+.open .tie{opacity:1}
+.valance{position:absolute;top:0;left:0;right:0;height:58px;z-index:4;
+  background:linear-gradient(180deg,rgba(0,0,0,.5),transparent),repeating-linear-gradient(90deg,var(--v2) 0,var(--v4) 10px,var(--v2) 20px);
+  box-shadow:0 6px 20px rgba(0,0,0,.55)}
+.valance::before{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--gold-d),var(--gold-l),var(--gold),var(--gold-l),var(--gold-d))}
+.valance::after{content:"";position:absolute;left:0;right:0;bottom:-11px;height:11px;background:repeating-linear-gradient(90deg,var(--gold) 0 2px,transparent 2px 5px);opacity:.8}
+.hint-down{position:absolute;bottom:3%;left:50%;transform:translateX(-50%);z-index:5;font-size:12px;letter-spacing:.2em;color:var(--gold-l);opacity:0;transition:opacity 1s;text-align:center}
+.unlocked .hint-down{opacity:.8}
+.hint-down i{display:block;width:1px;height:22px;margin:6px auto 0;background:linear-gradient(var(--gold-l),transparent);animation:drip 1.8s infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ============ COVER: gold glitter to brush away ============ */
+#cover{position:fixed;inset:0;z-index:20;touch-action:none;cursor:crosshair}
+#glitter{position:absolute;inset:0;width:100%;height:100%;display:block}
+.cover-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;transition:opacity .6s;padding:0 30px}
+.cover-text.gone{opacity:0}
+.cover-text .to{font-family:var(--kh);font-size:14px;color:#ecdcc0;letter-spacing:.04em;text-shadow:0 1px 8px rgba(0,0,0,.8)}
+.cover-text .guest{font-family:var(--kh-d);font-size:24px;line-height:1.9;margin:4px 0 2px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.8))}
+.cover-text .guest.en{font-family:var(--en);font-style:italic;font-size:32px;font-weight:500}
+.cover-text .orn{width:120px;height:14px;margin:14px auto 30px}
+.swipe{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:4px}
+.swipe svg{width:58px;height:40px;animation:swipe 2.4s ease-in-out infinite;filter:drop-shadow(0 2px 6px rgba(0,0,0,.7))}
+@keyframes swipe{0%,100%{transform:translateX(-18px) rotate(-8deg)}50%{transform:translateX(18px) rotate(8deg)}}
+.swipe .k{font-family:var(--kh);font-size:15px;color:#f6e7c8;text-shadow:0 1px 10px #000}
+.swipe .e{font-family:var(--en);font-style:italic;font-size:15px;color:#e2cfae;text-shadow:0 1px 10px #000}
+.tapopen{position:absolute;bottom:calc(env(safe-area-inset-bottom) + 26px);left:50%;transform:translateX(-50%);pointer-events:auto;
+  background:none;border:0;color:#d9c3a6;font:italic 13px var(--en);text-decoration:underline;text-underline-offset:3px;opacity:.75;cursor:pointer;padding:8px 14px}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:10}
+
+/* ============ INSIDE PAGES ============ */
+.sec{padding:64px 22px;position:relative}
+.rv{opacity:0;transform:translateY(22px);transition:opacity 1s,transform 1s}
+.rv.in{opacity:1;transform:none}
+.card{background:linear-gradient(180deg,#fbf5ea,var(--paper));color:var(--ink);border-radius:4px;padding:40px 26px 36px;text-align:center;position:relative;
+  box-shadow:0 20px 50px rgba(0,0,0,.45)}
+.card::before{content:"";position:absolute;inset:9px;border:1px solid rgba(168,120,42,.45);pointer-events:none}
+.card::after{content:"";position:absolute;inset:13px;border:1px solid rgba(168,120,42,.2);pointer-events:none}
+.h-kh{font-family:var(--kh-d);font-size:17px;line-height:2;color:var(--ink)}
+.h-en{font-family:var(--en-d);font-size:15px;letter-spacing:.22em;color:var(--gold-d)}
+.orn{display:block;margin:12px auto}
+.card .dear{font-family:var(--kh);font-size:15px;margin-top:10px;color:#7a5560}
+.card .dear b{font-weight:700;color:var(--ink)}
+.card .body{font-family:var(--kh);font-size:15.5px;line-height:2;margin:14px 0}
+html[data-lang=en] .card .body{font-family:var(--en);font-size:17px;line-height:1.7}
+.pair{display:flex;justify-content:center;gap:26px;margin:16px 0 6px}
+.pair small{display:block;font-family:var(--kh);font-size:12.5px;color:#8a6a70}
+.pair strong{display:block;font-family:var(--kh-d);font-weight:400;font-size:18px;line-height:2;color:var(--ink)}
+html[data-lang=en] .pair strong{font-family:var(--script);font-size:34px;line-height:1.4}
+html[data-lang=en] .pair small{font-family:var(--en);font-style:italic;font-size:14px}
+.card .when{font-family:var(--kh);font-size:15px;line-height:1.9;margin-top:10px}
+html[data-lang=en] .card .when{font-family:var(--en);font-size:17px}
+.card .thanks{font-family:var(--kh-d);font-size:13px;margin-top:16px;color:var(--gold-d);line-height:2}
+html[data-lang=en] .card .thanks{font-family:var(--script);font-size:28px}
+
+.dark-h{text-align:center;margin-bottom:24px}
+.dark-h .h-kh{color:var(--gold-l)}
+.cd{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.cd div{border:1px solid rgba(217,178,95,.45);background:rgba(0,0,0,.18);padding:14px 0 10px;text-align:center;border-radius:3px}
+.cd b{display:block;font-family:var(--en-d);font-size:26px;font-weight:500;color:var(--gold-l)}
+.cd span{font-family:var(--kh);font-size:12.5px;color:#d9c3a6}
+html[data-lang=en] .cd span{font-family:var(--en);font-size:13px;letter-spacing:.08em}
+
+.det{display:grid;gap:12px}
+.det .row{display:flex;gap:14px;align-items:center;border:1px solid rgba(217,178,95,.35);padding:14px 16px;border-radius:3px;background:rgba(0,0,0,.15)}
+.det svg{flex:none;width:28px;height:28px;stroke:var(--gold-l);fill:none;stroke-width:1.3}
+.det .k{font-family:var(--kh);font-size:12.5px;color:#cdb69a}
+html[data-lang=en] .det .k{font-family:var(--en);font-style:italic;font-size:14px}
+.det .v{font-family:var(--kh);font-size:15.5px;color:#f6ead6;line-height:1.7}
+html[data-lang=en] .det .v{font-family:var(--en);font-size:17px}
+.btn{display:inline-flex;align-items:center;gap:8px;margin-top:20px;padding:12px 26px;border-radius:40px;border:1px solid var(--gold);color:var(--gold-l);
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.1));text-decoration:none;font-family:var(--kh);font-size:14.5px;cursor:pointer}
+html[data-lang=en] .btn{font-family:var(--en-d);font-size:13px;letter-spacing:.14em}
+.center{text-align:center}
+.ty{font-family:var(--script);font-size:58px;line-height:1.2}
+.ty-kh{font-family:var(--kh-d);font-size:22px;line-height:2}
+.foot{margin-top:46px;padding-top:26px;border-top:1px solid rgba(217,178,95,.25);text-align:center}
+.foot .by{font:italic 13px var(--en);color:#bfa98c}
+.foot .brand{font-family:var(--en-d);letter-spacing:.3em;font-size:15px;margin:4px 0 2px;padding-left:.3em}
+.cta{margin-top:16px;background:linear-gradient(100deg,var(--gold-d),var(--gold-l) 50%,var(--gold-d));color:var(--v1);border:0;font-weight:700}
+
+/* ============ DEMO: customise panel (shows the "template + settings" idea) ============ */
+.cust-btn{position:fixed;top:calc(env(safe-area-inset-top) + 12px);right:12px;z-index:40;border:1px solid rgba(246,227,161,.55);background:rgba(0,0,0,.45);
+  color:var(--gold-l);font:500 12px var(--en-d);letter-spacing:.12em;padding:8px 13px;border-radius:30px;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.panel{position:fixed;left:0;right:0;bottom:0;z-index:41;background:#fbf6ee;color:#3b2a20;border-radius:18px 18px 0 0;padding:18px 20px calc(env(safe-area-inset-bottom) + 18px);
+  max-width:440px;margin:0 auto;transform:translateY(105%);transition:transform .35s cubic-bezier(.3,.8,.3,1);box-shadow:0 -10px 40px rgba(0,0,0,.4);font-family:system-ui,sans-serif}
+.panel.on{transform:none}
+.panel h3{font:600 15px system-ui;margin-bottom:2px}
+.panel p{font-size:12.5px;color:#7a6a5c;margin-bottom:14px}
+.panel .lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#9a8775;margin:12px 0 7px}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opts button{border:1.5px solid #e2d6c6;background:#fff;border-radius:10px;padding:8px 12px;font:500 13.5px system-ui;color:#3b2a20;display:flex;align-items:center;gap:7px;cursor:pointer}
+.opts button.on{border-color:#b8862f;box-shadow:0 0 0 2px rgba(184,134,47,.2)}
+.sw{width:16px;height:16px;border-radius:50%;border:1px solid #d9b25f}
+.panel .row2{display:flex;gap:8px;margin-top:16px}
+.panel .row2 button{flex:1;border:0;border-radius:10px;padding:12px;font:600 14px system-ui;cursor:pointer}
+.replay{background:#3b2a20;color:#f6e3a1}
+.close{background:#eee4d6;color:#3b2a20}
+@media (prefers-reduced-motion:reduce){.goldtext{animation:none}}
+</style>
+</head>
+<body>
+
+<!-- ======================================================
+     TEMPLATE SETTINGS
+     In the real platform this block comes from the database
+     (what the couple typed in the editor). The design below
+     never changes; only these settings do.
+     ====================================================== -->
+<script>
+var SETTINGS = {
+  theme: 'burgundy',                     // burgundy | emerald | navy
+  lang: 'km',                            // the language the host chose for this guest
+  guest: { km: 'លោក សុខា និង ភរិយា', en: 'Mr. & Mrs. Sokha' },
+  groom: { km: 'សុវណ្ណ', en: 'Sovann', full_km: 'ចាន់ សុវណ្ណ' },
+  bride: { km: 'ស្រីពៅ', en: 'Sreypov', full_km: 'លឹម ស្រីពៅ' },
+  start: '2027-02-14T17:00:00+07:00',
+  dateShort: '14 · 02 · 2027',
+  dateLong: { km: 'ថ្ងៃអាទិត្យ ទី១៤ ខែកុម្ភៈ ឆ្នាំ២០២៧', en: 'Sunday, 14 February 2027' },
+  time: { km: 'វេលាម៉ោង ៥:០០ ល្ងាច', en: '5:00 in the evening' },
+  venue: { km: 'សាលពិធីឈូកមាស ភ្នំពេញ', en: 'Golden Lotus Ballroom, Phnom Penh' },
+  mapUrl: 'https://maps.google.com/?q=Phnom+Penh',
+  brandUrl: '#'                          // MongkulCard Telegram link goes here
+};
+</script>
+
+<!-- ===== cover: glitter to brush away ===== -->
+<div id="cover">
+  <canvas id="glitter"></canvas>
+  <div class="cover-text" id="coverText">
+    <div class="to">ជូនចំពោះ · Dear</div>
+    <div class="guest goldtext" id="guestName"></div>
+    <svg class="orn" viewBox="0 0 120 14"><path d="M0 7h46M74 7h46" stroke="#d9b25f" stroke-width=".8"/><path d="M60 1l6 6-6 6-6-6z" fill="none" stroke="#f6e3a1" stroke-width=".9"/><circle cx="60" cy="7" r="1.4" fill="#f6e3a1"/></svg>
+    <div class="swipe">
+      <svg viewBox="0 0 58 40" fill="none" stroke="#f6e3a1" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M24 36V14a3 3 0 0 1 6 0v10m0-4a3 3 0 0 1 6 0v4m0-2a3 3 0 0 1 6 0v3m0-1a3 3 0 0 1 6 0v6c0 7-4 10-10 10h-6c-4 0-6-2-9-6l-5-7a3 3 0 0 1 5-3l3 3"/><path d="M4 8h12M42 8h12" opacity=".6"/><path d="M4 8l3-3M4 8l3 3M54 8l-3-3M54 8l-3 3" opacity=".6"/></svg>
+      <div class="k">អូសលើអេក្រង់ ដើម្បីបើកធៀប</div>
+      <div class="e">Brush away the gold to open</div>
+    </div>
+  </div>
+  <button class="tapopen" id="tapOpen" type="button">ចុចដើម្បីបើក · tap to open</button>
+</div>
+<canvas id="fx"></canvas>
+
+<button class="cust-btn" id="custBtn" type="button">✦ CUSTOMISE</button>
+<div class="panel" id="panel" aria-hidden="true">
+  <h3>Template settings (demo)</h3>
+  <p>In MongkulCard the couple chooses these in the editor. Same design, different look.</p>
+  <div class="lbl">Colour theme</div>
+  <div class="opts" id="optTheme">
+    <button data-v="burgundy"><span class="sw" style="background:#661326"></span>Burgundy</button>
+    <button data-v="emerald"><span class="sw" style="background:#0f4a31"></span>Emerald</button>
+    <button data-v="navy"><span class="sw" style="background:#152759"></span>Midnight</button>
+  </div>
+  <div class="lbl">Language</div>
+  <div class="opts" id="optLang">
+    <button data-v="km">ខ្មែរ</button>
+    <button data-v="en">English</button>
+  </div>
+  <div class="row2"><button class="replay" id="replay" type="button">↻ Replay opening</button><button class="close" id="closePanel" type="button">Close</button></div>
+</div>
+
+<main class="col">
+  <!-- ===== HERO: stage, arch, names, curtains ===== -->
+  <section class="hero" id="hero">
+    <div class="beam"></div>
+    <div class="floor"></div>
+    <div class="arch">
+      <svg viewBox="0 0 300 440" preserveAspectRatio="xMidYMid meet" id="archSvg">
+        <defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a8782a"/><stop offset=".35" stop-color="#f6e3a1"/><stop offset=".6" stop-color="#d9b25f"/><stop offset="1" stop-color="#a8782a"/></linearGradient></defs>
+        <path class="ln" pathLength="1" d="M20 440V212C20 122 92 72 150 30C208 72 280 122 280 212V440"/>
+        <path class="ln" pathLength="1" d="M34 440V216C34 134 100 90 150 54C200 90 266 134 266 216V440" style="stroke-width:.8;opacity:.75"/>
+        <path class="ln" pathLength="1" d="M20 212H34M266 212H280M14 200H40M260 200H286M14 200v-6h26v6M260 200v-6h26v6"/>
+        <path class="ln" pathLength="1" d="M150 30V18M142 30l8-20 8 20M145 18h10M147 10h6M150 10V2"/>
+        <g id="flames"></g>
+      </svg>
+    </div>
+    <div class="names">
+      <div class="t1 goldtext">សិរីមង្គលអាពាហ៍ពិពាហ៍</div>
+      <div class="t2"><span data-l="km" class="kh" style="font-style:normal;font-size:14px">ជាមួយក្រុមគ្រួសារទាំងសងខាង</span><span data-l="en">Together with their families</span></div>
+      <span class="script goldtext a" id="nA"></span>
+      <div class="amp goldtext">&amp;</div>
+      <span class="script goldtext b" id="nB"></span>
+      <div class="khn goldtext" id="nK"></div>
+      <div class="inv"><span data-l="km">សូមគោរពអញ្ជើញចូលរួមពិធីមង្គលការ</span><span data-l="en">invite you to celebrate their wedding</span></div>
+      <div class="date goldtext" id="dShort"></div>
+      <div class="venue" id="vShort"></div>
+    </div>
+    <div class="curtains">
+      <div class="curtain l"></div><div class="curtain r"></div>
+      <svg class="tie l" viewBox="0 0 20 44"><path d="M2 4h16" stroke="#d9b25f" stroke-width="3"/><path d="M10 6v10" stroke="#d9b25f" stroke-width="1.5"/><circle cx="10" cy="18" r="4" fill="#d9b25f"/><path d="M6 21l-2 21M8 22l-1 20M10 22v20M12 22l1 20M14 21l2 21" stroke="#c9973a" stroke-width="1.2"/></svg>
+      <svg class="tie r" viewBox="0 0 20 44"><path d="M2 4h16" stroke="#d9b25f" stroke-width="3"/><path d="M10 6v10" stroke="#d9b25f" stroke-width="1.5"/><circle cx="10" cy="18" r="4" fill="#d9b25f"/><path d="M6 21l-2 21M8 22l-1 20M10 22v20M12 22l1 20M14 21l2 21" stroke="#c9973a" stroke-width="1.2"/></svg>
+    </div>
+    <div class="valance"></div>
+    <div class="hint-down"><span data-l="km" class="kh">អូសចុះក្រោម</span><span data-l="en">SCROLL</span><i></i></div>
+  </section>
+
+  <!-- ===== invitation card ===== -->
+  <section class="sec">
+    <div class="card rv">
+      <div class="h-kh" data-l="km">សិរីមង្គលអាពាហ៍ពិពាហ៍</div>
+      <div class="h-en" data-l="en">THE WEDDING CELEBRATION</div>
+      <svg class="orn" width="140" height="16" viewBox="0 0 140 16"><path d="M0 8h52M88 8h52" stroke="#b8862f" stroke-width=".8"/><path d="M70 1c4 4 4 10 0 14-4-4-4-10 0-14z" fill="none" stroke="#b8862f"/><path d="M70 8c5-4 10-4 14 0-4 4-9 4-14 0zM70 8c-5-4-10-4-14 0 4 4 9 4 14 0z" fill="none" stroke="#b8862f" stroke-width=".8"/></svg>
+      <div class="dear"><span data-l="km">ជូនចំពោះ <b class="gname"></b></span><span data-l="en" style="font-family:var(--en);font-style:italic;font-size:17px">Dear <b class="gname"></b></span></div>
+      <p class="body" data-l="km">យើងខ្ញុំមានកិត្តិយសសូមគោរពអញ្ជើញ ឯកឧត្តម លោកឧកញ៉ា លោកជំទាវ លោក លោកស្រី អ្នកនាង កញ្ញា អញ្ជើញចូលរួមជាភ្ញៀវកិត្តិយស ដើម្បីប្រសិទ្ធពរជ័យ សិរីសួស្តី ក្នុងពិធីរៀបអាពាហ៍ពិពាហ៍ កូនប្រុស-ស្រី របស់យើងខ្ញុំ</p>
+      <p class="body" data-l="en">Together with our families, we joyfully invite you to share in our happiness as we celebrate our wedding day.</p>
+      <div class="pair">
+        <div><small data-l="km">កូនប្រុសនាម</small><small data-l="en">the groom</small><strong id="pg"></strong></div>
+        <div><small data-l="km">កូនស្រីនាម</small><small data-l="en">the bride</small><strong id="pb"></strong></div>
+      </div>
+      <div class="when" id="when"></div>
+      <div class="thanks"><span data-l="km">ដោយមេត្រីភាព សូមអរគុណ!</span><span data-l="en">With love &amp; gratitude</span></div>
+    </div>
+  </section>
+
+  <!-- ===== countdown ===== -->
+  <section class="sec" style="padding-top:20px">
+    <div class="dark-h rv"><div class="h-kh" data-l="km">រាប់ថយក្រោយ</div><div class="h-en" data-l="en" style="color:var(--gold-l)">COUNTING DOWN</div></div>
+    <div class="cd rv" id="cd">
+      <div><b>0</b><span data-l="km">ថ្ងៃ</span><span data-l="en">DAYS</span></div>
+      <div><b>0</b><span data-l="km">ម៉ោង</span><span data-l="en">HOURS</span></div>
+      <div><b>0</b><span data-l="km">នាទី</span><span data-l="en">MINS</span></div>
+      <div><b>0</b><span data-l="km">វិនាទី</span><span data-l="en">SECS</span></div>
+    </div>
+  </section>
+
+  <!-- ===== details ===== -->
+  <section class="sec" style="padding-top:20px">
+    <div class="dark-h rv"><div class="h-kh" data-l="km">កាលបរិច្ឆេទ និងទីកន្លែង</div><div class="h-en" data-l="en" style="color:var(--gold-l)">WHEN &amp; WHERE</div></div>
+    <div class="det">
+      <div class="row rv"><svg viewBox="0 0 28 28"><rect x="4" y="6" width="20" height="18" rx="2"/><path d="M4 11h20M9 3v5M19 3v5"/></svg><div><div class="k"><span data-l="km">កាលបរិច្ឆេទ</span><span data-l="en">Date</span></div><div class="v" id="dl"></div></div></div>
+      <div class="row rv"><svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="10"/><path d="M14 8v6l4 3"/></svg><div><div class="k"><span data-l="km">ម៉ោង</span><span data-l="en">Time</span></div><div class="v" id="tm"></div></div></div>
+      <div class="row rv"><svg viewBox="0 0 28 28"><path d="M14 25s-8-8-8-14a8 8 0 0 1 16 0c0 6-8 14-8 14z"/><circle cx="14" cy="11" r="3"/></svg><div><div class="k"><span data-l="km">ទីកន្លែង</span><span data-l="en">Venue</span></div><div class="v" id="vn"></div></div></div>
+    </div>
+    <div class="center rv"><a class="btn" id="mapBtn" target="_blank" rel="noopener"><span data-l="km">បើកផែនទី</span><span data-l="en">OPEN IN MAPS</span></a></div>
+  </section>
+
+  <!-- ===== thanks + brand ===== -->
+  <section class="sec center" style="padding-bottom:50px">
+    <div class="rv"><div class="ty goldtext" data-l="en">Thank you</div><div class="ty-kh goldtext" data-l="km">សូមអរគុណ</div></div>
+    <div class="foot rv">
+      <div class="by">Created with</div>
+      <div class="brand goldtext">MONGKULCARD</div>
+      <a class="btn cta" id="ctaBtn"><span data-l="km">បង្កើតធៀបរបស់អ្នក</span><span data-l="en">CREATE YOUR OWN</span></a>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var S=SETTINGS,root=document.documentElement,$=function(s){return document.querySelector(s)};
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- measure the screen once (Messenger/Telegram toolbars must not resize the page) ---- */
+  var lastW=0;function vh(){if(innerWidth===lastW)return;lastW=innerWidth;root.style.setProperty('--vh',innerHeight/100+'px')}
+  vh();addEventListener('resize',vh);
+
+  /* ---- fill the template from SETTINGS ---- */
+  function fill(){
+    root.dataset.lang=S.lang;root.dataset.theme=S.theme;
+    var g=$('#guestName');g.textContent=S.guest[S.lang];g.classList.toggle('en',S.lang==='en');
+    document.querySelectorAll('.gname').forEach(function(e){e.textContent=S.guest[S.lang]});
+    $('#nA').textContent=S.groom.en;$('#nB').textContent=S.bride.en;
+    $('#nK').textContent=S.groom.km+' · '+S.bride.km;
+    $('#dShort').textContent=S.dateShort;$('#vShort').textContent=S.venue[S.lang];
+    $('#vShort').style.fontFamily=S.lang==='km'?'var(--kh)':'var(--en)';
+    $('#pg').textContent=S.lang==='km'?S.groom.full_km:S.groom.en;
+    $('#pb').textContent=S.lang==='km'?S.bride.full_km:S.bride.en;
+    $('#when').innerHTML=S.dateLong[S.lang]+'<br>'+S.time[S.lang]+'<br>'+S.venue[S.lang];
+    $('#dl').textContent=S.dateLong[S.lang];$('#tm').textContent=S.time[S.lang];$('#vn').textContent=S.venue[S.lang];
+    $('#mapBtn').href=S.mapUrl;$('#ctaBtn').href=S.brandUrl;
+    document.querySelectorAll('#optTheme button').forEach(function(b){b.classList.toggle('on',b.dataset.v===S.theme)});
+    document.querySelectorAll('#optLang button').forEach(function(b){b.classList.toggle('on',b.dataset.v===S.lang)});
+  }
+  fill();
+
+  /* ---- Khmer "flame" ornaments along the arch ---- */
+  (function(){
+    var g=$('#flames'),segs=[[[20,212],[20,122],[92,72],[150,30]],[[150,30],[208,72],[280,122],[280,212]]],h='';
+    function bz(p,t){var u=1-t;return[u*u*u*p[0][0]+3*u*u*t*p[1][0]+3*u*t*t*p[2][0]+t*t*t*p[3][0],u*u*u*p[0][1]+3*u*u*t*p[1][1]+3*u*t*t*p[2][1]+t*t*t*p[3][1]]}
+    segs.forEach(function(p){[.12,.3,.48,.66,.84].forEach(function(t){
+      var a=bz(p,t-.01),b=bz(p,t+.01),c=bz(p,t),dx=b[0]-a[0],dy=b[1]-a[1],nx=dy,ny=-dx;
+      if((c[0]-150)*nx+(c[1]-250)*ny<0){nx=-nx;ny=-ny}
+      var ang=Math.atan2(nx,-ny)*180/Math.PI;
+      h+='<path class="fl" transform="translate('+c[0].toFixed(1)+' '+c[1].toFixed(1)+') rotate('+ang.toFixed(1)+')" d="M0 0C-5-5-4-11 0-17C1-12 4-10 3-6C5-8 6-10 6-12C8-7 5-2 0 0Z"/>';
+    })});
+    g.innerHTML=h;
+  })();
+
+  /* ================= GLITTER COVER ================= */
+  var cover=$('#cover'),cv=$('#glitter'),ctx=cv.getContext('2d'),mask=document.createElement('canvas'),mctx=mask.getContext('2d');
+  var W,H,DPR,P=[],buckets,BS=34,cols,rows,cells,hit,veilA,running=false,done=false,lastPt=null,down=false,started=false;
+  var GOLD=['#fff4d0','#f6e3a1','#e9c46a','#d4a64a','#b8862f'];
+  function cssv(n){return getComputedStyle(root).getPropertyValue(n).trim()}
+  function initGlitter(){
+    if(!innerWidth||!innerHeight){setTimeout(initGlitter,250);return}
+    DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;
+    [cv,mask].forEach(function(c){c.width=W*DPR;c.height=H*DPR});
+    ctx.setTransform(DPR,0,0,DPR,0,0);mctx.setTransform(DPR,0,0,DPR,0,0);
+    mctx.globalCompositeOperation='source-over';
+    var gr=mctx.createRadialGradient(W/2,H*.45,0,W/2,H*.45,Math.max(W,H)*.8);
+    gr.addColorStop(0,cssv('--v3'));gr.addColorStop(.55,cssv('--v2'));gr.addColorStop(1,cssv('--v1'));
+    mctx.fillStyle=gr;mctx.fillRect(0,0,W,H);
+    var n=Math.min(4200,Math.round(W*H/62));P=[];
+    for(var i=0;i<n;i++){var r=Math.random();P.push({x:Math.random()*W,y:Math.random()*H,s:r<.82?.6+Math.random()*1.1:1.6+Math.random()*1.4,
+      c:(Math.random()*GOLD.length)|0,ph:Math.random()*6.3,sp:1+Math.random()*3,st:0,vx:0,vy:0,life:1})}
+    P.sort(function(a,b){return a.c-b.c});
+    cols=Math.ceil(W/BS);rows=Math.ceil(H/BS);buckets=[];for(i=0;i<cols*rows;i++)buckets.push([]);
+    P.forEach(function(p,i){buckets[((p.y/BS)|0)*cols+((p.x/BS)|0)].push(i)});
+    cells=new Uint8Array(cols*rows);hit=0;veilA=1;done=false;started=false;lastPt=null;
+    cover.style.display='';cover.style.pointerEvents='';$('#tapOpen').style.display='';$('#coverText').classList.remove('gone');
+    if(!running){running=true;requestAnimationFrame(loop)}
+  }
+  function brushAt(x,y,dx,dy){
+    var R=44;
+    mctx.globalCompositeOperation='destination-out';
+    var g=mctx.createRadialGradient(x,y,0,x,y,R);g.addColorStop(0,'rgba(0,0,0,1)');g.addColorStop(.6,'rgba(0,0,0,.85)');g.addColorStop(1,'rgba(0,0,0,0)');
+    mctx.fillStyle=g;mctx.beginPath();mctx.arc(x,y,R,0,6.29);mctx.fill();
+    var len=Math.hypot(dx,dy)||1,ux=dx/len,uy=dy/len;
+    var c0=Math.max(0,((x-R)/BS)|0),c1=Math.min(cols-1,((x+R)/BS)|0),r0=Math.max(0,((y-R)/BS)|0),r1=Math.min(rows-1,((y+R)/BS)|0);
+    for(var r=r0;r<=r1;r++)for(var c=c0;c<=c1;c++){
+      var k=r*cols+c,cx=(c+.5)*BS,cy=(r+.5)*BS;
+      if(!cells[k]&&Math.hypot(cx-x,cy-y)<R*.9){cells[k]=1;hit++}
+      buckets[k].forEach(function(i){var p=P[i];if(p.st)return;var ex=p.x-x,ey=p.y-y,d=Math.hypot(ex,ey);if(d>R*1.1)return;
+        p.st=1;var f=1-d/(R*1.1);d=d||1;
+        p.vx=ux*(1.5+Math.random()*3.5)*(.5+f)+ex/d*(1+Math.random()*2.2);
+        p.vy=uy*(1.5+Math.random()*3.5)*(.5+f)+ey/d*(1+Math.random()*2.2)-Math.random()*1.6;
+        p.life=1;p.dec=.008+Math.random()*.012})
+    }
+    if(!started&&hit>cols*rows*.04){started=true;$('#coverText').classList.add('gone')}
+    if(hit>cols*rows*.4)finish();
+  }
+  function stroke(x,y){
+    if(done)return;
+    if(!lastPt){brushAt(x,y,0,-1);lastPt=[x,y];return}
+    var dx=x-lastPt[0],dy=y-lastPt[1],dist=Math.hypot(dx,dy),steps=Math.max(1,Math.ceil(dist/10));
+    for(var s=1;s<=steps;s++)brushAt(lastPt[0]+dx*s/steps,lastPt[1]+dy*s/steps,dx,dy);
+    lastPt=[x,y];
+  }
+  cover.addEventListener('pointerdown',function(e){down=true;lastPt=null;stroke(e.clientX,e.clientY)});
+  cover.addEventListener('pointermove',function(e){if(down||e.pointerType==='mouse')stroke(e.clientX,e.clientY)});
+  addEventListener('pointerup',function(){down=false;lastPt=null});
+  cover.addEventListener('pointerleave',function(){lastPt=null});
+  $('#tapOpen').addEventListener('click',function(e){e.stopPropagation();finish()});
+  $('#tapOpen').addEventListener('pointerdown',function(e){e.stopPropagation()});
+
+  function loop(t){
+    ctx.clearRect(0,0,W,H);
+    if(veilA>0){ctx.globalAlpha=veilA;ctx.drawImage(mask,0,0,W,H)}
+    var live=0,tt=t/1000,cur=-1;
+    for(var i=0;i<P.length;i++){var p=P[i];
+      if(p.st===0){
+        var a=.35+.65*Math.abs(Math.sin(tt*p.sp+p.ph));
+        ctx.globalAlpha=a*veilA;if(p.c!==cur){cur=p.c;ctx.fillStyle=GOLD[cur]}
+        ctx.fillRect(p.x,p.y,p.s,p.s);
+        if(p.s>2.4&&a>.93&&veilA>.5){ctx.globalAlpha=(a-.93)*10*veilA;ctx.fillRect(p.x-3,p.y+p.s/2-.3,p.s+6,.6);ctx.fillRect(p.x+p.s/2-.3,p.y-3,.6,p.s+6)}
+        live++;
+      }else if(p.life>0){
+        p.x+=p.vx;p.y+=p.vy;p.vx*=.965;p.vy=p.vy*.965+.05;p.life-=p.dec;
+        ctx.globalAlpha=Math.max(0,p.life);if(p.c!==cur){cur=p.c;ctx.fillStyle=GOLD[cur]}
+        ctx.fillRect(p.x,p.y,p.s,p.s);live++;
+      }
+    }
+    ctx.globalAlpha=1;
+    if(done&&veilA>0)veilA=Math.max(0,veilA-.022);
+    if(done&&veilA===0&&!live){running=false;cover.style.display='none';return}
+    requestAnimationFrame(loop);
+  }
+
+  /* ================= OPENING SEQUENCE ================= */
+  var timers=[];function at(ms,fn){timers.push(setTimeout(fn,reduce?0:ms))}
+  function finish(){
+    if(done)return;done=true;cover.style.pointerEvents='none';$('#tapOpen').style.display='none';$('#coverText').classList.add('gone');
+    var cx=W/2,cy=H/2;
+    P.forEach(function(p){if(p.st)return;p.st=1;var ex=p.x-cx,ey=p.y-cy,d=Math.hypot(ex,ey)||1;
+      p.vx=ex/d*(2+Math.random()*4)+(Math.random()-.5)*2;p.vy=ey/d*(2+Math.random()*4)-1-Math.random()*2;p.life=.6+Math.random()*.5;p.dec=.01+Math.random()*.012});
+    var hero=$('#hero');
+    at(500,function(){hero.classList.add('open')});
+    at(1300,function(){hero.classList.add('lit')});
+    at(1700,function(){hero.classList.add('show-arch')});
+    at(2500,function(){hero.classList.add('show-text');petals.start()});
+    at(5600,function(){if(NOSCROLL)return;root.classList.remove('locked');hero.classList.add('unlocked')});
+  }
+
+  /* ================= LOTUS PETALS + GOLD DUST ================= */
+  var petals=(function(){
+    var c=$('#fx'),x=c.getContext('2d'),L=[],on=false,raf,w,h,d,last=0,spawnT=0;
+    function size(){d=Math.min(devicePixelRatio||1,2);w=innerWidth;h=innerHeight;c.width=w*d;c.height=h*d;x.setTransform(d,0,0,d,0,0)}
+    function petal(burst){return{k:'p',x:Math.random()*w,y:burst?-20-Math.random()*h*.5:-20,s:9+Math.random()*9,r:Math.random()*6.3,vr:(Math.random()-.5)*.04,
+      vy:.6+Math.random()*.9,sw:Math.random()*6.3,ss:.01+Math.random()*.02,fl:Math.random()*6.3}}
+    function mote(){return{k:'m',x:Math.random()*w,y:h*.4+Math.random()*h*.6,vy:-.15-Math.random()*.35,s:.8+Math.random()*1.6,ph:Math.random()*6.3,a:0}}
+    function draw(t){
+      x.clearRect(0,0,w,h);
+      if(scrollY<h*.9){
+        if(t-spawnT>1100&&L.filter(function(o){return o.k==='p'}).length<16){spawnT=t;L.push(petal(false))}
+        if(L.filter(function(o){return o.k==='m'}).length<36)L.push(mote());
+      }
+      L=L.filter(function(o){
+        if(o.k==='p'){
+          o.y+=o.vy;o.sw+=o.ss;o.x+=Math.sin(o.sw)*.7;o.r+=o.vr;o.fl+=.03;
+          x.save();x.translate(o.x,o.y-scrollY*.0);x.rotate(o.r);x.scale(Math.cos(o.fl)*.5+.6,1);
+          var g=x.createLinearGradient(0,-o.s,0,o.s);g.addColorStop(0,'rgba(255,240,236,.95)');g.addColorStop(1,'rgba(240,170,170,.9)');
+          x.fillStyle=g;x.beginPath();x.moveTo(0,-o.s);x.bezierCurveTo(o.s*.65,-o.s*.5,o.s*.55,o.s*.6,0,o.s);x.bezierCurveTo(-o.s*.55,o.s*.6,-o.s*.65,-o.s*.5,0,-o.s);x.fill();
+          x.strokeStyle='rgba(200,120,120,.35)';x.lineWidth=.6;x.beginPath();x.moveTo(0,-o.s*.7);x.lineTo(0,o.s*.8);x.stroke();
+          x.restore();return o.y<h+30;
+        }
+        o.y+=o.vy;o.ph+=.03;o.a=Math.min(1,o.a+.01);
+        x.globalAlpha=o.a*(.4+.4*Math.sin(o.ph));x.fillStyle='#f6e3a1';x.beginPath();x.arc(o.x+Math.sin(o.ph)*4,o.y,o.s,0,6.29);x.fill();x.globalAlpha=1;
+        return o.y>-10;
+      });
+      raf=requestAnimationFrame(draw);
+    }
+    addEventListener('resize',function(){if(on)size()});
+    return{start:function(){if(reduce)return;size();for(var i=0;i<22;i++)L.push(petal(true));if(!on){on=true;raf=requestAnimationFrame(draw)}},
+           stop:function(){on=false;cancelAnimationFrame(raf);L=[];x.clearRect(0,0,w||0,h||0)}};
+  })();
+
+  /* ================= SCROLL REVEAL + COUNTDOWN ================= */
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.15});
+  document.querySelectorAll('.rv').forEach(function(e){io.observe(e)});
+  var cdB=document.querySelectorAll('#cd b'),target=new Date(S.start).getTime();
+  function tick(){var s=Math.max(0,(target-Date.now())/1000|0),v=[s/86400|0,s%86400/3600|0,s%3600/60|0,s%60];
+    cdB.forEach(function(b,i){b.textContent=i?String(v[i]).padStart(2,'0'):v[i]})}
+  tick();setInterval(tick,1000);
+
+  /* ================= DEMO: customise panel ================= */
+  var panel=$('#panel');
+  $('#custBtn').onclick=function(){panel.classList.add('on')};
+  $('#closePanel').onclick=function(){panel.classList.remove('on')};
+  function replay(){
+    timers.forEach(clearTimeout);timers=[];petals.stop();
+    var hero=$('#hero');['open','lit','show-arch','show-text','unlocked'].forEach(function(c){hero.classList.remove(c)});
+    root.classList.add('locked');scrollTo(0,0);
+    document.querySelectorAll('.rv').forEach(function(e){e.classList.remove('in');io.observe(e)});
+    void hero.offsetWidth;initGlitter();
+  }
+  $('#optTheme').onclick=function(e){var b=e.target.closest('button');if(!b)return;S.theme=b.dataset.v;fill();if(!done)setTimeout(initGlitter,30)};
+  $('#optLang').onclick=function(e){var b=e.target.closest('button');if(!b)return;S.lang=b.dataset.v;fill()};
+  $('#replay').onclick=function(){panel.classList.remove('on');replay()};
+
+  addEventListener('resize',function(){if(!done&&innerWidth&&innerWidth!==W)initGlitter()});
+
+  /* ---- inside the MongkulCard site: settings arrive from the editor ---- */
+  var EMBED=window.parent!==window,NOSCROLL=false;
+  if(EMBED){$('#custBtn').style.display='none';var st=document.createElement('style');st.textContent='html,body{scrollbar-width:none}::-webkit-scrollbar{display:none}';document.head.appendChild(st)}
+  addEventListener('message',function(e){
+    var m=e.data||{};
+    if(m.type==='settings'){var themeChanged=m.data.theme&&m.data.theme!==S.theme;
+      for(var k in m.data)S[k]=m.data[k];fill();if(themeChanged&&!done)setTimeout(initGlitter,30)}
+    if(m.type==='replay')replay();
+    if(m.type==='noscroll'){NOSCROLL=true;root.classList.add('locked');$('.hint-down').style.display='none'}
+    if(m.type==='open')finish();
+  });
+
+  initGlitter();
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fill);
+})();
+</script>
+</body>
+</html>
