@@ -5,8 +5,14 @@
   "observability": { "enabled": true },
   // Public settings. Secrets (TELEGRAM_BOT_TOKEN, TELEGRAM_WEBHOOK_SECRET) are set in the Cloudflare dashboard, not here.
   "vars": {
-    "TELEGRAM_BOT_USERNAME": "mongkulcard_bot"
+    "TELEGRAM_BOT_USERNAME": "mongkulcard_bot",
+    // KHQR payments: the Bakong account that receives the money (empty = payment switched off).
+    "BAKONG_ACCOUNT_ID": "",
+    "KHQR_MERCHANT_NAME": "MongkulCard",
+    "KHQR_CITY": "Phnom Penh"
   },
+  // 09:00 Phnom Penh time every day (src/payments.js dailyJobs)
+  "triggers": { "crons": ["0 2 * * *"] },
   "routes": [
     { "pattern": "mongkulcard.com", "custom_domain": true }
   ],

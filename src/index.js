@@ -10,6 +10,7 @@
 //   /preview/             the new website prototype (hidden from search engines, nothing is saved)
 //   /signin, /account, /auth/telegram, /tg/webhook, /api/account/...   customer accounts (src/account.js)
 //   /api/invitations/...  the customer's own invitations, saved from the editor (src/invitations.js)
+//   /api/packages, /api/orders/...  packages and KHQR payments checked with Bakong (src/payments.js)
 
 // Rules that match the database: 7 characters from a-z and 2-9 without i, l, o.
 const CODE_RE = /^[a-hj-km-np-z2-9]{7}$/;
@@ -22,6 +23,7 @@ const BOT_RE = /bot|crawler|spider|facebookexternalhit|whatsapp|preview|slurp/i;
 import { hostPage, appFile, api } from './host.js';
 import { siteRoute, accountApi } from './account.js';
 import { invitationsApi } from './invitations.js';
+import { paymentsApi, dailyJobs } from './payments.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -31,6 +33,7 @@ export default {
     // Customer accounts for the self-service website (src/account.js).
     if (parts[0] === 'api' && parts[1] === 'account') return accountApi(request, env, url, parts);
     if (parts[0] === 'api' && parts[1] === 'invitations') return invitationsApi(request, env, url, parts);
+    if (parts[0] === 'api' && (parts[1] === 'packages' || parts[1] === 'orders')) return paymentsApi(request, env, ctx, url, parts);
     if (['signin', 'auth', 'account', 'site', 'tg'].includes(parts[0])) {
       return (await siteRoute(request, env, ctx, url, parts)) || page(notFound(), 404);
     }
@@ -77,6 +80,11 @@ export default {
     }
 
     return page(notFound(), 404);
+  },
+
+  // Once a day (wrangler.jsonc "triggers"): expire old payment QRs, remind Samotra before the Bakong token expires.
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(dailyJobs(env));
   },
 };
 
@@ -245,10 +253,13 @@ async function previewFile(request, env, url, parts) {
   if (parts.length === 1 && !url.pathname.endsWith('/')) {
     return Response.redirect(new URL('/preview/', url).toString(), 301);
   }
-  const file = parts.length === 1 ? 'index.html' : parts.length === 2 && parts[1] === 'invite.html' ? 'invite.html' : null;
+  const file = parts.length === 1 ? 'index.html' : parts.length === 2 && ['invite.html', 'qrcode.js'].includes(parts[1]) ? parts[1] : null;
   if (!file) return page(notFound(), 404);
   const res = await env.ASSETS.fetch(new URL('/preview/' + file, url));
   if (!res.ok) return page(notFound(), 404);
+  if (file === 'qrcode.js') {
+    return new Response(res.body, { headers: { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'public, max-age=86400', 'x-content-type-options': 'nosniff' } });
+  }
   return page(await res.text(), 200, { 'cache-control': 'no-cache' });
 }
 

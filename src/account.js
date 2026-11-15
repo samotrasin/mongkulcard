@@ -15,6 +15,8 @@
 //
 // This is separate from the host login in host.js (/login, /manage), which keeps working as before.
 
+import { paymentCallback } from './payments.js';
+
 const enc = new TextEncoder();
 const COOKIE = 'mc_acct';          // different from host.js's mc_session
 const NEXT_COOKIE = 'mc_next';     // where to go after Telegram sends the customer back
@@ -150,6 +152,10 @@ async function telegramWebhook(request, env, ctx) {
   }
   let update;
   try { update = await request.json(); } catch { return new Response('ok'); }
+  if (update && update.callback_query) {           // Samotra's Unlock / Not received buttons
+    await paymentCallback(update.callback_query, env, ctx);
+    return new Response('ok');
+  }
   const msg = update && update.message;
   if (!msg || !msg.from || msg.chat?.type !== 'private') return new Response('ok');
   const from = msg.from;
@@ -187,15 +193,18 @@ function phoneKeyboard() {
   return { keyboard: [[{ text: '📱 ចែករំលែកលេខទូរស័ព្ទ · Share my phone number', request_contact: true }]], resize_keyboard: true, one_time_keyboard: true };
 }
 
-async function botSend(env, chatId, text, replyMarkup) {
-  if (!env.TELEGRAM_BOT_TOKEN) return;
+export async function botSend(env, chatId, text, replyMarkup) {
+  return botCall(env, 'sendMessage', { chat_id: chatId, text, reply_markup: replyMarkup, disable_web_page_preview: true });
+}
+
+export async function botCall(env, method, payload) {
+  if (!env.TELEGRAM_BOT_TOKEN) return null;
   try {
-    await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text, reply_markup: replyMarkup, disable_web_page_preview: true }),
+    const r = await fetch(`${env.TELEGRAM_API_BASE || 'https://api.telegram.org'}/bot${env.TELEGRAM_BOT_TOKEN}/${method}`, {   // TELEGRAM_API_BASE only for local tests
+      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload),
     });
-  } catch { /* the customer can tap /start again */ }
+    return await r.json().catch(() => null);
+  } catch { return null; }   // a failed message never breaks the request
 }
 
 // ---------------------------------------------------------------- sessions
@@ -204,7 +213,7 @@ export async function getAccount(request, env) {
   const token = readCookie(request, COOKIE);
   if (!token || !/^[A-Za-z0-9_-]{43}$/.test(token)) return null;
   const row = await env.DB.prepare(
-    `SELECT a.id, a.name, a.telegram_username, a.photo_url, a.phone, a.phone_verified_at, a.created_at, s.id AS session_id
+    `SELECT a.id, a.telegram_id, a.name, a.telegram_username, a.photo_url, a.phone, a.phone_verified_at, a.created_at, s.id AS session_id
        FROM account_sessions s JOIN accounts a ON a.id = s.account_id
       WHERE s.token_hash = ?1 AND s.expires_at > strftime('%Y-%m-%dT%H:%M:%SZ','now') AND a.disabled_at IS NULL`
   ).bind(await sha256Hex(token)).first();

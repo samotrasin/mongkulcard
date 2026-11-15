@@ -242,6 +242,17 @@ input[type=date]{color-scheme:dark}
 .ok{color:#8fe0b0}.no{color:#7f6d60}
 .hidden{display:none!important}.savestate{font-size:11.5px;letter-spacing:.04em;text-transform:none;font-family:var(--ui);color:var(--muted)}.savestate.ok{color:#8fe0b0}.savestate.err{color:#f0a0a0}
 .inv-row .ga{gap:8px}
+.pkg{display:flex;justify-content:space-between;align-items:center;gap:10px}.pkg b{font-size:16px}.pkg .pp{font:600 20px var(--serif);color:var(--gold-l);white-space:nowrap}
+.pkg small{display:block}.pkg.off{opacity:.55;cursor:default}
+.khqr-card{width:240px;margin:6px auto 12px;background:#fff;border-radius:18px;overflow:hidden;color:#111;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.khqr-card .top{background:#e1232e;color:#fff;font:700 15px system-ui;letter-spacing:.12em;padding:9px 0;position:relative}
+.khqr-card .top::after{content:"";position:absolute;right:0;bottom:-12px;border-left:12px solid transparent;border-top:12px solid #e1232e}
+.khqr-card .mn{text-align:left;padding:14px 18px 0;font:500 13px system-ui;color:#333}
+.khqr-card .am{text-align:left;padding:0 18px 8px;font:700 22px system-ui;border-bottom:1px dashed #ccc}
+.khqr-card .code{padding:12px 16px 16px}.khqr-card canvas{width:100%;height:auto;display:block;image-rendering:pixelated}
+.paystate{font-size:14px;margin-top:6px}.paystate.ok{color:#8fe0b0}.paystate.wait{color:var(--gold-l)}.paystate.err{color:#f0a0a0}
+.timer{font:600 13px var(--caps);letter-spacing:.1em;color:var(--muted)}
+.big-ok{font-size:46px;line-height:1;margin:6px 0}
 .fs-over{position:fixed;inset:0;z-index:70;background:#000;display:none}.fs-over.on{display:block}.fs-over iframe{width:100%;height:100%;border:0;display:block}
 #fsClose{position:fixed;top:calc(env(safe-area-inset-top) + 10px);left:10px;z-index:71;width:38px;height:38px;border-radius:50%;border:1px solid rgba(246,227,161,.6);background:rgba(0,0,0,.55);color:#f6e3a1;font-size:16px}
 .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:var(--gold);color:#2a0a10;padding:10px 18px;border-radius:30px;font-weight:600;font-size:14px;opacity:0;transition:.3s;z-index:60;pointer-events:none}
@@ -488,6 +499,12 @@ input[type=date]{color-scheme:dark}
   <button class="back" data-go="editor">← <span data-l="km">ត្រឡប់ទៅកែប្រែ</span><span data-l="en">Back to editor</span></button>
   <div style="max-width:440px;margin:0 auto">
     <h2 class="h2"><span data-l="km">ជ្រើសរើសកញ្ចប់ ហើយបង់ប្រាក់</span><span data-l="en">Choose a package and pay</span></h2>
+    <div id="payReal" class="hidden">
+      <div class="fontsets" style="margin:18px 0" id="realPkgs"></div>
+      <div class="panel" style="text-align:center" id="payBox"></div>
+      <div class="note"><b><span data-l="km">ធនាគារណាក៏បាន៖</span><span data-l="en">Any bank:</span></b> <span data-l="km">ការបង់ប្រាក់ត្រូវបានបញ្ជាក់ដោយស្វ័យប្រវត្តិ។ បើបង់ពី ABA ទៅ ABA សូមចុច «ខ្ញុំបានបង់ពី ABA» ហើយយើងនឹងបញ្ជាក់ក្នុងរយៈពេលខ្លី។</span><span data-l="en">payments are confirmed automatically. If you pay from an ABA account, tap "I paid with ABA" and we confirm it shortly.</span></div>
+    </div>
+    <div id="payDemo">
     <div class="fontsets" style="margin:18px 0" id="pkgs">
       <button class="fs"><b>Essential</b> <small>Price to be decided</small></button>
       <button class="fs on"><b>Premium</b> <small>Price to be decided · cinematic opening, photos, music</small></button>
@@ -500,6 +517,7 @@ input[type=date]{color-scheme:dark}
       <button class="btn gold block" style="margin-top:14px" id="paidBtn">✓ <span data-l="km">ក្លែងធ្វើថាបានបង់</span><span data-l="en">Simulate payment</span></button>
     </div>
     <div class="note"><b>Later:</b> Cloudflare creates a KHQR for each order, checks Bakong every few seconds, and unlocks the invitation by itself. <b>At launch:</b> you unlock it by hand from your admin page.</div>
+    </div>
   </div>
 </div></section>
 
@@ -554,6 +572,7 @@ input[type=date]{color-scheme:dark}
 </div>
 <div class="fs-over" id="fsOver" aria-hidden="true"><iframe id="fsFrame" title="Full screen preview"></iframe><button type="button" id="fsClose" aria-label="Close">✕</button></div>
 <div class="toast" id="toast"></div>
+<script src="/preview/qrcode.js"></script>
 
 <script>
 (function(){
@@ -692,6 +711,7 @@ function go(v){if(VIEWS.indexOf(v)<0)v='home';
   $('#loginBtn').dataset.go=loggedIn?'dashboard':'login';
   if(REAL&&loggedIn&&v==='editor'&&!CURRENT)ensureDraft();
   if(REAL&&loggedIn&&v==='dashboard')renderMyInvs();
+  if(REAL&&loggedIn&&v==='pay')openPay();else if(v!=='pay')stopPay();
   setTimeout(push,80);
 }
 document.addEventListener('click',function(e){var g=e.target.closest('[data-go]');if(g){e.preventDefault();go(g.dataset.go)}
@@ -786,6 +806,77 @@ $('#myInvs').onclick=function(e){
 };
 $('#newInv').onclick=function(){var blank=merge(DEFAULTS,{groom:{en:'',km:''},bride:{en:'',km:''},venue:''});INV=blank;createDraft(payload()).then(function(){go('editor')}).catch(function(){})};
 
+/* ---------- real payment (KHQR + Bakong) ---------- */
+var PAY={pkgs:[],sel:null,order:null,timer:null,tick:null,started:0,ready:false};
+function T(km,en){return lang()==='km'?km:en}
+function money(n){return '$'+Number(n).toFixed(2)}
+function stopPay(){clearTimeout(PAY.timer);clearInterval(PAY.tick);PAY.timer=null}
+function openPay(){
+  stopPay();var box=$('#payBox');box.innerHTML='<p class="sub">…</p>';$('#realPkgs').innerHTML='';
+  if(!CURRENT){ensureDraft();setTimeout(function(){if(CURRENT)openPay()},1500);return}
+  Promise.all([apiCall('GET','/api/packages'),apiCall('GET','/api/invitations/'+CURRENT)]).then(function(r){
+    var j=r[0],inv=r[1].invitation;PAY.ready=j.ready;PAY.pkgs=j.packages;
+    if(inv.status!=='draft'){showPaid(inv.package_code);return}
+    renderPkgs();
+    if(!j.ready){box.innerHTML='<p class="paystate wait">'+T('ការបង់ប្រាក់កំពុងរៀបចំ។ សូមសាកម្ដងទៀតឆាប់ៗនេះ។','Payment is being set up. Please try again soon.')+'</p>';return}
+    var forSale=PAY.pkgs.filter(function(p){return p.forSale});
+    if(!forSale.length){box.innerHTML='<p class="paystate wait">'+T('កញ្ចប់តម្លៃនឹងបើកលក់ឆាប់ៗនេះ។','Packages open for sale soon.')+'</p>';return}
+    if(!PAY.sel||!forSale.some(function(p){return p.code===PAY.sel}))PAY.sel=forSale[0].code;renderPkgs();showChoose();
+  }).catch(function(e){box.innerHTML='<p class="paystate err">'+esc(e.message)+'</p>'});
+}
+function renderPkgs(){
+  $('#realPkgs').innerHTML=PAY.pkgs.map(function(p){
+    var info=(p.named_guests?p.named_guests+T(' ឈ្មោះភ្ញៀវ',' named guests'):'')+(p.photos?' · '+p.photos+T(' រូបថត',' photos'):'');
+    return '<button class="fs pkg'+(p.forSale?'':' off')+(p.code===PAY.sel?' on':'')+'" data-pkg="'+p.code+'"'+(p.forSale?'':' disabled')+'><div><b>'+esc(lang()==='km'?p.name_km:p.name_en)+(p.admin_only?' <small style="display:inline;color:#f0a0a0">(admin test)</small>':'')+'</b><small>'+info+'</small></div><span class="pp">'+(p.forSale?money(p.price_cents/100):T('ឆាប់ៗ','Soon'))+'</span></button>'}).join('');
+}
+$('#realPkgs').onclick=function(e){var b=e.target.closest('[data-pkg]');if(!b||b.disabled||PAY.order&&PAY.order.status==='pending')return;PAY.sel=b.dataset.pkg;renderPkgs();showChoose()};
+function showChoose(){
+  var p=PAY.pkgs.find(function(x){return x.code===PAY.sel});PAY.order=null;
+  $('#payBox').innerHTML='<p class="sub">'+T('កញ្ចប់ ','Package ')+'<b>'+esc(lang()==='km'?p.name_km:p.name_en)+'</b></p><div class="big-ok goldtext" style="font:600 34px var(--serif)">'+money(p.price_cents/100)+'</div>'+
+    '<button class="btn gold block" id="makeQr" style="margin-top:12px">'+T('បង់ប្រាក់តាម KHQR','Pay with KHQR')+'</button>';
+  $('#makeQr').onclick=function(){this.disabled=true;apiCall('POST','/api/orders',{invitation:CURRENT,package:PAY.sel}).then(function(j){PAY.started=Date.now();showOrder(j.order);poll()}).catch(function(e){
+    if(e.code==='already_paid'){openPay();return}$('#payBox').insertAdjacentHTML('beforeend','<p class="paystate err">'+esc(e.message)+'</p>');$('#makeQr').disabled=false})};
+}
+function drawQr(text){
+  var q=qrcode(0,'M');q.addData(text);q.make();var n=q.getModuleCount(),sc=8,m=2,c=document.createElement('canvas');c.width=c.height=(n+m*2)*sc;
+  var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.fillStyle='#000';
+  for(var r=0;r<n;r++)for(var k=0;k<n;k++)if(q.isDark(r,k))x.fillRect((k+m)*sc,(r+m)*sc,sc,sc);return c}
+function showOrder(o){
+  PAY.order=o;var box=$('#payBox');
+  if(o.status==='paid'){showPaid(o.package);return}
+  if(o.status==='expired'||o.status==='cancelled'){box.innerHTML='<p class="paystate err">'+T('QR នេះផុតកំណត់ហើយ។','This QR has expired.')+'</p><button class="btn gold block" id="newQr">'+T('បង្កើត QR ថ្មី','Make a new QR')+'</button>';$('#newQr').onclick=showChoose;stopPay();return}
+  if(!box.querySelector('.khqr-card')||box.dataset.order!==o.id){
+    box.dataset.order=o.id;
+    box.innerHTML='<p class="sub">'+T('ស្កេនដោយកម្មវិធីធនាគារណាមួយ','Scan with any bank app')+'</p><div class="khqr-card"><div class="top">KHQR</div><div class="mn">MongkulCard</div><div class="am">'+money(o.amount)+' <small style="font:500 12px system-ui;color:#777">USD</small></div><div class="code" id="qrHere"></div></div>'+
+      '<div class="timer" id="qrTimer"></div><p class="paystate wait" id="payState"></p>'+
+      '<div class="hero-btns" style="margin-top:10px"><button class="btn sm" id="saveQr">⤓ '+T('រក្សាទុក QR','Save QR')+'</button><button class="btn sm" id="claimBtn">'+T('ខ្ញុំបានបង់ពី ABA','I paid with ABA')+'</button></div>'+
+      '<p class="sub" style="font-size:12px;margin-top:8px">'+T('លេខបញ្ជាទិញ ','Order ')+esc(o.bill)+'</p>';
+    var cv=drawQr(o.qr);$('#qrHere').appendChild(cv);
+    $('#saveQr').onclick=function(){var a=document.createElement('a');a.download='MongkulCard-KHQR-'+o.bill+'.png';a.href=cv.toDataURL('image/png');document.body.appendChild(a);a.click();a.remove()};
+    $('#claimBtn').onclick=function(){if(!confirm(T('តើអ្នកបានបង់ '+money(o.amount)+' រួចហើយមែនទេ?','Have you already paid '+money(o.amount)+'?')))return;
+      apiCall('POST','/api/orders/'+o.id+'/claim',{}).then(function(j){showOrder(j.order)}).catch(function(e){toast(e.message)})};
+    clearInterval(PAY.tick);PAY.tick=setInterval(function(){var left=Math.max(0,Date.parse(PAY.order.expiresAt)-Date.now());var t=$('#qrTimer');if(!t)return;
+      t.textContent=PAY.order.status==='claimed'?'':T('QR ផុតកំណត់ក្នុង ','QR expires in ')+Math.floor(left/60000)+':'+String(Math.floor(left/1000)%60).padStart(2,'0')},1000);
+  }
+  var st=$('#payState');
+  if(o.status==='claimed'){st.textContent=T('អរគុណ! យើងកំពុងពិនិត្យការបង់ប្រាក់របស់អ្នក ហើយនឹងប្រាប់អ្នកតាម Telegram។','Thank you! We are checking your payment and will tell you on Telegram.');var cb=$('#claimBtn');if(cb)cb.remove()}
+  else if(o.status==='rejected'){st.className='paystate err';st.textContent=T('យើងមិនទាន់ឃើញការបង់ប្រាក់។ សូមឆ្លើយតបតាម Telegram ជាមួយរូបវិក្កយបត្រ។','We could not find the payment yet. Please reply on Telegram with your receipt.')}
+  else st.textContent=T('កំពុងរង់ចាំការបង់ប្រាក់… ទំព័រនេះនឹងបញ្ជាក់ដោយខ្លួនឯង។','Waiting for payment… this page confirms by itself.');
+}
+function poll(){
+  clearTimeout(PAY.timer);
+  if(!PAY.order||document.hidden||!$('#v-pay').classList.contains('on'))return;
+  var age=Date.now()-PAY.started,wait=age<600000?4000:age<3600000?30000:120000;
+  PAY.timer=setTimeout(function(){apiCall('GET','/api/orders/'+PAY.order.id).then(function(j){showOrder(j.order);if(j.order.status==='pending'||j.order.status==='claimed'||j.order.status==='rejected')poll()}).catch(function(){poll()})},wait);
+}
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&PAY.order&&$('#v-pay').classList.contains('on')){PAY.started=PAY.started||Date.now();poll()}});
+function showPaid(code){
+  stopPay();var p=PAY.pkgs.find(function(x){return x.code===code});
+  $('#realPkgs').innerHTML='';
+  $('#payBox').innerHTML='<div class="big-ok">✅</div><h3>'+T('បានបង់ប្រាក់រួចរាល់','Paid')+'</h3><p class="sub">'+(p?esc(lang()==='km'?p.name_km:p.name_en)+' · ':'')+T('ធៀបរបស់អ្នកបានដោះសោហើយ។ ជំហានបន្ទាប់៖ បន្ថែមភ្ញៀវ ហើយផ្ញើតំណ (មកដល់ឆាប់ៗ)។','Your invitation is unlocked. Next: add guests and send their links (coming soon).')+'</p>'+
+    '<button class="btn gold block" data-go="dashboard" style="margin-top:12px">'+T('ទៅធៀបរបស់ខ្ញុំ','Go to my invitations')+'</button>';
+}
+
 /* ---------- pay ---------- */
 (function(){var s='',r=function(){return Math.random()<.5};for(var y=0;y<21;y++)for(var x=0;x<21;x++){var f=(x<7&&y<7)||(x>13&&y<7)||(x<7&&y>13);
   var on=f?((x%7===0||x%7===6||y%7===0||y%7===6)||((x%7>1&&x%7<5)&&(y%7>1&&y%7<5))):r();if(f&&x>13)on=((x-14===0||x-14===6||y===0||y===6)||(x-14>1&&x-14<5&&y>1&&y<5));if(f&&y>13)on=((x===0||x===6||y-14===0||y-14===6)||(x>1&&x<5&&y-14>1&&y-14<5));
@@ -814,6 +905,7 @@ setLang('km');renderGuests();
 if(REAL){
   try{var t=sessionStorage.getItem('mc_try');if(t){INV=merge(DEFAULTS,JSON.parse(t));sessionStorage.removeItem('mc_try');bindInputs()}}catch(e){}
   $('.proto').textContent='PREVIEW · LOGIN IS REAL';
+  $('#payDemo').classList.add('hidden');$('#payReal').classList.remove('hidden');
   var ln=$('#v-login .note');if(ln)ln.innerHTML='<b>Real now:</b> Telegram sign-in creates your MongkulCard account. The editor, payment and guest links after it are still a demo.';
   var dp=$('#v-dashboard .inv-card .pill');if(dp){dp.className='pill draft';dp.innerHTML='<span data-l="km">ឧទាហរណ៍</span><span data-l="en">Demo</span>'}
   var gp=$('#v-dashboard #glist');if(gp){var nt=document.createElement('div');nt.className='note';nt.innerHTML='<b>Demo:</b> guest links and payment are not real yet (steps 3–4).';gp.parentNode.insertBefore(nt,gp)}
