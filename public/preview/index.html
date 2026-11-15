@@ -1058,8 +1058,9 @@ $('#gpList').onclick=function(e){
 };
 
 /* ---------- soft background music for the website (not inside the editor or checkout) ----------
-   Phones only allow sound after the visitor's first tap, so it starts then, quietly (35%), fading in. */
-var BGM={a:$('#siteBgm'),vol:0.35,started:false,muted:false,fade:null};
+   Phones only allow sound after the visitor's first tap, so it starts then, fading in.
+   bgm.mp3 is saved at 35% loudness, because iPhones ignore a page's volume setting. */
+var BGM={a:$('#siteBgm'),vol:1,started:false,muted:false,fade:null};   // the file itself is already at 35% (iPhones ignore volume settings)
 try{BGM.muted=localStorage.getItem('mc_music')==='off'}catch(e){}
 function bgmAllowed(){var v=location.hash.slice(1)||'home';return ['home','templates','try'].indexOf(v)>=0&&!$('#fsOver').classList.contains('on')&&!document.hidden}
 function bgmPaint(){var b=$('#sndBtn');b.classList.toggle('muted',BGM.muted);b.classList.toggle('playing',!BGM.a.paused)}
