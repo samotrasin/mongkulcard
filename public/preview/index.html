@@ -265,6 +265,9 @@ input[type=date]{color-scheme:dark}
 .fontpick button.on{border-color:var(--gold);background:rgba(217,178,95,.08)}
 .fontpick .smp{display:block;color:var(--gold-l);font-size:19px;line-height:1.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fontpick small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+ .sndbtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line2);background:none;display:flex;align-items:center;justify-content:center;flex:none}
+.sndbtn svg{width:16px;height:16px;fill:none;stroke:var(--gold-l);stroke-width:1.6}.sndbtn .off{display:none}.sndbtn.muted .off{display:block}.sndbtn.muted svg{opacity:.6}
+.sndbtn.playing svg{animation:sndbeat 1.6s ease-in-out infinite}@keyframes sndbeat{50%{transform:scale(1.12)}}
 .pkg{display:flex;justify-content:space-between;align-items:center;gap:10px}.pkg b{font-size:16px}.pkg .pp{font:600 20px var(--serif);color:var(--gold-l);white-space:nowrap}
 .pkg small{display:block}.pkg.off{opacity:.55;cursor:default}
 .khqr-card{width:240px;margin:6px auto 12px;background:#fff;border-radius:18px;overflow:hidden;color:#111;box-shadow:0 10px 30px rgba(0,0,0,.4)}
@@ -302,6 +305,7 @@ input[type=date]{color-scheme:dark}
       <a data-jump="faq"><span data-l="km">សំណួរ</span><span data-l="en">FAQ</span></a>
     </nav>
     <div class="sp"></div>
+    <button type="button" class="sndbtn" id="sndBtn" aria-label="Music" title="Music"><svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="16" r="2"/><path class="off" d="M3 3l18 18"/></svg></button>
     <div class="lang" id="langSw"><button data-v="km">ខ្មែរ</button><button data-v="en">EN</button></div>
     <button class="btn sm" id="loginBtn" data-go="login"><span data-l="km">ចូល</span><span data-l="en">Log in</span></button>
   </div>
@@ -638,6 +642,7 @@ input[type=date]{color-scheme:dark}
 </div>
 <div class="fs-over" id="fsOver" aria-hidden="true"><iframe id="fsFrame" title="Full screen preview"></iframe><button type="button" id="fsClose" aria-label="Close">✕</button></div>
 <div class="toast" id="toast"></div>
+<audio id="siteBgm" src="/preview/bgm.mp3" loop preload="none"></audio>
 <script src="/preview/qrcode.js"></script>
 
 <script>
@@ -774,9 +779,9 @@ $('#hTry').onclick=function(){TRY.groom=$('#hG').value;TRY.bride=$('#hB').value;
 function syncTry(){$('#tryG').value=TRY.groom;$('#tryB').value=TRY.bride;$('#tryGuest').value=TRY.guest}
 [['#tryG','groom'],['#tryB','bride'],['#tryGuest','guest']].forEach(function(x){$(x[0]).addEventListener('input',function(){TRY[x[1]]=this.value;push()})});
 var guestTimer;$('#tryGuest').addEventListener('input',function(){clearTimeout(guestTimer);guestTimer=setTimeout(function(){post($('#tryFrame'),{type:'replay'})},1200)});
-$('#fullBtn').onclick=function(){var o=$('#fsOver'),f=$('#fsFrame');o.classList.add('on');o.setAttribute('aria-hidden','false');
+$('#fullBtn').onclick=function(){var o=$('#fsOver'),f=$('#fsFrame');o.classList.add('on');setTimeout(bgmUpdate,0);o.setAttribute('aria-hidden','false');
   f.onload=function(){post(f,{type:'settings',data:trySettings()})};f.src='/preview/invite.html?fs='+Date.now()};
-$('#fsClose').onclick=function(){var o=$('#fsOver');o.classList.remove('on');o.setAttribute('aria-hidden','true');$('#fsFrame').src='about:blank'};
+$('#fsClose').onclick=function(){var o=$('#fsOver');o.classList.remove('on');setTimeout(bgmUpdate,0);o.setAttribute('aria-hidden','true');$('#fsFrame').src='about:blank'};
 $$('[data-replay]').forEach(function(b){b.onclick=function(){var f=b.closest('.split').querySelector('iframe');post(f,{type:'replay'})}});
 
 /* ---------- views ---------- */
@@ -792,6 +797,7 @@ function go(v){if(VIEWS.indexOf(v)<0)v='home';
   if(REAL&&loggedIn&&v==='editor'&&!CURRENT)ensureDraft();
   if(REAL&&loggedIn&&v==='dashboard')renderMyInvs();
   if(REAL&&loggedIn&&v==='pay')openPay();else if(v!=='pay')stopPay();
+  setTimeout(function(){if(window.__bgm)window.__bgm()},60);
   setTimeout(push,80);
 }
 document.addEventListener('click',function(e){var g=e.target.closest('[data-go]');if(g){e.preventDefault();go(g.dataset.go)}
@@ -1050,6 +1056,28 @@ $('#gpList').onclick=function(e){
   if(x){if(!confirm(T('លុបភ្ញៀវនេះ? តំណរបស់គាត់នឹងលែងដំណើរការ។','Delete this guest? Their link will stop working.')))return;
     apiCall('DELETE','/api/invitations/'+GP.id+'/guests/'+x.dataset.gdel).then(function(j){GP.data=j;gpRender()}).catch(function(z){toast(z.message)})}
 };
+
+/* ---------- soft background music for the website (not inside the editor or checkout) ----------
+   Phones only allow sound after the visitor's first tap, so it starts then, quietly (35%), fading in. */
+var BGM={a:$('#siteBgm'),vol:0.35,started:false,muted:false,fade:null};
+try{BGM.muted=localStorage.getItem('mc_music')==='off'}catch(e){}
+function bgmAllowed(){var v=location.hash.slice(1)||'home';return ['home','templates','try'].indexOf(v)>=0&&!$('#fsOver').classList.contains('on')&&!document.hidden}
+function bgmPaint(){var b=$('#sndBtn');b.classList.toggle('muted',BGM.muted);b.classList.toggle('playing',!BGM.a.paused)}
+function bgmFade(to,cb){clearInterval(BGM.fade);var a=BGM.a;BGM.fade=setInterval(function(){var v=a.volume+(to>a.volume?0.02:-0.04);
+  if((to>=a.volume&&v>=to)||(to<a.volume&&v<=to)){a.volume=Math.max(0,Math.min(1,to));clearInterval(BGM.fade);if(cb)cb()}else a.volume=Math.max(0,Math.min(1,v))},60)}
+function bgmUpdate(){
+  var a=BGM.a;
+  if(BGM.started&&!BGM.muted&&bgmAllowed()){if(a.paused){a.volume=0;var p=a.play();if(p&&p.catch)p.catch(function(){});bgmFade(BGM.vol)}}
+  else if(!a.paused)bgmFade(0,function(){a.pause();bgmPaint()});
+  bgmPaint();
+}
+BGM.a.addEventListener('play',bgmPaint);BGM.a.addEventListener('pause',bgmPaint);
+function bgmFirstTap(e){if(BGM.started)return;if(e&&e.target&&e.target.closest&&e.target.closest('#sndBtn'))return;BGM.started=true;bgmUpdate()}
+['pointerdown','keydown','touchstart'].forEach(function(t){document.addEventListener(t,bgmFirstTap,{passive:true,capture:true})});
+$('#sndBtn').onclick=function(){BGM.started=true;BGM.muted=!BGM.muted;try{localStorage.setItem('mc_music',BGM.muted?'off':'on')}catch(e){}bgmUpdate()};
+addEventListener('hashchange',function(){setTimeout(bgmUpdate,50)});
+document.addEventListener('visibilitychange',bgmUpdate);
+bgmPaint();window.__bgm=bgmUpdate;
 
 /* ---------- real payment (KHQR + Bakong) ---------- */
 var PAY={pkgs:[],sel:null,order:null,timer:null,tick:null,started:0,ready:false};

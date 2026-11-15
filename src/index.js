@@ -273,14 +273,27 @@ async function previewFile(request, env, url, parts) {
   if (parts.length === 1 && !url.pathname.endsWith('/')) {
     return Response.redirect(new URL('/preview/', url).toString(), 301);
   }
-  const file = parts.length === 1 ? 'index.html' : parts.length === 2 && ['invite.html', 'qrcode.js'].includes(parts[1]) ? parts[1] : null;
+  const file = parts.length === 1 ? 'index.html' : parts.length === 2 && ['invite.html', 'qrcode.js', 'bgm.mp3'].includes(parts[1]) ? parts[1] : null;
   if (!file) return page(notFound(), 404);
   const res = await env.ASSETS.fetch(new URL('/preview/' + file, url));
   if (!res.ok) return page(notFound(), 404);
+  if (file === 'bgm.mp3') return audioFile(request, await res.arrayBuffer());
   if (file === 'qrcode.js') {
     return new Response(res.body, { headers: { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'public, max-age=86400', 'x-content-type-options': 'nosniff' } });
   }
   return page(await res.text(), 200, { 'cache-control': 'no-cache' });
+}
+
+// The website's soft background music. Safari only plays audio when the server answers "Range" requests.
+function audioFile(request, buf) {
+  const size = buf.byteLength;
+  const headers = { 'content-type': 'audio/mpeg', 'accept-ranges': 'bytes', 'cache-control': 'public, max-age=86400', 'x-content-type-options': 'nosniff' };
+  const m = /bytes=(\d*)-(\d*)/.exec(request.headers.get('range') || '');
+  if (!m || (m[1] === '' && m[2] === '')) return new Response(buf, { headers: { ...headers, 'content-length': String(size) } });
+  let start = m[1] !== '' ? Number(m[1]) : Math.max(0, size - Number(m[2]));
+  let end = m[1] !== '' && m[2] !== '' ? Math.min(Number(m[2]), size - 1) : size - 1;
+  if (start >= size || start > end) return new Response(null, { status: 416, headers: { ...headers, 'content-range': `bytes */${size}` } });
+  return new Response(buf.slice(start, end + 1), { status: 206, headers: { ...headers, 'content-range': `bytes ${start}-${end}/${size}`, 'content-length': String(end - start + 1) } });
 }
 
 // ---------------------------------------------------------------- helpers
