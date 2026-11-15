@@ -3,6 +3,10 @@
   "main": "src/index.js",
   "compatibility_date": "2026-10-01",
   "observability": { "enabled": true },
+  // Public settings. Secrets (TELEGRAM_BOT_TOKEN, TELEGRAM_WEBHOOK_SECRET) are set in the Cloudflare dashboard, not here.
+  "vars": {
+    "TELEGRAM_BOT_USERNAME": "mongkulcard_bot"
+  },
   "routes": [
     { "pattern": "mongkulcard.com", "custom_domain": true }
   ],
