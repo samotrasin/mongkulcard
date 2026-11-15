@@ -287,7 +287,7 @@ async function previewFile(request, env, url, parts) {
 // The website's soft background music. Safari only plays audio when the server answers "Range" requests.
 function audioFile(request, buf) {
   const size = buf.byteLength;
-  const headers = { 'content-type': 'audio/mpeg', 'accept-ranges': 'bytes', 'cache-control': 'public, max-age=86400', 'x-content-type-options': 'nosniff' };
+  const headers = { 'content-type': 'audio/mpeg', 'accept-ranges': 'bytes', 'cache-control': 'public, max-age=3600', 'x-content-type-options': 'nosniff' };
   const m = /bytes=(\d*)-(\d*)/.exec(request.headers.get('range') || '');
   if (!m || (m[1] === '' && m[2] === '')) return new Response(buf, { headers: { ...headers, 'content-length': String(size) } });
   let start = m[1] !== '' ? Number(m[1]) : Math.max(0, size - Number(m[2]));

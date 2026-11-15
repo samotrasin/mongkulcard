@@ -642,7 +642,7 @@ input[type=date]{color-scheme:dark}
 </div>
 <div class="fs-over" id="fsOver" aria-hidden="true"><iframe id="fsFrame" title="Full screen preview"></iframe><button type="button" id="fsClose" aria-label="Close">✕</button></div>
 <div class="toast" id="toast"></div>
-<audio id="siteBgm" src="/preview/bgm.mp3" loop preload="none"></audio>
+<audio id="siteBgm" src="/preview/bgm.mp3?v=3" loop preload="none"></audio>
 <script src="/preview/qrcode.js"></script>
 
 <script>
@@ -1060,16 +1060,15 @@ $('#gpList').onclick=function(e){
 /* ---------- soft background music for the website (not inside the editor or checkout) ----------
    Phones only allow sound after the visitor's first tap, so it starts then, fading in.
    bgm.mp3 is saved at 35% loudness, because iPhones ignore a page's volume setting. */
-var BGM={a:$('#siteBgm'),vol:1,started:false,muted:false,fade:null};   // the file itself is already at 35% (iPhones ignore volume settings)
+var BGM={a:$('#siteBgm'),started:false,muted:false};   // the file itself is already at 35% (iPhones ignore volume settings)
 try{BGM.muted=localStorage.getItem('mc_music')==='off'}catch(e){}
 function bgmAllowed(){var v=location.hash.slice(1)||'home';return ['home','templates','try'].indexOf(v)>=0&&!$('#fsOver').classList.contains('on')&&!document.hidden}
 function bgmPaint(){var b=$('#sndBtn');b.classList.toggle('muted',BGM.muted);b.classList.toggle('playing',!BGM.a.paused)}
-function bgmFade(to,cb){clearInterval(BGM.fade);var a=BGM.a;BGM.fade=setInterval(function(){var v=a.volume+(to>a.volume?0.02:-0.04);
-  if((to>=a.volume&&v>=to)||(to<a.volume&&v<=to)){a.volume=Math.max(0,Math.min(1,to));clearInterval(BGM.fade);if(cb)cb()}else a.volume=Math.max(0,Math.min(1,v))},60)}
+// Play and pause straight away. (No volume fades: iPhones ignore volume, so a fade would never finish.)
 function bgmUpdate(){
   var a=BGM.a;
-  if(BGM.started&&!BGM.muted&&bgmAllowed()){if(a.paused){a.volume=0;var p=a.play();if(p&&p.catch)p.catch(function(){});bgmFade(BGM.vol)}}
-  else if(!a.paused)bgmFade(0,function(){a.pause();bgmPaint()});
+  if(BGM.started&&!BGM.muted&&bgmAllowed()){if(a.paused){var p=a.play();if(p&&p.catch)p.catch(function(){bgmPaint()})}}
+  else if(!a.paused)a.pause();
   bgmPaint();
 }
 BGM.a.addEventListener('play',bgmPaint);BGM.a.addEventListener('pause',bgmPaint);
