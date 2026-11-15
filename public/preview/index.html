@@ -268,6 +268,33 @@ input[type=date]{color-scheme:dark}
  .sndbtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line2);background:none;display:flex;align-items:center;justify-content:center;flex:none}
 .sndbtn svg{width:16px;height:16px;fill:none;stroke:var(--gold-l);stroke-width:1.6}.sndbtn .off{display:none}.sndbtn.muted .off{display:block}.sndbtn.muted svg{opacity:.6}
 .sndbtn.playing svg{animation:sndbeat 1.6s ease-in-out infinite}@keyframes sndbeat{50%{transform:scale(1.12)}}
+ /* ---- motion: "don't cut, carry" ---- */
+.hdr{view-transition-name:mc-hdr}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.24s;animation-timing-function:ease}
+::view-transition-group(mc-morph){animation-duration:.52s;animation-timing-function:cubic-bezier(.2,.85,.22,1)}
+::view-transition-old(mc-morph),::view-transition-new(mc-morph){animation-duration:.52s;height:100%;object-fit:cover;overflow:clip}
+::view-transition-group(mc-hdr){animation:none}
+.menuBtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line2);background:none;display:flex;align-items:center;justify-content:center;flex:none}
+.menuBtn i,.menuBtn i::before,.menuBtn i::after{display:block;width:14px;height:1.5px;background:var(--gold-l);border-radius:2px;position:relative}
+.menuBtn i::before,.menuBtn i::after{content:"";position:absolute;left:0}.menuBtn i::before{top:-5px}.menuBtn i::after{top:5px}
+@media(min-width:860px){.menuBtn{display:none}}
+@media(max-width:859px){#loginBtn{display:none}.logo b{font-size:13px;letter-spacing:.16em}.hdr .wrap{gap:8px;padding:0 14px}.logo svg{width:24px;height:24px}
+  #v-try .split>.stick{order:-1}#v-try .split>.stick .phone{width:250px;height:520px;border-radius:40px}}
+.pop-bg{position:fixed;inset:0;z-index:79;background:rgba(0,0,0,.25);animation:fadeIn .2s}
+.pop{position:fixed;z-index:80;min-width:210px;max-width:min(320px,calc(100vw - 24px));background:#1d0b10;border:1px solid var(--line2);border-radius:18px;padding:8px;
+  box-shadow:0 24px 60px rgba(0,0,0,.55);transform-origin:var(--ox,50%) var(--oy,0);animation:popIn .32s cubic-bezier(.2,.9,.25,1.08)}
+.pop.out{animation:popOut .2s cubic-bezier(.5,0,.75,0) forwards}
+.pop-bg.out{animation:fadeOut .2s forwards}
+@keyframes popIn{from{opacity:0;transform:scale(.25)}}@keyframes popOut{to{opacity:0;transform:scale(.25)}}
+@keyframes fadeIn{from{opacity:0}}@keyframes fadeOut{to{opacity:0}}
+.pop a,.pop .mi{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;text-decoration:none;color:var(--ivory);font-size:15px;cursor:pointer;background:none;border:0;width:100%;text-align:left}
+.pop a:hover,.pop .mi:hover{background:rgba(217,178,95,.1)}
+.pop .q{padding:12px 12px 6px;font-size:15px;line-height:1.6}
+.pop .row2{display:flex;gap:8px;padding:8px 4px 4px}.pop .row2 .btn{flex:1;padding:10px}
+.pop .danger{background:#8c2238;border-color:#8c2238;color:#fff}
+.epane.on.in-r{animation:paneR .32s cubic-bezier(.2,.8,.2,1)}.epane.on.in-l{animation:paneL .32s cubic-bezier(.2,.8,.2,1)}
+@keyframes paneR{from{opacity:0;transform:translateX(26px)}}@keyframes paneL{from{opacity:0;transform:translateX(-26px)}}
+@media (prefers-reduced-motion:reduce){.pop,.pop.out,.pop-bg,.epane.on.in-r,.epane.on.in-l{animation:none}}
 .pkg{display:flex;justify-content:space-between;align-items:center;gap:10px}.pkg b{font-size:16px}.pkg .pp{font:600 20px var(--serif);color:var(--gold-l);white-space:nowrap}
 .pkg small{display:block}.pkg.off{opacity:.55;cursor:default}
 .khqr-card{width:240px;margin:6px auto 12px;background:#fff;border-radius:18px;overflow:hidden;color:#111;box-shadow:0 10px 30px rgba(0,0,0,.4)}
@@ -305,6 +332,7 @@ input[type=date]{color-scheme:dark}
       <a data-jump="faq"><span data-l="km">សំណួរ</span><span data-l="en">FAQ</span></a>
     </nav>
     <div class="sp"></div>
+    <button type="button" class="menuBtn" id="menuBtn" aria-label="Menu"><i></i></button>
     <button type="button" class="sndbtn" id="sndBtn" aria-label="Music" title="Music"><svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="16" r="2"/><path class="off" d="M3 3l18 18"/></svg></button>
     <div class="lang" id="langSw"><button data-v="km">ខ្មែរ</button><button data-v="en">EN</button></div>
     <button class="btn sm" id="loginBtn" data-go="login"><span data-l="km">ចូល</span><span data-l="en">Log in</span></button>
@@ -717,7 +745,8 @@ function renderGrids(){
 document.addEventListener('click',function(e){var c=e.target.closest('.tcard');if(!c)return;var t=TPL.find(function(x){return x.id===c.dataset.t});
   if(t.soon)return toast(lang()==='km'?'គំរូនេះកំពុងរចនា ✦':'This design is coming soon ✦');
   if(!t.live)return toast(lang()==='km'?'Classic Gold កំពុងបំប្លែងជាគំរូ':'Classic Gold is being turned into a template');
-  go('try')});
+  var sel='#'+c.parentNode.id+' [data-t="'+t.id+'"] .thumb';rememberCard(sel);
+  go('try',{from:c.querySelector('.thumb'),to:'#v-try .phone'})});
 $('#filters').onclick=function(e){var b=e.target.closest('.chip');if(!b)return;filt=b.dataset.f;$$('#filters .chip').forEach(function(x){x.classList.toggle('on',x===b)});renderGrids()};
 
 /* ---------- features + faq ---------- */
@@ -775,22 +804,81 @@ function bindInputs(){$$('[data-k]').forEach(function(inp){
   inp.oninput=function(){if(k.length>1)INV[k[0]][k[1]]=inp.value;else INV[k[0]]=inp.value;
     $$('[data-k="'+inp.dataset.k+'"]').forEach(function(o){if(o!==inp)o.value=inp.value});push()}})}
 bindInputs();
-$('#hTry').onclick=function(){TRY.groom=$('#hG').value;TRY.bride=$('#hB').value;TRY.guest=$('#hGuest').value;syncTry();go('try');setTimeout(function(){post($('#tryFrame'),{type:'replay'})},300)};
+$('#hTry').onclick=function(){TRY.groom=$('#hG').value;TRY.bride=$('#hB').value;TRY.guest=$('#hGuest').value;syncTry();rememberCard('#v-home .try');go('try',{from:$('#v-home .try'),to:'#v-try .phone'});setTimeout(function(){post($('#tryFrame'),{type:'replay'})},300)};
 function syncTry(){$('#tryG').value=TRY.groom;$('#tryB').value=TRY.bride;$('#tryGuest').value=TRY.guest}
 [['#tryG','groom'],['#tryB','bride'],['#tryGuest','guest']].forEach(function(x){$(x[0]).addEventListener('input',function(){TRY[x[1]]=this.value;push()})});
 var guestTimer;$('#tryGuest').addEventListener('input',function(){clearTimeout(guestTimer);guestTimer=setTimeout(function(){post($('#tryFrame'),{type:'replay'})},1200)});
-$('#fullBtn').onclick=function(){var o=$('#fsOver'),f=$('#fsFrame');o.classList.add('on');setTimeout(bgmUpdate,0);o.setAttribute('aria-hidden','false');
-  f.onload=function(){post(f,{type:'settings',data:trySettings()})};f.src='/preview/invite.html?fs='+Date.now()};
-$('#fsClose').onclick=function(){var o=$('#fsOver');o.classList.remove('on');setTimeout(bgmUpdate,0);o.setAttribute('aria-hidden','true');$('#fsFrame').src='about:blank'};
+$('#fullBtn').onclick=function(){var o=$('#fsOver'),f=$('#fsFrame'),ph=$('#v-try .phone'),shown=false;
+  var show=function(){if(shown)return;shown=true;carry(function(){o.classList.add('on');o.setAttribute('aria-hidden','false')},ph,function(){return o});setTimeout(bgmUpdate,0)};
+  f.onload=function(){if(f.src.indexOf('fs=')<0)return;post(f,{type:'settings',data:trySettings()});setTimeout(show,120)};
+  f.src='/preview/invite.html?fs='+Date.now();setTimeout(show,1500)};
+$('#fsClose').onclick=function(){var o=$('#fsOver');carry(function(){o.classList.remove('on');o.setAttribute('aria-hidden','true')},o,function(){return $('#v-try .phone')});
+  setTimeout(function(){$('#fsFrame').src='about:blank';bgmUpdate()},600)};
 $$('[data-replay]').forEach(function(b){b.onclick=function(){var f=b.closest('.split').querySelector('iframe');post(f,{type:'replay'})}});
+
+/* ---------- pop-overs: menus and questions open from the button that was tapped ---------- */
+var POP=null;
+function popClose(){if(!POP)return;var p=POP;POP=null;p.el.classList.add('out');p.bg.classList.add('out');
+  setTimeout(function(){p.el.remove();p.bg.remove()},RM?0:200);if(p.done)p.done(false)}
+function popover(anchor,html){
+  popClose();var bg=document.createElement('div');bg.className='pop-bg';var el=document.createElement('div');el.className='pop';el.setAttribute('role','dialog');el.innerHTML=html;
+  document.body.appendChild(bg);document.body.appendChild(el);
+  var r=anchor.getBoundingClientRect(),w=el.offsetWidth,h=el.offsetHeight,vw=innerWidth,vh=innerHeight;
+  var left=r.left+r.width/2>vw/2?Math.max(12,r.right-w):Math.min(vw-w-12,r.left);
+  var top=r.bottom+8+h<vh-12?r.bottom+8:Math.max(12,r.top-8-h);
+  el.style.left=left+'px';el.style.top=top+'px';
+  el.style.setProperty('--ox',(r.left+r.width/2-left)+'px');el.style.setProperty('--oy',(r.top+r.height/2-top)+'px');
+  bg.onclick=popClose;POP={el:el,bg:bg,done:null};return POP;
+}
+addEventListener('keydown',function(e){if(e.key==='Escape')popClose()});
+// a question in place of the phone's plain grey confirm box
+function ask(anchor,q,yes,danger){
+  return new Promise(function(res){
+    var p=popover(anchor||document.body,'<div class="q">'+esc(q)+'</div><div class="row2"><button type="button" class="btn sm" data-no>'+T('បោះបង់','Cancel')+'</button><button type="button" class="btn sm '+(danger?'danger':'gold')+'" data-yes>'+esc(yes)+'</button></div>');
+    p.done=function(v){res(v)};
+    p.el.querySelector('[data-no]').onclick=function(){popClose()};
+    p.el.querySelector('[data-yes]').onclick=function(){p.done=null;popClose();res(true)};
+  });
+}
+$('#menuBtn').onclick=function(){
+  var p=popover(this,'<a data-m="templates">'+T('គំរូធៀប','Templates')+'</a><a data-m="#how">'+T('របៀបប្រើ','How it works')+'</a><a data-m="#pricing">'+T('តម្លៃ','Packages')+'</a><a data-m="#faq">'+T('សំណួរ','Questions')+'</a>'+
+    '<a data-m="'+(loggedIn?'dashboard':'login')+'">'+(loggedIn?T('ធៀបរបស់ខ្ញុំ','My invitations'):T('ចូលគណនី','Sign in'))+'</a>');
+  p.el.onclick=function(e){var a=e.target.closest('[data-m]');if(!a)return;var m=a.dataset.m;popClose();
+    setTimeout(function(){if(m[0]==='#'){go('home');setTimeout(function(){var el=document.getElementById(m.slice(1));if(el)el.scrollIntoView({behavior:RM?'auto':'smooth'})},CAN_VT?320:60)}else go(m)},RM?0:150)};
+};
+
+/* ---------- motion: the thing you tap becomes the next page; back returns to it ----------
+   Uses the browser's View Transitions where available (new iPhones/Android); otherwise pages simply change. */
+var RM=matchMedia('(prefers-reduced-motion: reduce)').matches,CAN_VT=!!document.startViewTransition&&!RM;
+function vtn(el,n){if(el)el.style.viewTransitionName=n||''}
+function carry(update,from,toFn){
+  if(!CAN_VT){update();return}
+  var to=null;vtn(from,from?'mc-morph':'');
+  try{
+    var t=document.startViewTransition(function(){vtn(from,'');update();to=toFn?toFn():null;vtn(to,to?'mc-morph':'')});
+    var clean=function(){vtn(from,'');vtn(to,'')};t.finished.then(clean,clean);
+  }catch(e){vtn(from,'');update()}
+}
+var BACK={};                          // for each page: which card to return to, and where it was scrolled
+var PAGE_EL={'try':'#v-try .phone','editor':'#v-editor .split>div:first-child','pay':'#payBox','login':'#v-login .panel'};
+function curView(){var on=$('.view.on');return on?on.id.slice(2):'home'}
+function rememberCard(sel){BACK[curView()]={sel:sel,scroll:scrollY}}
+function goBack(fallback){if(NAV_I>0)history.back();else go(fallback,{back:true,replace:true})}
+var NAV_I=0;
 
 /* ---------- views ---------- */
 var VIEWS=['home','templates','try','login','editor','pay','dashboard'];
-function go(v){if(VIEWS.indexOf(v)<0)v='home';
+function go(v,o){o=o||{};if(VIEWS.indexOf(v)<0)v='home';
   if((v==='editor'||v==='pay'||v==='dashboard')&&!loggedIn)v='login';
+  var cur=curView(),from=o.from||null,toFn=o.to?function(){return typeof o.to==='string'?$(o.to):o.to()}:null;
+  if(o.back&&!from&&BACK[v]){from=PAGE_EL[cur]?$(PAGE_EL[cur]):null;var bs=BACK[v].sel;toFn=function(){return $(bs)}}
+  if(!o.fromHistory&&location.hash!=='#'+v){if(o.replace)history.replaceState({i:NAV_I},'','#'+v);else history.pushState({i:++NAV_I},'','#'+v)}
+  var job=function(){render(v,o)};
+  if(o.instant||v===cur)job();else carry(job,from,toFn);
+}
+function render(v,o){
   $$('.view').forEach(function(x){x.classList.toggle('on',x.id==='v-'+v)});
-  if(location.hash!=='#'+v)history.replaceState(null,'','#'+v);
-  scrollTo(0,0);$('.bbar').style.display=(v==='home'||v==='templates')?'':'none';
+  if(o.back&&BACK[v])scrollTo(0,BACK[v].scroll);else scrollTo(0,0);$('.bbar').style.display=(v==='home'||v==='templates')?'':'none';
   $('#loginBtn').innerHTML=loggedIn?'<span>'+(ACCOUNT?esc(ACCOUNT.name.split(' ')[0]):(lang()==='km'?'ធៀបរបស់ខ្ញុំ':'My invitations'))+'</span>':'<span data-l="km">ចូល</span><span data-l="en">Log in</span>';
   $('#loginBtn').dataset.go=loggedIn?'dashboard':'login';
   if(v==='editor'){loadEditorFonts();renderFontPickers()}
@@ -800,9 +888,10 @@ function go(v){if(VIEWS.indexOf(v)<0)v='home';
   setTimeout(function(){if(window.__bgm)window.__bgm()},60);
   setTimeout(push,80);
 }
-document.addEventListener('click',function(e){var g=e.target.closest('[data-go]');if(g){e.preventDefault();go(g.dataset.go)}
+document.addEventListener('click',function(e){var g=e.target.closest('[data-go]');if(g){e.preventDefault();if(g.classList.contains('back'))goBack(g.dataset.go);else go(g.dataset.go)}
   var j=e.target.closest('[data-jump]');if(j){go('home');setTimeout(function(){document.getElementById(j.dataset.jump).scrollIntoView({behavior:'smooth'})},120)}});
-addEventListener('hashchange',function(){go(location.hash.slice(1))});
+// the phone's back/forward gesture: "back goes back" to the card it came from
+addEventListener('popstate',function(e){var i=e.state&&typeof e.state.i==='number'?e.state.i:0,back=i<NAV_I;NAV_I=i;go(location.hash.slice(1)||'home',{fromHistory:true,back:back})});
 
 /* ---------- login (simulated) ---------- */
 $('#tgLogin').onclick=function(){if(REAL){location.href='/signin?next='+encodeURIComponent('/preview/#editor');return}$('#tgSheet').classList.add('on')};
@@ -811,7 +900,11 @@ $('#tgYes').onclick=function(){$('#tgSheet').classList.remove('on');loggedIn=tru
 $('#ggLogin').onclick=function(){if(REAL){toast(lang()==='km'?'ការចូលតាម Google នឹងមានឆាប់ៗ':'Google sign-in is coming soon');return}loggedIn=true;toast('hello');go('editor')};
 
 /* ---------- editor ---------- */
-$('#etabs').onclick=function(e){var b=e.target.closest('.etab');if(!b)return;$$('.etab').forEach(function(x){x.classList.toggle('on',x===b)});$$('.epane').forEach(function(p){p.classList.toggle('on',p.dataset.p===b.dataset.t)})};
+$('#etabs').onclick=function(e){var b=e.target.closest('.etab');if(!b||b.classList.contains('on'))return;
+  var tabs=$$('.etab'),from=tabs.indexOf($('.etab.on')),to=tabs.indexOf(b);
+  tabs.forEach(function(x){x.classList.toggle('on',x===b)});
+  $$('.epane').forEach(function(p){var on=p.dataset.p===b.dataset.t;p.classList.toggle('on',on);p.classList.remove('in-l','in-r');if(on){void p.offsetWidth;p.classList.add(to>from?'in-r':'in-l')}});
+  b.scrollIntoView({block:'nearest',inline:'center',behavior:RM?'auto':'smooth'})};
 $('#swatches').onclick=function(e){var b=e.target.closest('.swt');if(!b)return;INV.theme=b.dataset.v;$$('#swatches .swt').forEach(function(x){x.classList.toggle('on',x===b)});push()};
 function pick(sel,key){$(sel).onclick=function(e){var b=e.target.closest('button');if(!b)return;$$(sel+' button').forEach(function(x){x.classList.toggle('on',x===b)});if(key){INV[key]=b.dataset.v;push()}}}
 ['#fontKh','#fontEn'].forEach(function(sel){$(sel).onclick=function(e){var b=e.target.closest('button');if(!b)return;INV[sel==='#fontKh'?'fontKh':'fontEn']=b.dataset.v;renderFontPickers();push()}});pick('#openings','opening');pick('#pkgs');
@@ -869,7 +962,7 @@ function ensureDraft(){
 }
 $('#useTpl').onclick=function(){
   if(!REAL||!loggedIn){try{sessionStorage.setItem('mc_new','1');sessionStorage.setItem('mc_try',JSON.stringify(fromTry()))}catch(e){}if(!REAL){INV=fromTry();bindInputs()}go('login');return}
-  INV=fromTry();createDraft(payload()).then(function(){go('editor')}).catch(function(){});
+  INV=fromTry();createDraft(payload()).then(function(){rememberCard('#v-try .phone');go('editor',{from:$('#v-try .phone'),to:'#v-editor .stick .phone'})}).catch(function(){});
 };
 function fmtDate(iso){try{var d=new Date(iso);return d.toLocaleDateString(lang()==='km'?'km-KH':'en-GB',{day:'numeric',month:'short',year:'numeric'})}catch(e){return ''}}
 function renderMyInvs(){
@@ -877,7 +970,7 @@ function renderMyInvs(){
   apiCall('GET','/api/invitations').then(function(j){
     var st={draft:['ព្រាង','Draft'],paid:['បានបង់','Paid'],published:['បានផ្សព្វផ្សាយ','Published']};
     $('#myInvs').innerHTML=j.invitations.map(function(v){var s=st[v.status]||[v.status,v.status];
-      return '<li class="inv-row"><div class="gn">'+esc(v.title)+' <span class="pill'+(v.status==='draft'?' draft':'')+'">'+(lang()==='km'?s[0]:s[1])+'</span></div>'+
+      return '<li class="inv-row" data-row="'+v.id+'"><div class="gn">'+esc(v.title)+' <span class="pill'+(v.status==='draft'?' draft':'')+'">'+(lang()==='km'?s[0]:s[1])+'</span></div>'+
         '<div class="gl">Golden Curtain'+(v.date?' · '+esc(v.date):'')+' · '+(lang()==='km'?'កែចុងក្រោយ ':'edited ')+fmtDate(v.updated_at)+'</div>'+
         '<div class="ga"><button class="btn sm" data-guests="'+v.id+'" data-title="'+esc(v.title)+'">'+(lang()==='km'?'ភ្ញៀវ':'Guests')+'</button><button class="btn sm" data-edit="'+v.id+'">'+(lang()==='km'?'កែ':'Edit')+'</button>'+
         (v.status==='draft'?'<button class="btn sm" data-del="'+v.id+'" aria-label="Delete">✕</button>':'')+'</div></li>'}).join('')||
@@ -888,9 +981,9 @@ function renderMyInvs(){
 $('#myInvs').onclick=function(e){
   var gu=e.target.closest('[data-guests]');if(gu){gpOpen(gu.dataset.guests,gu.dataset.title);return}
   var ed=e.target.closest('[data-edit]'),dl=e.target.closest('[data-del]');
-  if(ed){apiCall('GET','/api/invitations/'+ed.dataset.edit).then(function(k){loadInv(k.invitation);go('editor')}).catch(function(){})}
-  if(dl){if(!confirm(lang()==='km'?'លុបធៀបព្រាងនេះ? មិនអាចយកមកវិញបានទេ។':'Delete this draft? This cannot be undone.'))return;
-    apiCall('DELETE','/api/invitations/'+dl.dataset.del).then(function(){if(CURRENT===dl.dataset.del)CURRENT=null;renderMyInvs()}).catch(function(e){toast(e.message)})}
+  if(ed){var row=ed.closest('li'),rid=ed.dataset.edit;apiCall('GET','/api/invitations/'+rid).then(function(k){loadInv(k.invitation);rememberCard('#myInvs li[data-row="'+rid+'"]');go('editor',{from:row,to:'#v-editor .split>div:first-child'})}).catch(function(){})}
+  if(dl){ask(dl,T('លុបធៀបព្រាងនេះ? មិនអាចយកមកវិញបានទេ។','Delete this draft? This cannot be undone.'),T('លុប','Delete'),true).then(function(ok){if(!ok)return;
+    apiCall('DELETE','/api/invitations/'+dl.dataset.del).then(function(){if(CURRENT===dl.dataset.del)CURRENT=null;renderMyInvs()}).catch(function(e){toast(e.message)})})}
 };
 $('#newInv').onclick=function(){var blank=merge(DEFAULTS,{groom:{en:'',km:''},bride:{en:'',km:''},venue:''});INV=blank;createDraft(payload()).then(function(){go('editor')}).catch(function(){})};
 
@@ -932,7 +1025,7 @@ $('#upIn').onchange=function(){
 };
 $('#upl').onclick=function(e){
   var d=e.target.closest('[data-del]'),c=e.target.closest('[data-cover]'),l=e.target.closest('[data-left]');
-  if(d){if(!confirm(T('លុបរូបនេះ?','Delete this photo?')))return;apiCall('DELETE',mediaPath('/media/'+d.dataset.del)).then(function(j){MEDIA=j;renderPhotos();push()}).catch(function(x){toast(x.message)});return}
+  if(d){ask(d,T('លុបរូបនេះ?','Delete this photo?'),T('លុប','Delete'),true).then(function(ok){if(ok)apiCall('DELETE',mediaPath('/media/'+d.dataset.del)).then(function(j){MEDIA=j;renderPhotos();push()}).catch(function(x){toast(x.message)})});return}
   var ids=MEDIA.photos.map(function(p){return p.id}),id=(c||l||{}).dataset;if(!id)return;id=c?c.dataset.cover:l.dataset.left;var k=ids.indexOf(id);if(k<1)return;
   ids.splice(k,1);if(c)ids.unshift(id);else ids.splice(k-1,0,id);
   apiCall('PUT',mediaPath('/photos/order'),{ids:ids}).then(function(j){MEDIA=j;renderPhotos();push()}).catch(function(x){toast(x.message)});
@@ -956,8 +1049,8 @@ $('#muIn').onchange=function(){
     .catch(function(x){st.className='savestate err';st.textContent=x.message});
 };
 $('#muPlay').onclick=function(){var a=$('#muAudio');if(!a.paused){a.pause();return}a.src=MEDIA.music.url;a.play().catch(function(){})};
-$('#muDel').onclick=function(){if(!MEDIA.music||!confirm(T('លុបបទនេះ?','Remove this song?')))return;
-  apiCall('DELETE',mediaPath('/media/'+MEDIA.music.id)).then(function(j){MEDIA=j;if(INV.music==='custom')INV.music='none';$('#muAudio').pause();renderMusic();push()}).catch(function(x){toast(x.message)})};
+$('#muDel').onclick=function(){if(!MEDIA.music)return;ask(this,T('លុបបទនេះ?','Remove this song?'),T('លុប','Remove'),true).then(function(ok){if(!ok)return;
+  apiCall('DELETE',mediaPath('/media/'+MEDIA.music.id)).then(function(j){MEDIA=j;if(INV.music==='custom')INV.music='none';$('#muAudio').pause();renderMusic();push()}).catch(function(x){toast(x.message)})})};
 
 /* ---------- video (uploads straight to Cloudflare Stream) ---------- */
 var vidTimer=null;
@@ -994,8 +1087,8 @@ $('#vidIn').onchange=function(){
     }).then(function(){delete st.dataset.busy;return apiCall('GET',mediaPath('/media')).then(function(j){MEDIA=j;renderVideo();push()})});
   }).catch(function(x){delete st.dataset.busy;st.className='savestate err';st.textContent=x.code==='not_ready'?x.message:T('បញ្ចូលមិនបានសម្រេច។ សូមព្យាយាមម្ដងទៀត។','Upload failed. Please try again.')});
 };
-$('#vidDel').onclick=function(){if(!MEDIA.video||!confirm(T('លុបវីដេអូនេះ?','Remove this video?')))return;
-  apiCall('DELETE',mediaPath('/media/'+MEDIA.video.id)).then(function(j){MEDIA=j;renderVideo();push()}).catch(function(x){toast(x.message)})};
+$('#vidDel').onclick=function(){if(!MEDIA.video)return;ask(this,T('លុបវីដេអូនេះ?','Remove this video?'),T('លុប','Remove'),true).then(function(ok){if(!ok)return;
+  apiCall('DELETE',mediaPath('/media/'+MEDIA.video.id)).then(function(j){MEDIA=j;renderVideo();push()}).catch(function(x){toast(x.message)})})};
 
 /* ---------- publishing + guests + RSVP (dashboard) ---------- */
 var GP={id:null,data:null,title:''};
@@ -1053,8 +1146,8 @@ $('#gpList').onclick=function(e){
   if(m){var g=d.guests.find(function(z){return z.code===m.dataset.msg}),link=d.url+'/'+g.code;
     copyText(g.lang==='km'?'សូមគោរពអញ្ជើញ '+g.name+' ចូលរួមពិធីមង្គលការ '+GP.title+' ។ សូមចុចបើកធៀបនៅទីនេះ៖ '+link:'Dear '+g.name+', you are warmly invited to the wedding of '+GP.title+'. Please open your invitation here: '+link)}
   if(v)gpPreview(d.guests.find(function(z){return z.code===v.dataset.view}));
-  if(x){if(!confirm(T('លុបភ្ញៀវនេះ? តំណរបស់គាត់នឹងលែងដំណើរការ។','Delete this guest? Their link will stop working.')))return;
-    apiCall('DELETE','/api/invitations/'+GP.id+'/guests/'+x.dataset.gdel).then(function(j){GP.data=j;gpRender()}).catch(function(z){toast(z.message)})}
+  if(x){ask(x,T('លុបភ្ញៀវនេះ? តំណរបស់គាត់នឹងលែងដំណើរការ។','Delete this guest? Their link will stop working.'),T('លុប','Delete'),true).then(function(ok){if(!ok)return;
+    apiCall('DELETE','/api/invitations/'+GP.id+'/guests/'+x.dataset.gdel).then(function(j){GP.data=j;gpRender()}).catch(function(z){toast(z.message)})})}
 };
 
 /* ---------- soft background music for the website (not inside the editor or checkout) ----------
@@ -1075,7 +1168,7 @@ BGM.a.addEventListener('play',bgmPaint);BGM.a.addEventListener('pause',bgmPaint)
 function bgmFirstTap(e){if(BGM.started)return;if(e&&e.target&&e.target.closest&&e.target.closest('#sndBtn'))return;BGM.started=true;bgmUpdate()}
 ['pointerdown','keydown','touchstart'].forEach(function(t){document.addEventListener(t,bgmFirstTap,{passive:true,capture:true})});
 $('#sndBtn').onclick=function(){BGM.started=true;BGM.muted=!BGM.muted;try{localStorage.setItem('mc_music',BGM.muted?'off':'on')}catch(e){}bgmUpdate()};
-addEventListener('hashchange',function(){setTimeout(bgmUpdate,50)});
+
 document.addEventListener('visibilitychange',bgmUpdate);
 bgmPaint();window.__bgm=bgmUpdate;
 
@@ -1107,7 +1200,8 @@ function showChoose(){
   var p=PAY.pkgs.find(function(x){return x.code===PAY.sel});PAY.order=null;
   $('#payBox').innerHTML='<p class="sub">'+T('កញ្ចប់ ','Package ')+'<b>'+esc(lang()==='km'?p.name_km:p.name_en)+'</b></p><div class="big-ok goldtext" style="font:600 34px var(--serif)">'+money(p.price_cents/100)+'</div>'+
     '<button class="btn gold block" id="makeQr" style="margin-top:12px">'+T('បង់ប្រាក់តាម KHQR','Pay with KHQR')+'</button>';
-  $('#makeQr').onclick=function(){this.disabled=true;apiCall('POST','/api/orders',{invitation:CURRENT,package:PAY.sel}).then(function(j){PAY.started=Date.now();showOrder(j.order);poll()}).catch(function(e){
+  $('#makeQr').onclick=function(){this.disabled=true;apiCall('POST','/api/orders',{invitation:CURRENT,package:PAY.sel}).then(function(j){PAY.started=Date.now();
+    carry(function(){showOrder(j.order)},$('#realPkgs .on'),function(){return $('.khqr-card')});poll()}).catch(function(e){
     if(e.code==='already_paid'){openPay();return}$('#payBox').insertAdjacentHTML('beforeend','<p class="paystate err">'+esc(e.message)+'</p>');$('#makeQr').disabled=false})};
 }
 function drawQr(text){
@@ -1126,8 +1220,8 @@ function showOrder(o){
       '<p class="sub" style="font-size:12px;margin-top:8px">'+T('លេខបញ្ជាទិញ ','Order ')+esc(o.bill)+'</p>';
     var cv=drawQr(o.qr);$('#qrHere').appendChild(cv);
     $('#saveQr').onclick=function(){var a=document.createElement('a');a.download='MongkulCard-KHQR-'+o.bill+'.png';a.href=cv.toDataURL('image/png');document.body.appendChild(a);a.click();a.remove()};
-    $('#claimBtn').onclick=function(){if(!confirm(T('តើអ្នកបានបង់ '+money(o.amount)+' រួចហើយមែនទេ?','Have you already paid '+money(o.amount)+'?')))return;
-      apiCall('POST','/api/orders/'+o.id+'/claim',{}).then(function(j){showOrder(j.order)}).catch(function(e){toast(e.message)})};
+    $('#claimBtn').onclick=function(){ask(this,T('តើអ្នកបានបង់ '+money(o.amount)+' រួចហើយមែនទេ?','Have you already paid '+money(o.amount)+'?'),T('បាទ/ចាស បានបង់','Yes, I paid')).then(function(ok){if(!ok)return;
+      apiCall('POST','/api/orders/'+o.id+'/claim',{}).then(function(j){showOrder(j.order)}).catch(function(e){toast(e.message)})})};
     clearInterval(PAY.tick);PAY.tick=setInterval(function(){var left=Math.max(0,Date.parse(PAY.order.expiresAt)-Date.now());var t=$('#qrTimer');if(!t)return;
       t.textContent=PAY.order.status==='claimed'?'':T('QR ផុតកំណត់ក្នុង ','QR expires in ')+Math.floor(left/60000)+':'+String(Math.floor(left/1000)%60).padStart(2,'0')},1000);
   }
@@ -1185,8 +1279,8 @@ if(REAL){
   var dp=$('#v-dashboard .inv-card .pill');if(dp){dp.className='pill draft';dp.innerHTML='<span data-l="km">ឧទាហរណ៍</span><span data-l="en">Demo</span>'}
   var gp=$('#v-dashboard #glist');if(gp){var nt=document.createElement('div');nt.className='note';nt.innerHTML='<b>Demo:</b> guest links and payment are not real yet (steps 3–4).';gp.parentNode.insertBefore(nt,gp)}
   var dt=$('#v-dashboard .dash-top');if(dt){var a=document.createElement('a');a.href='/account';a.className='btn sm';a.style.marginLeft='auto';a.textContent=(lang()==='km'?'គណនី':'Account');dt.appendChild(a)}
-  fetch('/api/account/me',{credentials:'same-origin'}).then(function(r){return r.json()}).then(function(a){if(a&&a.signedIn){loggedIn=true;ACCOUNT=a}}).catch(function(){}).then(function(){go(location.hash.slice(1)||'home')});
-}else go(location.hash.slice(1)||'home');
+  fetch('/api/account/me',{credentials:'same-origin'}).then(function(r){return r.json()}).then(function(a){if(a&&a.signedIn){loggedIn=true;ACCOUNT=a}}).catch(function(){}).then(function(){go(location.hash.slice(1)||'home',{instant:true,replace:true})});
+}else go(location.hash.slice(1)||'home',{instant:true,replace:true});
 })();
 </script>
 </body>
