@@ -240,6 +240,8 @@ input[type=date]{color-scheme:dark}
 .glist .ga{grid-row:1/3;grid-column:2;display:flex;gap:6px;align-items:center}
 .glist .st{font-size:11.5px}
 .ok{color:#8fe0b0}.no{color:#7f6d60}
+.hidden{display:none!important}.savestate{font-size:11.5px;letter-spacing:.04em;text-transform:none;font-family:var(--ui);color:var(--muted)}.savestate.ok{color:#8fe0b0}.savestate.err{color:#f0a0a0}
+.inv-row .ga{gap:8px}
 .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:var(--gold);color:#2a0a10;padding:10px 18px;border-radius:30px;font-weight:600;font-size:14px;opacity:0;transition:.3s;z-index:60;pointer-events:none}
 .toast.on{opacity:1;transform:translateX(-50%)}
 .proto{position:fixed;top:66px;right:10px;z-index:29;font:600 10px var(--caps);letter-spacing:.15em;color:#2a0a10;background:var(--gold-l);padding:4px 9px;border-radius:20px;opacity:.85}
@@ -386,7 +388,7 @@ input[type=date]{color-scheme:dark}
         <label class="f"><span><span data-l="km">ទីកន្លែង</span><span data-l="en">Venue</span></span><input data-k="venue" placeholder="Golden Lotus Ballroom"></label>
       </div>
       <div class="hero-btns" style="justify-content:flex-start">
-        <button class="btn gold" data-go="login"><span data-l="km">ប្រើគំរូនេះ</span><span data-l="en">Use this template</span> →</button>
+        <button class="btn gold" id="useTpl"><span data-l="km">ប្រើគំរូនេះ</span><span data-l="en">Use this template</span> →</button>
         <button class="btn" data-replay><span data-l="km">↻ មើលការបើកម្ដងទៀត</span><span data-l="en">↻ Replay opening</span></button>
       </div>
     </div>
@@ -415,7 +417,7 @@ input[type=date]{color-scheme:dark}
 <section class="view" id="v-editor"><div class="wrap app">
   <div class="split">
     <div>
-      <div class="eyebrow"><span data-l="km">កំពុងកែប្រែ</span><span data-l="en">Editing</span> · Golden Curtain · <span class="pill draft"><span data-l="km">ព្រាង</span><span data-l="en">Draft</span></span></div>
+      <div class="eyebrow"><span data-l="km">កំពុងកែប្រែ</span><span data-l="en">Editing</span> · Golden Curtain · <span class="pill draft"><span data-l="km">ព្រាង</span><span data-l="en">Draft</span></span> <span id="saveState" class="savestate"></span></div>
       <h2 class="h1" style="margin:6px 0 14px;font-size:22px" id="edTitle"></h2>
       <div class="etabs" id="etabs">
         <button class="etab on" data-t="details"><span data-l="km">ព័ត៌មាន</span><span data-l="en">Details</span></button>
@@ -435,7 +437,7 @@ input[type=date]{color-scheme:dark}
             <label class="f"><span><span data-l="km">ម៉ោង</span><span data-l="en">Time</span></span><input type="time" data-k="time" value="17:00"></label>
           </div>
           <label class="f"><span><span data-l="km">ទីកន្លែង</span><span data-l="en">Venue</span></span><input data-k="venue"></label>
-          <label class="f" style="margin-top:10px"><span><span data-l="km">តំណ Google Maps</span><span data-l="en">Google Maps link</span></span><input placeholder="https://maps.app.goo.gl/…"></label>
+          <label class="f" style="margin-top:10px"><span><span data-l="km">តំណ Google Maps</span><span data-l="en">Google Maps link</span></span><input data-k="mapUrl" inputmode="url" placeholder="https://maps.app.goo.gl/…"></label>
         </div>
         <div class="epane" data-p="design">
           <div class="f"><span><span data-l="km">ពណ៌</span><span data-l="en">Colour theme</span></span></div>
@@ -446,11 +448,11 @@ input[type=date]{color-scheme:dark}
           </div>
           <div class="f" style="margin-top:16px"><span><span data-l="km">ពុម្ពអក្សរ</span><span data-l="en">Font set</span></span></div>
           <div class="fontsets" id="fontsets">
-            <button class="fs on"><div class="a">សុវណ្ណ · ស្រីពៅ</div><div class="b">Sovann &amp; Sreypov</div><small>Classic · Moul + Great Vibes</small></button>
-            <button class="fs"><div class="a" style="font-family:'Kantumruy Pro';font-weight:600">សុវណ្ណ · ស្រីពៅ</div><div class="b" style="font-family:Cinzel;font-style:normal;font-size:16px;letter-spacing:.15em">SOVANN &amp; SREYPOV</div><small>Modern · Kantumruy Pro + Cinzel</small></button>
+            <button class="fs on" data-v="classic"><div class="a">សុវណ្ណ · ស្រីពៅ</div><div class="b">Sovann &amp; Sreypov</div><small>Classic · Moul + Great Vibes</small></button>
+            <button class="fs" data-v="modern"><div class="a" style="font-family:'Kantumruy Pro';font-weight:600">សុវណ្ណ · ស្រីពៅ</div><div class="b" style="font-family:Cinzel;font-style:normal;font-size:16px;letter-spacing:.15em">SOVANN &amp; SREYPOV</div><small>Modern · Kantumruy Pro + Cinzel</small></button>
           </div>
           <div class="f" style="margin-top:16px"><span><span data-l="km">ការបើកធៀប</span><span data-l="en">Opening animation</span></span></div>
-          <div class="swatches"><button class="swt on"><i style="background:radial-gradient(circle,#f6e3a1 1px,transparent 1.5px) 0 0/7px 7px,#3f0916"></i>Gold glitter</button><button class="swt"><i style="background:linear-gradient(90deg,#661326 0 45%,#000 45% 55%,#661326 55%)"></i>Curtain only</button></div>
+          <div class="swatches" id="openings"><button class="swt on" data-v="glitter"><i style="background:radial-gradient(circle,#f6e3a1 1px,transparent 1.5px) 0 0/7px 7px,#3f0916"></i>Gold glitter</button><button class="swt" data-v="curtain"><i style="background:linear-gradient(90deg,#661326 0 45%,#000 45% 55%,#661326 55%)"></i>Curtain only</button></div>
         </div>
         <div class="epane" data-p="photos">
           <p class="sub" style="margin-bottom:10px"><span data-l="km">រូបថតរហូតដល់ ១២ សន្លឹក។ យើងបង្រួមទំហំឲ្យស្រាប់ ដោយរក្សាគុណភាព។</span><span data-l="en">Up to 12 photos. We resize them automatically and keep the quality.</span></p>
@@ -458,9 +460,9 @@ input[type=date]{color-scheme:dark}
         </div>
         <div class="epane" data-p="music">
           <div class="music" id="musicList">
-            <button class="mu on"><span class="pl">▶</span><div>Golden Morning<small>MongkulCard library · piano</small></div></button>
-            <button class="mu"><span class="pl">▶</span><div>Khmer Wedding Strings<small>MongkulCard library · traditional</small></div></button>
-            <button class="mu"><span class="pl">▶</span><div>Forever Waltz<small>MongkulCard library · orchestra</small></div></button>
+            <button class="mu on" data-v="golden-morning"><span class="pl">▶</span><div>Golden Morning<small>MongkulCard library · piano</small></div></button>
+            <button class="mu" data-v="khmer-strings"><span class="pl">▶</span><div>Khmer Wedding Strings<small>MongkulCard library · traditional</small></div></button>
+            <button class="mu" data-v="forever-waltz"><span class="pl">▶</span><div>Forever Waltz<small>MongkulCard library · orchestra</small></div></button>
             <label class="mu" style="cursor:pointer"><span class="pl">⇪</span><div><span data-l="km">បញ្ចូលបទផ្ទាល់ខ្លួន</span><span data-l="en">Upload your own song</span><small>MP3 · max 8 MB</small></div><input type="file" accept="audio/*" hidden></label>
           </div>
         </div>
@@ -503,6 +505,12 @@ input[type=date]{color-scheme:dark}
 <section class="view" id="v-dashboard"><div class="wrap app">
   <div class="dash-top" style="margin-bottom:18px">
     <div><div class="eyebrow"><span data-l="km">គណនីរបស់ខ្ញុំ</span><span data-l="en">My account</span></div><h2 class="h1" style="font-size:22px"><span data-l="km">ធៀបរបស់ខ្ញុំ</span><span data-l="en">My invitations</span></h2></div>
+  </div>
+  <div class="panel hidden" id="myInvPanel" style="margin-bottom:16px">
+    <h3><span data-l="km">ធៀបដែលបានរក្សាទុក</span><span data-l="en">Saved invitations</span></h3>
+    <p class="sub"><span data-l="km">រក្សាទុកក្នុងគណនីរបស់អ្នក — បើកពីទូរស័ព្ទណាក៏បាន។</span><span data-l="en">Saved to your account. Open them from any phone.</span></p>
+    <ul class="glist" id="myInvs"></ul>
+    <button class="btn sm" id="newInv" type="button" style="margin-top:12px">+ <span data-l="km">ធៀបថ្មី</span><span data-l="en">New invitation</span></button>
   </div>
   <div class="split">
     <div>
@@ -551,9 +559,11 @@ var root=document.documentElement;
 
 /* ---------- the customer's invitation, as the editor would save it ---------- */
 var INV={groom:{en:'Sovann',km:'សុវណ្ណ'},bride:{en:'Sreypov',km:'ស្រីពៅ'},date:'2027-02-14',time:'17:00',venue:'Golden Lotus Ballroom, Phnom Penh',theme:'burgundy',
-  sections:{countdown:true,program:true,map:true,gallery:true,gift:true,rsvp:false,photos:true}};
+  sections:{countdown:true,program:true,map:true,gallery:true,gift:true,rsvp:false,photos:true},mapUrl:'',fontSet:'classic',opening:'glitter',music:'golden-morning'};
+var DEFAULTS=JSON.parse(JSON.stringify(INV));
 var GUESTS=[];var loggedIn=false;var ACCOUNT=null;
 var REAL=location.pathname.indexOf('/preview')===0;
+var CURRENT=null,lastSaved='',saveTimer=null;
 
 /* ---------- language ---------- */
 var TXT={km:{p1:'គំរូ + ព័ត៌មានរបស់អ្នក',p2:'ខ្មែរ និង English',p3:'តំណផ្ទាល់ខ្លួនសម្រាប់ភ្ញៀវ',p4:'ភ្ញៀវចែករំលែករូបថត',p5:'中文 (ភាសាចិន)',p6:'ការបើកធៀបបែបភាពយន្ត',p7:'តន្ត្រី និង RSVP',p8:'គ្រប់យ៉ាងក្នុង Premium',p9:'រចនាផ្ទាល់ខ្លួនដោយ MongkulCard',p10:'វីដេអូ AI របស់គូស្វាមីភរិយា',pop:'ពេញនិយមបំផុត',
@@ -635,10 +645,11 @@ function push(){
   var s=settings();
   $$('iframe.pv,#heroFrame').forEach(function(f){if(f.closest('#v-dashboard'))return;post(f,{type:'settings',data:s})});
   var dg=GUESTS[GUESTS.length-1];var df=$('#v-dashboard iframe');post(df,{type:'settings',data:settings(dg||null)});
-  var title=(INV.groom.en||'')+' & '+(INV.bride.en||'');$('#edTitle').textContent=title;$('#dashTitle').textContent=title;
+  var gN=INV.groom.en||INV.groom.km,bN=INV.bride.en||INV.bride.km;var title=gN&&bN?gN+' & '+bN:(gN||bN||(lang()==='km'?'ធៀបថ្មី':'New invitation'));$('#edTitle').textContent=title;$('#dashTitle').textContent=title;
   $('#dashUrl').textContent='mongkulcard.com/'+slug();
   $('#dashCap').innerHTML=dg?(lang()==='km'?'ធៀបដែល <b>'+esc(dg.name)+'</b> ឃើញ':'What <b>'+esc(dg.name)+'</b> sees'):(lang()==='km'?'បន្ថែមភ្ញៀវ ដើម្បីមើលធៀបរបស់គាត់':'Add a guest to see their invitation');
   renderGrids();
+  scheduleSave();
 }
 $$('iframe').forEach(function(f){f.addEventListener('load',function(){setTimeout(push,60)})});
 $('#heroFrame').addEventListener('load',function(){post(this,{type:'noscroll'})});
@@ -659,6 +670,8 @@ function go(v){if(VIEWS.indexOf(v)<0)v='home';
   scrollTo(0,0);$('.bbar').style.display=(v==='home'||v==='templates')?'':'none';
   $('#loginBtn').innerHTML=loggedIn?'<span>'+(ACCOUNT?esc(ACCOUNT.name.split(' ')[0]):(lang()==='km'?'ធៀបរបស់ខ្ញុំ':'My invitations'))+'</span>':'<span data-l="km">ចូល</span><span data-l="en">Log in</span>';
   $('#loginBtn').dataset.go=loggedIn?'dashboard':'login';
+  if(REAL&&loggedIn&&v==='editor'&&!CURRENT)ensureDraft();
+  if(REAL&&loggedIn&&v==='dashboard')renderMyInvs();
   setTimeout(push,80);
 }
 document.addEventListener('click',function(e){var g=e.target.closest('[data-go]');if(g){e.preventDefault();go(g.dataset.go)}
@@ -666,7 +679,7 @@ document.addEventListener('click',function(e){var g=e.target.closest('[data-go]'
 addEventListener('hashchange',function(){go(location.hash.slice(1))});
 
 /* ---------- login (simulated) ---------- */
-$('#tgLogin').onclick=function(){if(REAL){location.href='/signin?next='+encodeURIComponent('/preview/#editor');return}$('#tgSheet').classList.add('on')};
+$('#tgLogin').onclick=function(){if(REAL){try{sessionStorage.setItem('mc_try',JSON.stringify(INV))}catch(e){}location.href='/signin?next='+encodeURIComponent('/preview/#editor');return}$('#tgSheet').classList.add('on')};
 $('#tgNo').onclick=function(){$('#tgSheet').classList.remove('on')};
 $('#tgYes').onclick=function(){$('#tgSheet').classList.remove('on');loggedIn=true;toast('hello');go('editor')};
 $('#ggLogin').onclick=function(){if(REAL){toast(lang()==='km'?'ការចូលតាម Google នឹងមានឆាប់ៗ':'Google sign-in is coming soon');return}loggedIn=true;toast('hello');go('editor')};
@@ -674,14 +687,84 @@ $('#ggLogin').onclick=function(){if(REAL){toast(lang()==='km'?'ការចូ�
 /* ---------- editor ---------- */
 $('#etabs').onclick=function(e){var b=e.target.closest('.etab');if(!b)return;$$('.etab').forEach(function(x){x.classList.toggle('on',x===b)});$$('.epane').forEach(function(p){p.classList.toggle('on',p.dataset.p===b.dataset.t)})};
 $('#swatches').onclick=function(e){var b=e.target.closest('.swt');if(!b)return;INV.theme=b.dataset.v;$$('#swatches .swt').forEach(function(x){x.classList.toggle('on',x===b)});push()};
-function pick(sel){$(sel).onclick=function(e){var b=e.target.closest('button');if(!b)return;$$(sel+' button').forEach(function(x){x.classList.toggle('on',x===b)})}}
-pick('#fontsets');pick('#musicList');pick('#pkgs');
+function pick(sel,key){$(sel).onclick=function(e){var b=e.target.closest('button');if(!b)return;$$(sel+' button').forEach(function(x){x.classList.toggle('on',x===b)});if(key){INV[key]=b.dataset.v;push()}}}
+pick('#fontsets','fontSet');pick('#musicList','music');pick('#openings','opening');pick('#pkgs');
 var SEC=[['countdown','រាប់ថយក្រោយ','Countdown'],['program','កម្មវិធីពិធី','Programme'],['map','ផែនទី','Map'],['gallery','រូបថត','Gallery'],['gift','QR ចំណងដៃ','Gift QR'],['rsvp','ឆ្លើយតប (RSVP)','RSVP'],['photos','ភ្ញៀវចែករំលែករូបថត','Guest photo sharing']];
 function renderSec(){$('#secToggles').innerHTML=SEC.map(function(s){return '<div class="toggle"><span><span data-l="km">'+s[1]+'</span><span data-l="en">'+s[2]+'</span></span><button class="sw'+(INV.sections[s[0]]?' on':'')+'" data-s="'+s[0]+'" aria-label="'+s[2]+'"></button></div>'}).join('')}
 renderSec();
-$('#secToggles').onclick=function(e){var b=e.target.closest('.sw');if(!b)return;INV.sections[b.dataset.s]=!INV.sections[b.dataset.s];b.classList.toggle('on')};
+$('#secToggles').onclick=function(e){var b=e.target.closest('.sw');if(!b)return;INV.sections[b.dataset.s]=!INV.sections[b.dataset.s];b.classList.toggle('on');push()};
 $('#upIn').onchange=function(){[].slice.call(this.files,0,12).forEach(function(f){var d=document.createElement('div');d.className='ph';d.style.backgroundImage='url('+URL.createObjectURL(f)+')';$('#upl').appendChild(d)})};
-$('#saveBtn').onclick=function(){toast('saved')};
+$('#saveBtn').onclick=function(){if(REAL&&CURRENT){saveNow(true)}else toast('saved')};
+
+/* ---------- saving to the customer's account (real site only) ---------- */
+function apiCall(method,path,body){
+  return fetch(path,{method:method,credentials:'same-origin',headers:body?{'content-type':'application/json'}:{},body:body?JSON.stringify(body):undefined})
+    .then(function(r){return r.json().catch(function(){return{}}).then(function(j){
+      if(r.status===401){loggedIn=false;ACCOUNT=null;go('login');throw new Error('signed out')}
+      if(!r.ok){var e=new Error(j.error||'Error');e.code=j.code;throw e}return j})})}
+function payload(){return{groom:INV.groom,bride:INV.bride,date:INV.date,time:INV.time,venue:INV.venue,mapUrl:INV.mapUrl,theme:INV.theme,fontSet:INV.fontSet,opening:INV.opening,music:INV.music,sections:INV.sections}}
+function saveState(t,c){var e=$('#saveState');if(!e)return;e.textContent=t;e.className='savestate'+(c?' '+c:'')}
+function scheduleSave(){
+  if(!REAL||!loggedIn||!CURRENT)return;
+  if(JSON.stringify(payload())===lastSaved)return;
+  saveState(lang()==='km'?'កំពុងរក្សាទុក…':'Saving…');
+  clearTimeout(saveTimer);saveTimer=setTimeout(saveNow,900);
+}
+function saveNow(announce){
+  clearTimeout(saveTimer);if(!CURRENT)return;
+  var p=payload(),txt=JSON.stringify(p),id=CURRENT;
+  apiCall('PUT','/api/invitations/'+id,{settings:p}).then(function(){
+    if(id!==CURRENT)return;lastSaved=txt;saveState(lang()==='km'?'បានរក្សាទុក ✓':'Saved ✓','ok');if(announce)toast('saved')
+  }).catch(function(e){if(e.message!=='signed out')saveState(lang()==='km'?'មិនទាន់រក្សាទុក — ពិនិត្យអ៊ីនធឺណិត':'Not saved, check your connection','err')});
+}
+function merge(def,src){var o=JSON.parse(JSON.stringify(def));if(!src)return o;
+  Object.keys(o).forEach(function(k){if(src[k]===undefined)return;if(o[k]&&typeof o[k]==='object'){Object.keys(o[k]).forEach(function(j){if(src[k][j]!==undefined)o[k][j]=src[k][j]})}else o[k]=src[k]});return o}
+function syncUI(){
+  bindInputs();
+  $$('#swatches .swt').forEach(function(x){x.classList.toggle('on',x.dataset.v===INV.theme)});
+  $$('#fontsets button').forEach(function(x){x.classList.toggle('on',x.dataset.v===INV.fontSet)});
+  $$('#openings button').forEach(function(x){x.classList.toggle('on',x.dataset.v===INV.opening)});
+  $$('#musicList button').forEach(function(x){x.classList.toggle('on',x.dataset.v===INV.music)});
+  renderSec();push();
+}
+function loadInv(inv){INV=merge(DEFAULTS,inv.settings);CURRENT=inv.id;lastSaved=JSON.stringify(payload());syncUI();saveState(lang()==='km'?'បានរក្សាទុក ✓':'Saved ✓','ok')}
+function createDraft(from){
+  return apiCall('POST','/api/invitations',{template:'golden-curtain',event_type:'wedding',settings:from}).then(function(j){loadInv(j.invitation);return j.invitation})
+    .catch(function(e){if(e.code==='limit'){toast(lang()==='km'?'អ្នកមានធៀបដល់ ១០ ហើយ។ សូមលុបធៀបព្រាងចាស់ជាមុនសិន។':e.message);go('dashboard')}throw e});
+}
+var ensuring=false;
+function ensureDraft(){
+  if(ensuring)return;ensuring=true;saveState(lang()==='km'?'កំពុងបើក…':'Opening…');
+  var wantNew=false;try{wantNew=sessionStorage.getItem('mc_new')==='1';sessionStorage.removeItem('mc_new')}catch(e){}
+  (wantNew?createDraft(payload()):apiCall('GET','/api/invitations').then(function(j){
+    if(j.invitations.length)return apiCall('GET','/api/invitations/'+j.invitations[0].id).then(function(k){loadInv(k.invitation)});
+    return createDraft(payload());
+  })).catch(function(){}).then(function(){ensuring=false});
+}
+$('#useTpl').onclick=function(){
+  if(!REAL||!loggedIn){try{sessionStorage.setItem('mc_new','1')}catch(e){}go('login');return}
+  createDraft(payload()).then(function(){go('editor')}).catch(function(){});
+};
+function fmtDate(iso){try{var d=new Date(iso);return d.toLocaleDateString(lang()==='km'?'km-KH':'en-GB',{day:'numeric',month:'short',year:'numeric'})}catch(e){return ''}}
+function renderMyInvs(){
+  var p=$('#myInvPanel');p.classList.remove('hidden');
+  apiCall('GET','/api/invitations').then(function(j){
+    var st={draft:['ព្រាង','Draft'],paid:['បានបង់','Paid'],published:['បានផ្សព្វផ្សាយ','Published']};
+    $('#myInvs').innerHTML=j.invitations.map(function(v){var s=st[v.status]||[v.status,v.status];
+      return '<li class="inv-row"><div class="gn">'+esc(v.title)+' <span class="pill'+(v.status==='draft'?' draft':'')+'">'+(lang()==='km'?s[0]:s[1])+'</span></div>'+
+        '<div class="gl">Golden Curtain'+(v.date?' · '+esc(v.date):'')+' · '+(lang()==='km'?'កែចុងក្រោយ ':'edited ')+fmtDate(v.updated_at)+'</div>'+
+        '<div class="ga"><button class="btn sm" data-edit="'+v.id+'">'+(lang()==='km'?'កែ':'Edit')+'</button>'+
+        (v.status==='draft'?'<button class="btn sm" data-del="'+v.id+'" aria-label="Delete">✕</button>':'')+'</div></li>'}).join('')||
+      '<li style="display:block;color:var(--muted);font-size:13.5px">'+(lang()==='km'?'មិនទាន់មានធៀបទេ។':'No invitations yet.')+'</li>';
+  }).catch(function(){});
+}
+$('#myInvs').onclick=function(e){
+  var ed=e.target.closest('[data-edit]'),dl=e.target.closest('[data-del]');
+  if(ed){apiCall('GET','/api/invitations/'+ed.dataset.edit).then(function(k){loadInv(k.invitation);go('editor')}).catch(function(){})}
+  if(dl){if(!confirm(lang()==='km'?'លុបធៀបព្រាងនេះ? មិនអាចយកមកវិញបានទេ។':'Delete this draft? This cannot be undone.'))return;
+    apiCall('DELETE','/api/invitations/'+dl.dataset.del).then(function(){if(CURRENT===dl.dataset.del)CURRENT=null;renderMyInvs()}).catch(function(e){toast(e.message)})}
+};
+$('#newInv').onclick=function(){var blank=merge(DEFAULTS,{groom:{en:'',km:''},bride:{en:'',km:''},venue:''});INV=blank;createDraft(payload()).then(function(){go('editor')}).catch(function(){})};
 
 /* ---------- pay ---------- */
 (function(){var s='',r=function(){return Math.random()<.5};for(var y=0;y<21;y++)for(var x=0;x<21;x++){var f=(x<7&&y<7)||(x>13&&y<7)||(x<7&&y>13);
@@ -709,8 +792,11 @@ $('#glist').onclick=function(e){var b=e.target.closest('[data-copy]');if(!b)retu
 
 setLang('km');renderGuests();
 if(REAL){
+  try{var t=sessionStorage.getItem('mc_try');if(t){INV=merge(DEFAULTS,JSON.parse(t));sessionStorage.removeItem('mc_try');bindInputs()}}catch(e){}
   $('.proto').textContent='PREVIEW · LOGIN IS REAL';
   var ln=$('#v-login .note');if(ln)ln.innerHTML='<b>Real now:</b> Telegram sign-in creates your MongkulCard account. The editor, payment and guest links after it are still a demo.';
+  var dp=$('#v-dashboard .inv-card .pill');if(dp){dp.className='pill draft';dp.innerHTML='<span data-l="km">ឧទាហរណ៍</span><span data-l="en">Demo</span>'}
+  var gp=$('#v-dashboard #glist');if(gp){var nt=document.createElement('div');nt.className='note';nt.innerHTML='<b>Demo:</b> guest links and payment are not real yet (steps 3–4).';gp.parentNode.insertBefore(nt,gp)}
   var dt=$('#v-dashboard .dash-top');if(dt){var a=document.createElement('a');a.href='/account';a.className='btn sm';a.style.marginLeft='auto';a.textContent=(lang()==='km'?'គណនី':'Account');dt.appendChild(a)}
   fetch('/api/account/me',{credentials:'same-origin'}).then(function(r){return r.json()}).then(function(a){if(a&&a.signedIn){loggedIn=true;ACCOUNT=a}}).catch(function(){}).then(function(){go(location.hash.slice(1)||'home')});
 }else go(location.hash.slice(1)||'home');
