@@ -17,6 +17,7 @@
 [data-theme=navy]{--v1:#050a1e;--v2:#0b1638;--v3:#152759;--v4:#22397c;--ink:#18285a}
 
 *{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
 html,body{background:var(--v1);color:#f3e6d2;overflow-anchor:none;-webkit-tap-highlight-color:transparent}
 html.locked,html.locked body{overflow:hidden;height:100%}
 body{font-family:var(--en);transition:background .6s}
@@ -80,6 +81,26 @@ html[data-khf=fasthand] .script.khs{font-size:clamp(30px,9vw,37px)}
 .vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .vid-play{position:absolute;left:50%;top:50%;width:66px;height:66px;margin:-33px 0 0 -33px;border-radius:50%;border:1px solid rgba(246,227,161,.8);background:rgba(20,4,8,.55);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);cursor:pointer;display:flex;align-items:center;justify-content:center}
 .vid-play svg{width:28px;height:28px;fill:#f6e3a1;margin-left:4px}
+.rs{border:1px solid rgba(217,178,95,.4);background:rgba(0,0,0,.18);border-radius:4px;padding:18px 16px;text-align:center}
+.rs-by{font-size:13px;color:#d9c3a6;margin-top:4px}
+.rs-choice{display:grid;gap:10px}
+.rs-choice button{border:1px solid rgba(217,178,95,.45);background:transparent;color:#f3e6d2;border-radius:30px;padding:12px 10px;cursor:pointer;font:400 15px var(--kh)}
+html[data-lang=en] .rs-choice button{font:500 16px var(--en)}
+.rs-choice button.on{background:linear-gradient(100deg,var(--gold-d),var(--gold-l) 50%,var(--gold-d));color:var(--v1);border-color:transparent}
+.rs-party{display:flex;align-items:center;justify-content:space-between;margin:16px 4px 4px;font-family:var(--kh);font-size:14.5px;color:#ead9bf}
+html[data-lang=en] .rs-party{font-family:var(--en);font-size:16px}
+.stp{display:flex;align-items:center;gap:14px}.stp b{font:500 22px var(--en-d);color:var(--gold-l);min-width:26px}
+.stp button{width:36px;height:36px;border-radius:50%;border:1px solid rgba(217,178,95,.55);background:transparent;color:var(--gold-l);font-size:20px;cursor:pointer}
+.rs-name,.rs-msg{display:block;text-align:left;margin:14px 0 0}
+.rs-name{margin:0 0 14px}
+.rs-name>span,.rs-msg>span{display:block;font:400 13px var(--kh);color:#cdb69a;margin:0 0 5px 4px}
+html[data-lang=en] .rs-name>span,html[data-lang=en] .rs-msg>span{font:italic 14px var(--en)}
+.rs input,.rs textarea{width:100%;background:rgba(0,0,0,.28);border:1px solid rgba(217,178,95,.3);border-radius:10px;color:#f6ead6;padding:11px 12px;font:15px var(--kh);outline:none;resize:vertical}
+.rs input:focus,.rs textarea:focus{border-color:var(--gold)}
+.rs-send{margin-top:16px}.rs-err{color:#f0a0a0;font-size:13.5px;min-height:1em;margin-top:8px}
+.rs-done .rs-ic{font-size:26px;color:var(--gold-l)}.rs-done p{font-family:var(--kh);font-size:15.5px;line-height:1.9;margin:6px 0 4px}
+html[data-lang=en] .rs-done p{font-family:var(--en);font-size:18px}
+.rs-closed{text-align:center;font-family:var(--kh);color:#d9c3a6}
 .mute{position:fixed;bottom:16px;right:14px;z-index:30;width:42px;height:42px;border-radius:50%;border:1px solid rgba(246,227,161,.55);background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);cursor:pointer;display:flex;align-items:center;justify-content:center}
 .mute svg{width:20px;height:20px;fill:none;stroke:#f6e3a1;stroke-width:1.5}.mute .off{display:none}.mute.muted .off{display:block}
 .mute:not(.muted) svg{animation:beat 1.6s ease-in-out infinite}@keyframes beat{50%{transform:scale(1.12)}}
@@ -353,6 +374,29 @@ var SETTINGS = {
     <div class="center rv"><a class="btn" id="mapBtn" target="_blank" rel="noopener"><span data-l="km">បើកផែនទី</span><span data-l="en">OPEN IN MAPS</span></a></div>
   </section>
 
+  <!-- ===== RSVP ===== -->
+  <section class="sec" id="rsvpSec" style="padding-top:20px" hidden>
+    <div class="dark-h rv"><div class="h-kh" data-l="km">សូមឆ្លើយតប</div><div class="h-en" data-l="en" style="color:var(--gold-l)">KINDLY REPLY</div>
+      <div class="rs-by" id="rsBy"></div></div>
+    <div class="rs rv" id="rsForm">
+      <label class="rs-name" id="rsNameBox" hidden><span><span data-l="km">ឈ្មោះរបស់អ្នក</span><span data-l="en">Your name</span></span><input id="rsName" maxlength="80" autocomplete="name"></label>
+      <div class="rs-choice">
+        <button type="button" data-a="1"><b data-l="km">យល់ព្រមចូលរួម</b><b data-l="en">Joyfully accept</b></button>
+        <button type="button" data-a="0"><b data-l="km">សុំទោស មិនអាចចូលរួម</b><b data-l="en">Regretfully decline</b></button>
+      </div>
+      <div class="rs-party" id="rsParty" hidden><span><span data-l="km">ចំនួនអ្នកចូលរួម</span><span data-l="en">Number of guests</span></span>
+        <div class="stp"><button type="button" id="rsMinus" aria-label="Fewer">−</button><b id="rsN">1</b><button type="button" id="rsPlus" aria-label="More">+</button></div></div>
+      <label class="rs-msg"><span><span data-l="km">ពាក្យជូនពរ (មិនចាំបាច់)</span><span data-l="en">A message for the couple (optional)</span></span><textarea id="rsMsg" maxlength="300" rows="3"></textarea></label>
+      <button type="button" class="btn rs-send" id="rsSend"><span data-l="km">ផ្ញើការឆ្លើយតប</span><span data-l="en">SEND MY REPLY</span></button>
+      <p class="rs-err" id="rsErr"></p>
+    </div>
+    <div class="rs rs-done rv" id="rsDone" hidden>
+      <div class="rs-ic">✦</div><p id="rsDoneTxt"></p>
+      <button type="button" class="btn" id="rsEdit"><span data-l="km">កែការឆ្លើយតប</span><span data-l="en">CHANGE MY REPLY</span></button>
+    </div>
+    <p class="rs-closed rv" id="rsClosed" hidden><span data-l="km">ការឆ្លើយតបបានបិទហើយ។ សូមអរគុណ!</span><span data-l="en">Replies are now closed. Thank you!</span></p>
+  </section>
+
   <!-- ===== thanks + brand ===== -->
   <section class="sec center" style="padding-bottom:50px">
     <div class="rv"><div class="ty goldtext" data-l="en">Thank you</div><div class="ty-kh goldtext" data-l="km">សូមអរគុណ</div></div>
@@ -378,6 +422,8 @@ var SETTINGS = {
 
 <script>
 (function(){
+  // On a real guest page the server sends this invitation's settings and the RSVP details.
+  if(window.MC_DATA&&MC_DATA.settings){for(var k0 in MC_DATA.settings)SETTINGS[k0]=MC_DATA.settings[k0]}
   var S=SETTINGS,root=document.documentElement,$=function(s){return document.querySelector(s)};
   var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -424,6 +470,7 @@ var SETTINGS = {
     $('#mapBtn').parentNode.hidden=sec.map===false||!S.mapUrl;
     renderGallery((S.photos||[]).slice(0,20),sec.gallery!==false);
     renderVideo(sec.video!==false?S.video:null);
+    renderRsvp(sec.rsvp===true);
     setMusic(S.musicUrl||'');
     document.querySelectorAll('#optTheme button').forEach(function(b){b.classList.toggle('on',b.dataset.v===S.theme)});
     document.querySelectorAll('#optLang button').forEach(function(b){b.classList.toggle('on',b.dataset.v===S.lang)});
@@ -459,6 +506,41 @@ var SETTINGS = {
     var f=document.createElement('iframe');f.src=vidKey+'?autoplay=true&preload=auto';f.allow='autoplay; fullscreen; picture-in-picture';f.allowFullscreen=true;
     $('#vid').appendChild(f);this.hidden=true;
   };
+
+  /* ---- RSVP: a real guest page sends it to the server; the editor preview only shows the form ---- */
+  var RS=window.MC_DATA&&MC_DATA.rsvp||null,rsA=null,rsN=1,rsDoneShown=false;
+  function rsT(km,en){return S.lang==='km'?km:en}
+  function renderRsvp(on){
+    var live=!!RS;on=live?RS.on:on;$('#rsvpSec').hidden=!on;if(!on)return;
+    $('#rsNameBox').hidden=!(live&&RS.shared);
+    var by=live?RS.by:(S.rsvpBy||'');$('#rsBy').textContent=by?rsT('សូមឆ្លើយតបមុនថ្ងៃ ','Please reply by ')+by.split('-').reverse().join('·'):'';
+    if(live&&RS.closed){$('#rsForm').hidden=true;$('#rsDone').hidden=true;$('#rsClosed').hidden=false;return}
+    if(live&&RS.current&&!rsDoneShown){rsDoneShown=true;rsA=RS.current.attending;rsN=RS.current.party||1;$('#rsMsg').value=RS.current.message||'';showDone()}
+    paint();
+  }
+  function paint(){
+    document.querySelectorAll('.rs-choice button').forEach(function(b){b.classList.toggle('on',rsA!==null&&(b.dataset.a==='1')===rsA)});
+    $('#rsParty').hidden=rsA!==true;$('#rsN').textContent=rsN;
+  }
+  function showDone(){
+    $('#rsForm').hidden=true;$('#rsDone').hidden=false;
+    $('#rsDoneTxt').textContent=rsA?rsT('អរគុណ! យើងរង់ចាំស្វាគមន៍អ្នក ('+rsN+' នាក់)។','Thank you! We look forward to celebrating with you ('+rsN+(rsN>1?' guests':' guest')+').'):rsT('អរគុណសម្រាប់ការប្រាប់យើង។ យើងនឹងនឹកអ្នក!','Thank you for letting us know. You will be missed!');
+  }
+  document.querySelector('.rs-choice').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;rsA=b.dataset.a==='1';paint()});
+  $('#rsMinus').onclick=function(){rsN=Math.max(1,rsN-1);paint()};$('#rsPlus').onclick=function(){rsN=Math.min(20,rsN+1);paint()};
+  $('#rsEdit').onclick=function(){$('#rsDone').hidden=true;$('#rsForm').hidden=false;paint()};
+  $('#rsSend').onclick=function(){
+    var err=$('#rsErr');err.textContent='';
+    if(rsA===null){err.textContent=rsT('សូមជ្រើសរើសមួយ','Please choose one');return}
+    if(RS&&RS.shared&&!$('#rsName').value.trim()){err.textContent=rsT('សូមវាយឈ្មោះរបស់អ្នក','Please type your name');$('#rsName').focus();return}
+    if(!RS){showDone();return}    // editor preview: nothing is sent
+    var btn=this;btn.disabled=true;
+    fetch(RS.endpoint,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({attending:rsA,party:rsN,message:$('#rsMsg').value,name:$('#rsName').value})})
+      .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||'Error');showDone()})})
+      .catch(function(x){err.textContent=rsT('ផ្ញើមិនបានសម្រេច។ សូមព្យាយាមម្ដងទៀត។','Could not send. Please try again.')})
+      .then(function(){btn.disabled=false});
+  };
+  renderRsvp(!!(S.sections&&S.sections.rsvp===true));
 
   /* ---- music: starts when the guest opens the invitation (phones need that tap first) ---- */
   var bgm=$('#bgm'),muteBtn=$('#muteBtn'),musicSrc,userMuted=false;
@@ -643,6 +725,7 @@ var SETTINGS = {
 
   /* ---- inside the MongkulCard site: settings arrive from the editor ---- */
   var EMBED=window.parent!==window,NOSCROLL=false;
+  if(window.MC_DATA){var cb=$('#custBtn');if(cb)cb.remove();var pn=document.getElementById('panel');if(pn)pn.remove()}
   if(EMBED){$('#custBtn').style.display='none';var st=document.createElement('style');st.textContent='html,body{scrollbar-width:none}::-webkit-scrollbar{display:none}';document.head.appendChild(st)}
   addEventListener('message',function(e){
     var m=e.data||{};

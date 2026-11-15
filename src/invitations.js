@@ -126,6 +126,7 @@ function clean(input) {
     fontEn: FONTS_EN.includes(s.fontEn) ? s.fontEn : FONTS_EN[0],
     opening: OPENINGS.includes(s.opening) ? s.opening : OPENINGS[0],
     music: MUSIC.includes(s.music) ? s.music : MUSIC[0],
+    rsvpBy: /^\d{4}-\d{2}-\d{2}$/.test(s.rsvpBy) && !isNaN(Date.parse(s.rsvpBy + 'T00:00:00Z')) ? s.rsvpBy : '',
     sections: {},
   };
   const sec = s.sections && typeof s.sections === 'object' ? s.sections : {};

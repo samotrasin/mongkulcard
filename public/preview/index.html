@@ -245,6 +245,13 @@ input[type=date]{color-scheme:dark}
    .vthumb{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000 center/cover no-repeat;border:1px solid var(--line)}
 .vthumb span{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:2px 9px;border-radius:10px}
 .vprog{height:6px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:10px}.vprog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold-d),var(--gold-l))}
+ .linkrow{display:flex;gap:8px;align-items:center;margin-top:4px}.linkrow code{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px;color:var(--gold-l)}
+.stats4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.stats4 div{border:1px solid var(--line);border-radius:12px;padding:10px 4px;text-align:center}
+.stats4 b{display:block;font:600 21px var(--serif);color:var(--gold-l)}.stats4 span{font-size:11px;color:var(--muted)}
+#gpNames{width:100%;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:12px;padding:10px 12px;color:var(--ivory);font:15px var(--ui);outline:none;resize:vertical}
+.addg2{display:flex;gap:8px;align-items:center;margin:8px 0 4px}.addg2 select{background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:10px;color:var(--ivory);padding:8px;font:14px var(--ui)}
+.gsearch{width:100%;margin-top:12px;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:var(--ivory);font:14px var(--ui);outline:none}
+.glist .rsv{font-size:11.5px}.glist .ga .btn{padding:6px 10px}
 .phhead{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 8px;font-size:13px;color:var(--muted)}
 .upl .th{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:#000;border:1px solid var(--line)}
 .upl .th img{width:100%;height:100%;object-fit:cover;display:block}
@@ -517,6 +524,7 @@ input[type=date]{color-scheme:dark}
         </div>
         <div class="epane" data-p="sections">
           <div id="secToggles"></div>
+          <label class="f" style="margin-top:12px"><span><span data-l="km">ឆ្លើយតប (RSVP) មុនថ្ងៃ — មិនចាំបាច់</span><span data-l="en">RSVP reply-by date (optional)</span></span><input type="date" data-k="rsvpBy"></label>
         </div>
       </div>
       <div class="ebar">
@@ -568,7 +576,29 @@ input[type=date]{color-scheme:dark}
     <ul class="glist" id="myInvs"></ul>
     <button class="btn sm" id="newInv" type="button" style="margin-top:12px">+ <span data-l="km">ធៀបថ្មី</span><span data-l="en">New invitation</span></button>
   </div>
-  <div class="split">
+  <div class="split hidden" id="gpWrap">
+    <div>
+      <div class="panel" id="gpPanel">
+        <div class="eyebrow"><span data-l="km">ភ្ញៀវ និងតំណ</span><span data-l="en">Guests &amp; links</span></div>
+        <h3 id="gpTitle" style="font:600 20px var(--serif);margin:4px 0 6px"></h3>
+        <div id="gpPublish"></div>
+        <div id="gpLive" class="hidden">
+          <div class="f"><span><span data-l="km">តំណរួម (សម្រាប់ផ្ញើក្នុងក្រុម)</span><span data-l="en">Shared link (for group chats)</span></span></div>
+          <div class="linkrow"><code id="gpShared"></code><button class="btn sm" type="button" id="gpCopyShared">⧉</button></div>
+          <div class="stats4" id="gpStats"></div>
+          <div class="f" style="margin-top:14px"><span><span data-l="km">បន្ថែមភ្ញៀវ — ឈ្មោះមួយក្នុងមួយបន្ទាត់</span><span data-l="en">Add guests: one name per line</span></span></div>
+          <textarea id="gpNames" rows="4" placeholder="លោក ដារ៉ា និងភរិយា&#10;Ms. Lina&#10;…"></textarea>
+          <div class="addg2"><select id="gpLang"><option value="km">ខ្មែរ</option><option value="en">English</option><option value="zh">中文</option></select><button class="btn gold sm" type="button" id="gpAdd">+ <span data-l="km">បន្ថែម</span><span data-l="en">Add</span></button><span id="gpCount" class="savestate"></span></div>
+          <input id="gpSearch" class="gsearch" placeholder="🔍">
+          <ul class="glist" id="gpList"></ul>
+          <div id="gpSharedReplies"></div>
+        </div>
+      </div>
+    </div>
+    <div class="stick"><div class="phone"><iframe class="pv" id="gpFrame" src="/preview/invite.html" title="Guest view"></iframe></div>
+      <div class="phone-cap" id="gpCap"></div></div>
+  </div>
+  <div class="split" id="demoSplit">
     <div>
       <div class="panel">
         <div class="inv-card">
@@ -617,7 +647,7 @@ var root=document.documentElement;
 
 /* ---------- the customer's invitation, as the editor would save it ---------- */
 var INV={groom:{en:'Sovann',km:'សុវណ្ណ'},bride:{en:'Sreypov',km:'ស្រីពៅ'},date:'2027-02-14',time:'17:00',venue:'Golden Lotus Ballroom, Phnom Penh',theme:'burgundy',
-  sections:{countdown:true,program:true,map:true,gallery:true,gift:true,rsvp:false,photos:true},mapUrl:'',fontKh:'moul',fontEn:'greatvibes',opening:'glitter',music:'none'};
+  sections:{countdown:true,program:true,map:true,gallery:true,gift:true,rsvp:false,photos:true},mapUrl:'',fontKh:'moul',fontEn:'greatvibes',opening:'glitter',music:'none',rsvpBy:''};
 var DEFAULTS=JSON.parse(JSON.stringify(INV));
 /* font choices (same list as the template and the server) */
 var FONTS_KH=[['moul','Moul',"'Moul'",'Moul'],['moulpali','Moulpali',"'Moulpali'",'Moulpali'],['koulen','Koulen',"'Koulen'",'Koulen'],['kantumruy','Kantumruy Pro',"'Kantumruy Pro'",'Kantumruy+Pro:wght@600'],['hanuman','Hanuman',"'Hanuman'",'Hanuman:wght@700'],['fasthand','Fasthand',"'Fasthand'",'Fasthand']];
@@ -709,7 +739,7 @@ function settings(guest,src){
   var own=!src;var INV=src||window.__INV();
   var d=new Date(INV.date+'T12:00:00'),ok=!isNaN(d),t=(INV.time||'17:00').split(':'),h=+t[0],m=t[1]||'00',h12=((h+11)%12)+1;
   var kmPart=h<12?'ព្រឹក':h<17?'រសៀល':'ល្ងាច',enPart=h<12?'in the morning':h<17?'in the afternoon':'in the evening';
-  return {photos:own?MEDIA.photos.map(function(p){return p.url}):[],musicUrl:own&&INV.music==='custom'&&MEDIA.music?MEDIA.music.url:'',video:own&&MEDIA.video&&MEDIA.video.status==='ready'?{player:MEDIA.video.player,poster:MEDIA.video.poster}:null,sections:INV.sections,mapUrl:INV.mapUrl||'',
+  return {photos:own?MEDIA.photos.map(function(p){return p.url}):[],musicUrl:own&&INV.music==='custom'&&MEDIA.music?MEDIA.music.url:'',video:own&&MEDIA.video&&MEDIA.video.status==='ready'?{player:MEDIA.video.player,poster:MEDIA.video.poster}:null,sections:INV.sections,mapUrl:INV.mapUrl||'',rsvpBy:INV.rsvpBy||'',
     theme:INV.theme,fontKh:INV.fontKh,fontEn:INV.fontEn,lang:guest?guest.lang==='zh'?'en':guest.lang:lang(),
     guest:guest?{km:guest.name,en:guest.name}:{km:'លោក សុខា និង ភរិយា',en:'Mr. & Mrs. Sokha'},
     groom:{en:INV.groom.en||INV.groom.km||'Groom',km:INV.groom.km||'',full_km:INV.groom.km||INV.groom.en||'កូនកំលោះ'},
@@ -726,7 +756,7 @@ function push(){
   var ts=trySettings();
   post($('#heroFrame'),{type:'settings',data:ts});post($('#tryFrame'),{type:'settings',data:ts});if($('#fsOver').classList.contains('on'))post($('#fsFrame'),{type:'settings',data:ts});
   post($('#v-editor iframe'),{type:'settings',data:s});
-  var dg=GUESTS[GUESTS.length-1];var df=$('#v-dashboard iframe');post(df,{type:'settings',data:settings(dg||null)});
+  var dg=GUESTS[GUESTS.length-1];var df=$('#demoSplit iframe');post(df,{type:'settings',data:settings(dg||null)});
   var gN=INV.groom.en||INV.groom.km,bN=INV.bride.en||INV.bride.km;var title=gN&&bN?gN+' & '+bN:(gN||bN||(lang()==='km'?'ធៀបថ្មី':'New invitation'));$('#edTitle').textContent=title;$('#dashTitle').textContent=title;
   $('#dashUrl').textContent='mongkulcard.com/'+slug();
   $('#dashCap').innerHTML=dg?(lang()==='km'?'ធៀបដែល <b>'+esc(dg.name)+'</b> ឃើញ':'What <b>'+esc(dg.name)+'</b> sees'):(lang()==='km'?'បន្ថែមភ្ញៀវ ដើម្បីមើលធៀបរបស់គាត់':'Add a guest to see their invitation');
@@ -792,7 +822,7 @@ function apiCall(method,path,body){
     .then(function(r){return r.json().catch(function(){return{}}).then(function(j){
       if(r.status===401){loggedIn=false;ACCOUNT=null;go('login');throw new Error('signed out')}
       if(!r.ok){var e=new Error(j.error||'Error');e.code=j.code;throw e}return j})})}
-function payload(){return{groom:INV.groom,bride:INV.bride,date:INV.date,time:INV.time,venue:INV.venue,mapUrl:INV.mapUrl,theme:INV.theme,fontKh:INV.fontKh,fontEn:INV.fontEn,opening:INV.opening,music:INV.music,sections:INV.sections}}
+function payload(){return{groom:INV.groom,bride:INV.bride,date:INV.date,time:INV.time,venue:INV.venue,mapUrl:INV.mapUrl,theme:INV.theme,fontKh:INV.fontKh,fontEn:INV.fontEn,opening:INV.opening,music:INV.music,rsvpBy:INV.rsvpBy,sections:INV.sections}}
 function saveState(t,c){var e=$('#saveState');if(!e)return;e.textContent=t;e.className='savestate'+(c?' '+c:'')}
 function scheduleSave(){
   if(!REAL||!loggedIn||!CURRENT)return;
@@ -843,12 +873,14 @@ function renderMyInvs(){
     $('#myInvs').innerHTML=j.invitations.map(function(v){var s=st[v.status]||[v.status,v.status];
       return '<li class="inv-row"><div class="gn">'+esc(v.title)+' <span class="pill'+(v.status==='draft'?' draft':'')+'">'+(lang()==='km'?s[0]:s[1])+'</span></div>'+
         '<div class="gl">Golden Curtain'+(v.date?' · '+esc(v.date):'')+' · '+(lang()==='km'?'កែចុងក្រោយ ':'edited ')+fmtDate(v.updated_at)+'</div>'+
-        '<div class="ga"><button class="btn sm" data-edit="'+v.id+'">'+(lang()==='km'?'កែ':'Edit')+'</button>'+
+        '<div class="ga"><button class="btn sm" data-guests="'+v.id+'" data-title="'+esc(v.title)+'">'+(lang()==='km'?'ភ្ញៀវ':'Guests')+'</button><button class="btn sm" data-edit="'+v.id+'">'+(lang()==='km'?'កែ':'Edit')+'</button>'+
         (v.status==='draft'?'<button class="btn sm" data-del="'+v.id+'" aria-label="Delete">✕</button>':'')+'</div></li>'}).join('')||
       '<li style="display:block;color:var(--muted);font-size:13.5px">'+(lang()==='km'?'មិនទាន់មានធៀបទេ។':'No invitations yet.')+'</li>';
+    if(!GP.id){var pick=j.invitations.find(function(v){return v.status!=='draft'})||j.invitations[0];if(pick)gpOpen(pick.id,pick.title)}
   }).catch(function(){});
 }
 $('#myInvs').onclick=function(e){
+  var gu=e.target.closest('[data-guests]');if(gu){gpOpen(gu.dataset.guests,gu.dataset.title);return}
   var ed=e.target.closest('[data-edit]'),dl=e.target.closest('[data-del]');
   if(ed){apiCall('GET','/api/invitations/'+ed.dataset.edit).then(function(k){loadInv(k.invitation);go('editor')}).catch(function(){})}
   if(dl){if(!confirm(lang()==='km'?'លុបធៀបព្រាងនេះ? មិនអាចយកមកវិញបានទេ។':'Delete this draft? This cannot be undone.'))return;
@@ -959,6 +991,66 @@ $('#vidIn').onchange=function(){
 $('#vidDel').onclick=function(){if(!MEDIA.video||!confirm(T('លុបវីដេអូនេះ?','Remove this video?')))return;
   apiCall('DELETE',mediaPath('/media/'+MEDIA.video.id)).then(function(j){MEDIA=j;renderVideo();push()}).catch(function(x){toast(x.message)})};
 
+/* ---------- publishing + guests + RSVP (dashboard) ---------- */
+var GP={id:null,data:null,title:''};
+function gpOpen(id,title){GP.id=id;GP.title=title||'';$('#gpWrap').classList.remove('hidden');$('#demoSplit').classList.add('hidden');$('#gpTitle').textContent=GP.title;gpLoad();
+  setTimeout(function(){$('#gpWrap').scrollIntoView({behavior:'smooth',block:'start'})},50)}
+function gpLoad(){apiCall('GET','/api/invitations/'+GP.id+'/guests').then(function(j){GP.data=j;gpRender()}).catch(function(x){toast(x.message)})}
+function gpRender(){
+  var d=GP.data,pub=d.status==='published';
+  $('#gpLive').classList.toggle('hidden',!pub);
+  if(!pub){
+    var canPublish=d.status==='paid'||d.admin;
+    $('#gpPublish').innerHTML='<p class="sub">'+(canPublish?T('ធៀបរបស់អ្នករួចរាល់។ ចុច «ផ្សព្វផ្សាយ» ដើម្បីបង្កើតតំណ ហើយបន្ថែមភ្ញៀវ។','Ready. Tap Publish to get your link and add guests.'):T('បង់ប្រាក់ជាមុនសិន ដើម្បីផ្សព្វផ្សាយ និងបន្ថែមភ្ញៀវ។','Pay first to publish and add guests.'))+'</p>'+
+      (canPublish?'<button class="btn gold block" id="gpPub">'+T('ផ្សព្វផ្សាយ','Publish')+(d.admin&&d.status!=='paid'?' (admin test)':'')+'</button>':'<button class="btn gold block" id="gpPay">'+T('បង់ប្រាក់','Pay')+'</button>')+'<p class="sub" id="gpPubErr" style="color:#f0a0a0"></p>';
+    var p=$('#gpPub');if(p)p.onclick=function(){p.disabled=true;apiCall('POST','/api/invitations/'+GP.id+'/publish',{}).then(function(){toast(T('បានផ្សព្វផ្សាយ ✓','Published ✓'));gpLoad();renderMyInvs()}).catch(function(x){p.disabled=false;
+      $('#gpPubErr').textContent=x.code==='missing'?T('សូមបំពេញ ឈ្មោះ កាលបរិច្ឆេទ និងទីកន្លែង ក្នុងកម្មវិធីកែ។','Please fill in the names, date and venue in the editor first.'):x.message})};
+    var q=$('#gpPay');if(q)q.onclick=function(){apiCall('GET','/api/invitations/'+GP.id).then(function(k){loadInv(k.invitation);go('pay')})};
+    $('#gpCap').textContent='';return;
+  }
+  $('#gpPublish').innerHTML='';$('#gpShared').textContent=d.url.replace('https://','');
+  var t=d.totals;$('#gpStats').innerHTML=[[t.guests,T('ភ្ញៀវ','Guests')],[t.opened,T('បានបើក','Opened')],[t.people,T('នឹងមក (នាក់)','Coming')],[t.notComing,T('មិនមក','Not coming')]].map(function(x){return '<div><b>'+x[0]+'</b><span>'+x[1]+'</span></div>'}).join('');
+  $('#gpCount').textContent=t.guests+' / '+d.limit;gpList();
+  $('#gpSharedReplies').innerHTML=d.shared.length?'<div class="f" style="margin-top:14px"><span>'+T('ការឆ្លើយតបពីតំណរួម','Replies from the shared link')+'</span></div><ul class="glist">'+d.shared.map(function(r){return '<li><div class="gn">'+esc(r.name)+'</div><div class="gl">'+(r.attending?'✓ '+T('មក ','Coming · ')+r.party:'✕ '+T('មិនមក','Not coming'))+(r.message?' · “'+esc(r.message)+'”':'')+'</div></li>'}).join('')+'</ul>':'';
+  if(!$('#gpCap').textContent)gpPreview(null);
+}
+function gpList(){
+  var q=($('#gpSearch').value||'').trim().toLowerCase(),d=GP.data;
+  $('#gpList').innerHTML=d.guests.filter(function(g){return !q||g.name.toLowerCase().indexOf(q)>=0}).slice(0,300).map(function(g){
+    var link=d.url+'/'+g.code,r=g.attending===null?'<span class="no">'+T('មិនទាន់ឆ្លើយ','No reply')+'</span>':g.attending?'<span class="ok">✓ '+T('មក ','Coming · ')+g.party+'</span>':'<span class="no">✕ '+T('មិនមក','Not coming')+'</span>';
+    return '<li><div class="gn">'+esc(g.name)+' <small style="color:var(--muted)">· '+({km:'ខ្មែរ',en:'EN',zh:'中文'})[g.lang]+'</small></div><div class="gl">'+esc(link.replace('https://',''))+'<br><span class="st '+(g.first_opened_at?'ok':'no')+'">'+(g.first_opened_at?'● '+T('បានបើក','Opened'):'○ '+T('មិនទាន់បើក','Not opened'))+'</span> · <span class="rsv">'+r+'</span>'+(g.message?' · “'+esc(g.message)+'”':'')+'</div>'+
+      '<div class="ga"><button class="btn sm" data-msg="'+g.code+'" title="Copy message">✉</button><button class="btn sm" data-copy="'+esc(link)+'" title="Copy link">⧉</button><button class="btn sm" data-view="'+g.code+'" title="Preview">👁</button><button class="btn sm" data-gdel="'+g.code+'" title="Delete">✕</button></div></li>'}).join('')||
+    '<li style="display:block;color:var(--muted);font-size:13.5px">'+T('មិនទាន់មានភ្ញៀវ។','No guests yet.')+'</li>';
+}
+$('#gpSearch').addEventListener('input',gpList);
+function copyText(t){try{navigator.clipboard.writeText(t).then(function(){toast('copied')},function(){prompt('',t)})}catch(e){prompt('',t)}}
+$('#gpCopyShared').onclick=function(){copyText(GP.data.url)};
+$('#gpAdd').onclick=function(){
+  var names=$('#gpNames').value.split(/\n/).map(function(x){return x.trim()}).filter(Boolean);if(!names.length){$('#gpNames').focus();return}
+  var b=this;b.disabled=true;apiCall('POST','/api/invitations/'+GP.id+'/guests',{names:names,lang:$('#gpLang').value}).then(function(j){GP.data=j;$('#gpNames').value='';gpRender();toast(T('បានបន្ថែម '+names.length+' នាក់','Added '+names.length))})
+    .catch(function(x){toast(x.message)}).then(function(){b.disabled=false});
+};
+function gpPreview(g){
+  var d=GP.data;apiCall('GET','/api/invitations/'+GP.id).then(function(k){
+    var src=merge(DEFAULTS,k.invitation.settings),keep=INV,keepM=MEDIA;
+    apiCall('GET','/api/invitations/'+GP.id+'/media').then(function(m){
+      INV=src;MEDIA=m;var st=settings(g?{name:g.name,lang:g.lang}:null);INV=keep;MEDIA=keepM;
+      if(!g){st.guest={km:'ភ្ញៀវកិត្តិយស',en:'Our dear guest'}}
+      var f=$('#gpFrame');post(f,{type:'settings',data:st});post(f,{type:'replay'});
+      $('#gpCap').innerHTML=g?T('ធៀបដែល <b>'+esc(g.name)+'</b> ឃើញ','What <b>'+esc(g.name)+'</b> sees'):T('តំណរួម («ភ្ញៀវកិត្តិយស»)','Shared link ("Our dear guest")');
+    });
+  });
+}
+$('#gpList').onclick=function(e){
+  var c=e.target.closest('[data-copy]'),m=e.target.closest('[data-msg]'),v=e.target.closest('[data-view]'),x=e.target.closest('[data-gdel]');var d=GP.data;
+  if(c)copyText(c.dataset.copy);
+  if(m){var g=d.guests.find(function(z){return z.code===m.dataset.msg}),link=d.url+'/'+g.code;
+    copyText(g.lang==='km'?'សូមគោរពអញ្ជើញ '+g.name+' ចូលរួមពិធីមង្គលការ '+GP.title+' ។ សូមចុចបើកធៀបនៅទីនេះ៖ '+link:'Dear '+g.name+', you are warmly invited to the wedding of '+GP.title+'. Please open your invitation here: '+link)}
+  if(v)gpPreview(d.guests.find(function(z){return z.code===v.dataset.view}));
+  if(x){if(!confirm(T('លុបភ្ញៀវនេះ? តំណរបស់គាត់នឹងលែងដំណើរការ។','Delete this guest? Their link will stop working.')))return;
+    apiCall('DELETE','/api/invitations/'+GP.id+'/guests/'+x.dataset.gdel).then(function(j){GP.data=j;gpRender()}).catch(function(z){toast(z.message)})}
+};
+
 /* ---------- real payment (KHQR + Bakong) ---------- */
 var PAY={pkgs:[],sel:null,order:null,timer:null,tick:null,started:0,ready:false};
 function T(km,en){return lang()==='km'?km:en}
@@ -1026,8 +1118,9 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden&&PAY
 function showPaid(code){
   stopPay();var p=PAY.pkgs.find(function(x){return x.code===code});
   $('#realPkgs').innerHTML='';
-  $('#payBox').innerHTML='<div class="big-ok">✅</div><h3>'+T('បានបង់ប្រាក់រួចរាល់','Paid')+'</h3><p class="sub">'+(p?esc(lang()==='km'?p.name_km:p.name_en)+' · ':'')+T('ធៀបរបស់អ្នកបានដោះសោហើយ។ ជំហានបន្ទាប់៖ បន្ថែមភ្ញៀវ ហើយផ្ញើតំណ (មកដល់ឆាប់ៗ)។','Your invitation is unlocked. Next: add guests and send their links (coming soon).')+'</p>'+
-    '<button class="btn gold block" data-go="dashboard" style="margin-top:12px">'+T('ទៅធៀបរបស់ខ្ញុំ','Go to my invitations')+'</button>';
+  $('#payBox').innerHTML='<div class="big-ok">✅</div><h3>'+T('បានបង់ប្រាក់រួចរាល់','Paid')+'</h3><p class="sub">'+(p?esc(lang()==='km'?p.name_km:p.name_en)+' · ':'')+T('ធៀបរបស់អ្នកបានដោះសោហើយ។ ជំហានបន្ទាប់៖ ផ្សព្វផ្សាយ ហើយបន្ថែមភ្ញៀវ។','Your invitation is unlocked. Next: publish it and add your guests.')+'</p>'+
+    '<button class="btn gold block" id="toGuests" style="margin-top:12px">'+T('ផ្សព្វផ្សាយ និងបន្ថែមភ្ញៀវ','Publish and add guests')+'</button>';
+  var tg=$('#toGuests');if(tg)tg.onclick=function(){go('dashboard');gpOpen(CURRENT,$('#edTitle').textContent)};
 }
 
 /* ---------- pay ---------- */
@@ -1059,6 +1152,7 @@ if(REAL){
   try{var t=sessionStorage.getItem('mc_try');if(t){INV=merge(DEFAULTS,JSON.parse(t));sessionStorage.removeItem('mc_try');bindInputs()}}catch(e){}
   $('.proto').textContent='PREVIEW · LOGIN IS REAL';
   $('#payDemo').classList.add('hidden');$('#payReal').classList.remove('hidden');
+  $('#demoSplit').classList.add('hidden');
   var ln=$('#v-login .note');if(ln)ln.innerHTML='<b>Real now:</b> Telegram sign-in creates your MongkulCard account. The editor, payment and guest links after it are still a demo.';
   var dp=$('#v-dashboard .inv-card .pill');if(dp){dp.className='pill draft';dp.innerHTML='<span data-l="km">ឧទាហរណ៍</span><span data-l="en">Demo</span>'}
   var gp=$('#v-dashboard #glist');if(gp){var nt=document.createElement('div');nt.className='note';nt.innerHTML='<b>Demo:</b> guest links and payment are not real yet (steps 3–4).';gp.parentNode.insertBefore(nt,gp)}

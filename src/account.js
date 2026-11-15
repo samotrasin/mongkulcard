@@ -15,7 +15,7 @@
 //
 // This is separate from the host login in host.js (/login, /manage), which keeps working as before.
 
-import { paymentCallback } from './payments.js';
+import { paymentCallback, normalizePhone } from './payments.js';
 
 const enc = new TextEncoder();
 const COOKIE = 'mc_acct';          // different from host.js's mc_session
@@ -75,6 +75,7 @@ export async function accountApi(request, env, url, parts) {
       photo: a.photo_url || null,
       phoneShared: !!a.phone_verified_at,
       phoneEnding: a.phone ? a.phone.slice(-3) : null,
+      admin: !!(env.ADMIN_PHONE && a.phone_verified_at && a.phone === normalizePhone(env.ADMIN_PHONE)),
       since: a.created_at,
     });
   }
