@@ -13,9 +13,10 @@ import { getAccount } from './account.js';
 const MAX_ACTIVE = 10;                       // drafts + paid + published per account
 const TEMPLATES = { 'golden-curtain': ['wedding'] };
 const THEMES = ['burgundy', 'emerald', 'navy'];
-const FONT_SETS = ['classic', 'modern'];
+const FONTS_KH = ['moul', 'moulpali', 'koulen', 'kantumruy', 'hanuman', 'fasthand'];
+const FONTS_EN = ['greatvibes', 'pinyon', 'parisienne', 'alexbrush', 'cinzel', 'playfair'];
 const OPENINGS = ['glitter', 'curtain'];
-const MUSIC = ['golden-morning', 'khmer-strings', 'forever-waltz'];
+const MUSIC = ['none', 'custom', 'golden-morning', 'khmer-strings', 'forever-waltz'];
 const SECTIONS = ['countdown', 'program', 'map', 'gallery', 'gift', 'rsvp', 'photos'];
 const ID_CHARS = 'abcdefghjkmnpqrstuvwxyz23456789';
 
@@ -98,6 +99,8 @@ async function save(request, env, me, row) {
 
 async function remove(env, me, row) {
   if (row.status !== 'draft') return json({ error: 'Only drafts can be deleted. Please contact MongkulCard.' }, 409);
+  const files = await env.DB.prepare(`SELECT r2_key FROM invitation_media WHERE invitation_id = ?1 AND r2_key IS NOT NULL`).bind(row.id).all();
+  for (const f of files.results) await env.PHOTOS.delete(f.r2_key);
   await env.DB.prepare(`DELETE FROM invitations WHERE id = ?1 AND account_id = ?2 AND status = 'draft'`).bind(row.id, me.id).run();
   return json({ ok: true });
 }
@@ -115,7 +118,8 @@ function clean(input) {
     venue: text(s.venue, 140),
     mapUrl: typeof s.mapUrl === 'string' && /^https:\/\/[^\s<>"']{4,300}$/.test(s.mapUrl.trim()) ? s.mapUrl.trim() : '',
     theme: THEMES.includes(s.theme) ? s.theme : THEMES[0],
-    fontSet: FONT_SETS.includes(s.fontSet) ? s.fontSet : FONT_SETS[0],
+    fontKh: FONTS_KH.includes(s.fontKh) ? s.fontKh : FONTS_KH[0],
+    fontEn: FONTS_EN.includes(s.fontEn) ? s.fontEn : FONTS_EN[0],
     opening: OPENINGS.includes(s.opening) ? s.opening : OPENINGS[0],
     music: MUSIC.includes(s.music) ? s.music : MUSIC[0],
     sections: {},

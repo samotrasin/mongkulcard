@@ -242,6 +242,19 @@ input[type=date]{color-scheme:dark}
 .ok{color:#8fe0b0}.no{color:#7f6d60}
 .hidden{display:none!important}.savestate{font-size:11.5px;letter-spacing:.04em;text-transform:none;font-family:var(--ui);color:var(--muted)}.savestate.ok{color:#8fe0b0}.savestate.err{color:#f0a0a0}
 .inv-row .ga{gap:8px}
+  .phhead{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 8px;font-size:13px;color:var(--muted)}
+.upl .th{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:#000;border:1px solid var(--line)}
+.upl .th img{width:100%;height:100%;object-fit:cover;display:block}
+.upl .th .cv{position:absolute;top:5px;left:5px;background:var(--gold);color:#2a0a10;font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px}
+.upl .th .act{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;background:linear-gradient(transparent,rgba(0,0,0,.75));padding:14px 4px 4px}
+.upl .th .act button{border:0;background:rgba(0,0,0,.5);color:#fff;width:26px;height:26px;border-radius:50%;font-size:12px;cursor:pointer}
+.upl .add{aspect-ratio:1;border-radius:12px;border:1.5px dashed var(--line2);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--gold);font-size:26px;cursor:pointer;background:none}
+.upl .add small{font-size:11px;color:var(--muted)}
+.fontpick{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fontpick button{border:1.5px solid var(--line);border-radius:12px;background:none;padding:10px 8px 8px;text-align:center;min-height:74px;overflow:hidden}
+.fontpick button.on{border-color:var(--gold);background:rgba(217,178,95,.08)}
+.fontpick .smp{display:block;color:var(--gold-l);font-size:19px;line-height:1.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fontpick small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
 .pkg{display:flex;justify-content:space-between;align-items:center;gap:10px}.pkg b{font-size:16px}.pkg .pp{font:600 20px var(--serif);color:var(--gold-l);white-space:nowrap}
 .pkg small{display:block}.pkg.off{opacity:.55;cursor:default}
 .khqr-card{width:240px;margin:6px auto 12px;background:#fff;border-radius:18px;overflow:hidden;color:#111;box-shadow:0 10px 30px rgba(0,0,0,.4)}
@@ -459,24 +472,33 @@ input[type=date]{color-scheme:dark}
             <button class="swt" data-v="emerald"><i style="background:linear-gradient(135deg,#1b6a48,#03170f)"></i>Emerald</button>
             <button class="swt" data-v="navy"><i style="background:linear-gradient(135deg,#22397c,#050a1e)"></i>Midnight</button>
           </div>
-          <div class="f" style="margin-top:16px"><span><span data-l="km">ពុម្ពអក្សរ</span><span data-l="en">Font set</span></span></div>
-          <div class="fontsets" id="fontsets">
-            <button class="fs on" data-v="classic"><div class="a">សុវណ្ណ · ស្រីពៅ</div><div class="b">Sovann &amp; Sreypov</div><small>Classic · Moul + Great Vibes</small></button>
-            <button class="fs" data-v="modern"><div class="a" style="font-family:'Kantumruy Pro';font-weight:600">សុវណ្ណ · ស្រីពៅ</div><div class="b" style="font-family:Cinzel;font-style:normal;font-size:16px;letter-spacing:.15em">SOVANN &amp; SREYPOV</div><small>Modern · Kantumruy Pro + Cinzel</small></button>
-          </div>
+          <div class="f" style="margin-top:16px"><span><span data-l="km">ពុម្ពអក្សរខ្មែរ</span><span data-l="en">Khmer font</span></span></div>
+          <div class="fontpick" id="fontKh"></div>
+          <div class="f" style="margin-top:14px"><span><span data-l="km">ពុម្ពអក្សរអង់គ្លេស (ឈ្មោះ)</span><span data-l="en">English font (names)</span></span></div>
+          <div class="fontpick" id="fontEn"></div>
           <div class="f" style="margin-top:16px"><span><span data-l="km">ការបើកធៀប</span><span data-l="en">Opening animation</span></span></div>
           <div class="swatches" id="openings"><button class="swt on" data-v="glitter"><i style="background:radial-gradient(circle,#f6e3a1 1px,transparent 1.5px) 0 0/7px 7px,#3f0916"></i>Gold glitter</button><button class="swt" data-v="curtain"><i style="background:linear-gradient(90deg,#661326 0 45%,#000 45% 55%,#661326 55%)"></i>Curtain only</button></div>
         </div>
         <div class="epane" data-p="photos">
-          <p class="sub" style="margin-bottom:10px"><span data-l="km">រូបថតរហូតដល់ ១២ សន្លឹក។ យើងបង្រួមទំហំឲ្យស្រាប់ ដោយរក្សាគុណភាព។</span><span data-l="en">Up to 12 photos. We resize them automatically and keep the quality.</span></p>
-          <div class="upl" id="upl"><label>+<input type="file" accept="image/*" multiple hidden id="upIn"></label></div>
+          <p class="sub" style="margin-bottom:6px"><span data-l="km">រូបថតរហូតដល់ ២០ សន្លឹក។ រូបទីមួយជារូបធំ។ យើងបង្រួមទំហំឲ្យស្រាប់ ដោយរក្សាគុណភាព។</span><span data-l="en">Up to 20 photos. The first one is shown large. We resize them for you and keep them sharp.</span></p>
+          <div class="phhead"><span id="phCount"></span><span id="upState" class="savestate"></span></div>
+          <div class="upl" id="upl"></div>
+          <input type="file" accept="image/*" multiple hidden id="upIn">
         </div>
         <div class="epane" data-p="music">
           <div class="music" id="musicList">
-            <button class="mu on" data-v="golden-morning"><span class="pl">▶</span><div>Golden Morning<small>MongkulCard library · piano</small></div></button>
-            <button class="mu" data-v="khmer-strings"><span class="pl">▶</span><div>Khmer Wedding Strings<small>MongkulCard library · traditional</small></div></button>
-            <button class="mu" data-v="forever-waltz"><span class="pl">▶</span><div>Forever Waltz<small>MongkulCard library · orchestra</small></div></button>
-            <label class="mu" style="cursor:pointer"><span class="pl">⇪</span><div><span data-l="km">បញ្ចូលបទផ្ទាល់ខ្លួន</span><span data-l="en">Upload your own song</span><small>MP3 · max 8 MB</small></div><input type="file" accept="audio/*" hidden></label>
+            <button class="mu" data-v="none"><span class="pl">✕</span><div><span data-l="km">គ្មានតន្ត្រី</span><span data-l="en">No music</span></div></button>
+            <button class="mu" data-v="custom" id="muCustom"><span class="pl">♪</span><div><span id="muName"><span data-l="km">បទផ្ទាល់ខ្លួន</span><span data-l="en">Your own song</span></span><small id="muInfo">MP3 / M4A · max 10 MB</small></div></button>
+            <div class="hero-btns" style="justify-content:flex-start;margin:2px 0 6px">
+              <label class="btn sm" style="cursor:pointer">⇪ <span data-l="km">ជ្រើសរើសបទចម្រៀង</span><span data-l="en">Choose a song</span><input type="file" accept="audio/mpeg,audio/mp4,audio/x-m4a,audio/aac,.mp3,.m4a" hidden id="muIn"></label>
+              <button type="button" class="btn sm hidden" id="muPlay">▶ <span data-l="km">ស្ដាប់</span><span data-l="en">Listen</span></button>
+              <button type="button" class="btn sm hidden" id="muDel">✕ <span data-l="km">លុប</span><span data-l="en">Remove</span></button>
+            </div>
+            <div class="f" style="margin-top:8px"><span><span data-l="km">បណ្ណាល័យតន្ត្រី MongkulCard (ឆាប់ៗនេះ)</span><span data-l="en">MongkulCard music library (coming soon)</span></span></div>
+            <button class="mu" disabled style="opacity:.5"><span class="pl">▶</span><div>Golden Morning<small>piano</small></div></button>
+            <button class="mu" disabled style="opacity:.5"><span class="pl">▶</span><div>Khmer Wedding Strings<small>traditional</small></div></button>
+            <span id="muState" class="savestate"></span>
+            <audio id="muAudio" preload="none"></audio>
           </div>
         </div>
         <div class="epane" data-p="sections">
@@ -581,8 +603,20 @@ var root=document.documentElement;
 
 /* ---------- the customer's invitation, as the editor would save it ---------- */
 var INV={groom:{en:'Sovann',km:'សុវណ្ណ'},bride:{en:'Sreypov',km:'ស្រីពៅ'},date:'2027-02-14',time:'17:00',venue:'Golden Lotus Ballroom, Phnom Penh',theme:'burgundy',
-  sections:{countdown:true,program:true,map:true,gallery:true,gift:true,rsvp:false,photos:true},mapUrl:'',fontSet:'classic',opening:'glitter',music:'golden-morning'};
+  sections:{countdown:true,program:true,map:true,gallery:true,gift:true,rsvp:false,photos:true},mapUrl:'',fontKh:'moul',fontEn:'greatvibes',opening:'glitter',music:'none'};
 var DEFAULTS=JSON.parse(JSON.stringify(INV));
+/* font choices (same list as the template and the server) */
+var FONTS_KH=[['moul','Moul',"'Moul'",'Moul'],['moulpali','Moulpali',"'Moulpali'",'Moulpali'],['koulen','Koulen',"'Koulen'",'Koulen'],['kantumruy','Kantumruy Pro',"'Kantumruy Pro'",'Kantumruy+Pro:wght@600'],['hanuman','Hanuman',"'Hanuman'",'Hanuman:wght@700'],['fasthand','Fasthand',"'Fasthand'",'Fasthand']];
+var FONTS_EN=[['greatvibes','Great Vibes',"'Great Vibes'",'Great+Vibes'],['pinyon','Pinyon Script',"'Pinyon Script'",'Pinyon+Script'],['parisienne','Parisienne',"'Parisienne'",'Parisienne'],['alexbrush','Alex Brush',"'Alex Brush'",'Alex+Brush'],['cinzel','Cinzel',"'Cinzel'",'Cinzel:wght@500'],['playfair','Playfair Display',"'Playfair Display'",'Playfair+Display:ital,wght@1,500']];
+var fontsLoaded=false;
+function loadEditorFonts(){if(fontsLoaded)return;fontsLoaded=true;var l=document.createElement('link');l.rel='stylesheet';
+  l.href='https://fonts.googleapis.com/css2?'+FONTS_KH.concat(FONTS_EN).map(function(f){return 'family='+f[3]}).join('&')+'&display=swap';document.head.appendChild(l)}
+function renderFontPickers(){
+  var g=INV.groom.km||'សុវណ្ណ',b=INV.bride.km||'ស្រីពៅ',ge=INV.groom.en||'Sovann',be=INV.bride.en||'Sreypov';
+  $('#fontKh').innerHTML=FONTS_KH.map(function(f){return '<button type="button" data-v="'+f[0]+'"'+(INV.fontKh===f[0]?' class="on"':'')+'><span class="smp" style="font-family:'+f[2]+'">'+esc(g)+' · '+esc(b)+'</span><small>'+f[1]+'</small></button>'}).join('');
+  $('#fontEn').innerHTML=FONTS_EN.map(function(f){var st=f[0]==='cinzel'?';text-transform:uppercase;font-size:14px;letter-spacing:.08em':f[0]==='playfair'?';font-style:italic;font-size:17px':';font-size:23px';
+    return '<button type="button" data-v="'+f[0]+'"'+(INV.fontEn===f[0]?' class="on"':'')+'><span class="smp" style="font-family:'+f[2]+st+'">'+esc(ge)+' &amp; '+esc(be)+'</span><small>'+f[1]+'</small></button>'}).join('');
+}
 window.__INV=function(){return INV};
 /* the try page has its own names, so it never touches a saved invitation */
 var TRY={groom:'',bride:'',guest:''};
@@ -658,10 +692,11 @@ function renderFaq(){var k=lang()==='km';$('#faqList').innerHTML=FQ.map(function
 var KM_M=['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'],KM_D=['អាទិត្យ','ចន្ទ','អង្គារ','ពុធ','ព្រហស្បតិ៍','សុក្រ','សៅរ៍'],EN_M=['January','February','March','April','May','June','July','August','September','October','November','December'],EN_D=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 function khNum(n){return String(n).replace(/\d/g,function(d){return '០១២៣៤៥៦៧៨៩'[d]})}
 function settings(guest,src){
-  var INV=src||window.__INV();
+  var own=!src;var INV=src||window.__INV();
   var d=new Date(INV.date+'T12:00:00'),ok=!isNaN(d),t=(INV.time||'17:00').split(':'),h=+t[0],m=t[1]||'00',h12=((h+11)%12)+1;
   var kmPart=h<12?'ព្រឹក':h<17?'រសៀល':'ល្ងាច',enPart=h<12?'in the morning':h<17?'in the afternoon':'in the evening';
-  return {theme:INV.theme,lang:guest?guest.lang==='zh'?'en':guest.lang:lang(),
+  return {photos:own?MEDIA.photos.map(function(p){return p.url}):[],musicUrl:own&&INV.music==='custom'&&MEDIA.music?MEDIA.music.url:'',sections:INV.sections,mapUrl:INV.mapUrl||'',
+    theme:INV.theme,fontKh:INV.fontKh,fontEn:INV.fontEn,lang:guest?guest.lang==='zh'?'en':guest.lang:lang(),
     guest:guest?{km:guest.name,en:guest.name}:{km:'លោក សុខា និង ភរិយា',en:'Mr. & Mrs. Sokha'},
     groom:{en:INV.groom.en||INV.groom.km||'Groom',km:INV.groom.km||'',full_km:INV.groom.km||INV.groom.en||'កូនកំលោះ'},
     bride:{en:INV.bride.en||INV.bride.km||'Bride',km:INV.bride.km||'',full_km:INV.bride.km||INV.bride.en||'កូនក្រមុំ'},
@@ -709,6 +744,7 @@ function go(v){if(VIEWS.indexOf(v)<0)v='home';
   scrollTo(0,0);$('.bbar').style.display=(v==='home'||v==='templates')?'':'none';
   $('#loginBtn').innerHTML=loggedIn?'<span>'+(ACCOUNT?esc(ACCOUNT.name.split(' ')[0]):(lang()==='km'?'ធៀបរបស់ខ្ញុំ':'My invitations'))+'</span>':'<span data-l="km">ចូល</span><span data-l="en">Log in</span>';
   $('#loginBtn').dataset.go=loggedIn?'dashboard':'login';
+  if(v==='editor'){loadEditorFonts();renderFontPickers()}
   if(REAL&&loggedIn&&v==='editor'&&!CURRENT)ensureDraft();
   if(REAL&&loggedIn&&v==='dashboard')renderMyInvs();
   if(REAL&&loggedIn&&v==='pay')openPay();else if(v!=='pay')stopPay();
@@ -728,12 +764,12 @@ $('#ggLogin').onclick=function(){if(REAL){toast(lang()==='km'?'ការចូ�
 $('#etabs').onclick=function(e){var b=e.target.closest('.etab');if(!b)return;$$('.etab').forEach(function(x){x.classList.toggle('on',x===b)});$$('.epane').forEach(function(p){p.classList.toggle('on',p.dataset.p===b.dataset.t)})};
 $('#swatches').onclick=function(e){var b=e.target.closest('.swt');if(!b)return;INV.theme=b.dataset.v;$$('#swatches .swt').forEach(function(x){x.classList.toggle('on',x===b)});push()};
 function pick(sel,key){$(sel).onclick=function(e){var b=e.target.closest('button');if(!b)return;$$(sel+' button').forEach(function(x){x.classList.toggle('on',x===b)});if(key){INV[key]=b.dataset.v;push()}}}
-pick('#fontsets','fontSet');pick('#musicList','music');pick('#openings','opening');pick('#pkgs');
+['#fontKh','#fontEn'].forEach(function(sel){$(sel).onclick=function(e){var b=e.target.closest('button');if(!b)return;INV[sel==='#fontKh'?'fontKh':'fontEn']=b.dataset.v;renderFontPickers();push()}});pick('#openings','opening');pick('#pkgs');
 var SEC=[['countdown','រាប់ថយក្រោយ','Countdown'],['program','កម្មវិធីពិធី','Programme'],['map','ផែនទី','Map'],['gallery','រូបថត','Gallery'],['gift','QR ចំណងដៃ','Gift QR'],['rsvp','ឆ្លើយតប (RSVP)','RSVP'],['photos','ភ្ញៀវចែករំលែករូបថត','Guest photo sharing']];
 function renderSec(){$('#secToggles').innerHTML=SEC.map(function(s){return '<div class="toggle"><span><span data-l="km">'+s[1]+'</span><span data-l="en">'+s[2]+'</span></span><button class="sw'+(INV.sections[s[0]]?' on':'')+'" data-s="'+s[0]+'" aria-label="'+s[2]+'"></button></div>'}).join('')}
 renderSec();
 $('#secToggles').onclick=function(e){var b=e.target.closest('.sw');if(!b)return;INV.sections[b.dataset.s]=!INV.sections[b.dataset.s];b.classList.toggle('on');push()};
-$('#upIn').onchange=function(){[].slice.call(this.files,0,12).forEach(function(f){var d=document.createElement('div');d.className='ph';d.style.backgroundImage='url('+URL.createObjectURL(f)+')';$('#upl').appendChild(d)})};
+
 $('#saveBtn').onclick=function(){if(REAL&&CURRENT){saveNow(true)}else toast('saved')};
 
 /* ---------- saving to the customer's account (real site only) ---------- */
@@ -742,7 +778,7 @@ function apiCall(method,path,body){
     .then(function(r){return r.json().catch(function(){return{}}).then(function(j){
       if(r.status===401){loggedIn=false;ACCOUNT=null;go('login');throw new Error('signed out')}
       if(!r.ok){var e=new Error(j.error||'Error');e.code=j.code;throw e}return j})})}
-function payload(){return{groom:INV.groom,bride:INV.bride,date:INV.date,time:INV.time,venue:INV.venue,mapUrl:INV.mapUrl,theme:INV.theme,fontSet:INV.fontSet,opening:INV.opening,music:INV.music,sections:INV.sections}}
+function payload(){return{groom:INV.groom,bride:INV.bride,date:INV.date,time:INV.time,venue:INV.venue,mapUrl:INV.mapUrl,theme:INV.theme,fontKh:INV.fontKh,fontEn:INV.fontEn,opening:INV.opening,music:INV.music,sections:INV.sections}}
 function saveState(t,c){var e=$('#saveState');if(!e)return;e.textContent=t;e.className='savestate'+(c?' '+c:'')}
 function scheduleSave(){
   if(!REAL||!loggedIn||!CURRENT)return;
@@ -762,12 +798,12 @@ function merge(def,src){var o=JSON.parse(JSON.stringify(def));if(!src)return o;
 function syncUI(){
   bindInputs();
   $$('#swatches .swt').forEach(function(x){x.classList.toggle('on',x.dataset.v===INV.theme)});
-  $$('#fontsets button').forEach(function(x){x.classList.toggle('on',x.dataset.v===INV.fontSet)});
+  renderFontPickers();
   $$('#openings button').forEach(function(x){x.classList.toggle('on',x.dataset.v===INV.opening)});
   $$('#musicList button').forEach(function(x){x.classList.toggle('on',x.dataset.v===INV.music)});
   renderSec();push();
 }
-function loadInv(inv){INV=merge(DEFAULTS,inv.settings);CURRENT=inv.id;lastSaved=JSON.stringify(payload());syncUI();saveState(lang()==='km'?'បានរក្សាទុក ✓':'Saved ✓','ok')}
+function loadInv(inv){INV=merge(DEFAULTS,inv.settings);CURRENT=inv.id;MEDIA={photos:[],music:null,maxPhotos:20};loadMedia();lastSaved=JSON.stringify(payload());syncUI();saveState(lang()==='km'?'បានរក្សាទុក ✓':'Saved ✓','ok')}
 function createDraft(from){
   return apiCall('POST','/api/invitations',{template:'golden-curtain',event_type:'wedding',settings:from}).then(function(j){loadInv(j.invitation);return j.invitation})
     .catch(function(e){if(e.code==='limit'){toast(lang()==='km'?'អ្នកមានធៀបដល់ ១០ ហើយ។ សូមលុបធៀបព្រាងចាស់ជាមុនសិន។':e.message);go('dashboard')}throw e});
@@ -805,6 +841,71 @@ $('#myInvs').onclick=function(e){
     apiCall('DELETE','/api/invitations/'+dl.dataset.del).then(function(){if(CURRENT===dl.dataset.del)CURRENT=null;renderMyInvs()}).catch(function(e){toast(e.message)})}
 };
 $('#newInv').onclick=function(){var blank=merge(DEFAULTS,{groom:{en:'',km:''},bride:{en:'',km:''},venue:''});INV=blank;createDraft(payload()).then(function(){go('editor')}).catch(function(){})};
+
+/* ---------- photos + music ---------- */
+var MEDIA={photos:[],music:null,maxPhotos:20};
+function mediaPath(p){return '/api/invitations/'+CURRENT+p}
+function loadMedia(){if(!REAL||!CURRENT){renderPhotos();renderMusic();return}
+  apiCall('GET',mediaPath('/media')).then(function(j){MEDIA=j;renderPhotos();renderMusic();push()}).catch(function(){})}
+function setUpState(t,c){var e=$('#upState');e.textContent=t||'';e.className='savestate'+(c?' '+c:'')}
+function renderPhotos(){
+  var n=MEDIA.photos.length;$('#phCount').textContent=n+' / '+MEDIA.maxPhotos;
+  $('#upl').innerHTML=MEDIA.photos.map(function(p,i){return '<div class="th"><img src="'+esc(p.url)+'" alt="" loading="lazy">'+(i===0?'<span class="cv">'+T('រូបធំ','Cover')+'</span>':'')+
+    '<div class="act">'+(i>0?'<button type="button" data-cover="'+p.id+'" title="Cover">★</button>':'<span></span>')+(i>0?'<button type="button" data-left="'+p.id+'">‹</button>':'')+'<button type="button" data-del="'+p.id+'" title="Delete">✕</button></div></div>'}).join('')+
+    (n<MEDIA.maxPhotos?'<button type="button" class="add" id="addPh">+<small>'+T('បន្ថែមរូប','Add photos')+'</small></button>':'');
+  var a=$('#addPh');if(a)a.onclick=function(){$('#upIn').click()};
+}
+function shrink(file){ // resize on the phone: long side 2000 px, JPEG ~85%
+  return new Promise(function(res,rej){
+    var url=URL.createObjectURL(file),img=new Image();
+    img.onload=function(){var w=img.naturalWidth,h=img.naturalHeight,k=Math.min(1,2000/Math.max(w,h)),c=document.createElement('canvas');
+      c.width=Math.round(w*k);c.height=Math.round(h*k);var x=c.getContext('2d');x.drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);
+      c.toBlob(function(b){b?res({blob:b,w:c.width,h:c.height}):rej(new Error('resize'))},'image/jpeg',0.85)};
+    img.onerror=function(){URL.revokeObjectURL(url);rej(new Error('read'))};img.src=url;
+  });
+}
+$('#upIn').onchange=function(){
+  var files=[].slice.call(this.files);this.value='';
+  if(!REAL||!CURRENT){toast(T('សូមចូលគណនី ដើម្បីបញ្ចូលរូបថត','Please sign in to add photos'));return}
+  var room=MEDIA.maxPhotos-MEDIA.photos.length;if(files.length>room){toast(T('អាចបន្ថែមបានតែ '+room+' រូបទៀត','Only '+room+' more photos fit'));files=files.slice(0,room)}
+  var i=0,bad=0;
+  (function next(){
+    if(i>=files.length){setUpState(bad?T(bad+' រូបមិនអាចបញ្ចូលបាន','Could not add '+bad+' photo(s)'):T('បានបញ្ចូល ✓','Added ✓'),bad?'err':'ok');return}
+    setUpState(T('កំពុងបញ្ចូល ','Uploading ')+(i+1)+' / '+files.length+'…');
+    shrink(files[i]).then(function(r){
+      return fetch(mediaPath('/photos'),{method:'POST',credentials:'same-origin',headers:{'content-type':'image/jpeg','x-width':r.w,'x-height':r.h},body:r.blob})
+        .then(function(res){return res.json().then(function(j){if(!res.ok)throw new Error(j.error||'Error');MEDIA=j;renderPhotos();push()})});
+    }).catch(function(){bad++}).then(function(){i++;next()});
+  })();
+};
+$('#upl').onclick=function(e){
+  var d=e.target.closest('[data-del]'),c=e.target.closest('[data-cover]'),l=e.target.closest('[data-left]');
+  if(d){if(!confirm(T('លុបរូបនេះ?','Delete this photo?')))return;apiCall('DELETE',mediaPath('/media/'+d.dataset.del)).then(function(j){MEDIA=j;renderPhotos();push()}).catch(function(x){toast(x.message)});return}
+  var ids=MEDIA.photos.map(function(p){return p.id}),id=(c||l||{}).dataset;if(!id)return;id=c?c.dataset.cover:l.dataset.left;var k=ids.indexOf(id);if(k<1)return;
+  ids.splice(k,1);if(c)ids.unshift(id);else ids.splice(k-1,0,id);
+  apiCall('PUT',mediaPath('/photos/order'),{ids:ids}).then(function(j){MEDIA=j;renderPhotos();push()}).catch(function(x){toast(x.message)});
+};
+function renderMusic(){
+  $$('#musicList [data-v]').forEach(function(b){b.classList.toggle('on',b.dataset.v===INV.music)});
+  var m=MEDIA.music;$('#muCustom').disabled=!m;$('#muCustom').style.opacity=m?'':'.5';
+  $('#muInfo').textContent=m?(m.name||'song')+' · '+(m.bytes/1048576).toFixed(1)+' MB':'MP3 / M4A · max 10 MB';
+  $('#muPlay').classList.toggle('hidden',!m);$('#muDel').classList.toggle('hidden',!m);
+}
+$('#musicList').addEventListener('click',function(e){var b=e.target.closest('[data-v]');if(!b||b.disabled)return;INV.music=b.dataset.v;renderMusic();push()});
+$('#muIn').onchange=function(){
+  var f=this.files[0];this.value='';if(!f)return;
+  if(!REAL||!CURRENT){toast(T('សូមចូលគណនី ដើម្បីបញ្ចូលបទចម្រៀង','Please sign in to add a song'));return}
+  if(f.size>10*1048576){toast(T('ឯកសារធំជាង 10 MB','The file is bigger than 10 MB'));return}
+  var ext=(f.name.split('.').pop()||'').toLowerCase(),type=f.type||(ext==='mp3'?'audio/mpeg':'audio/mp4');
+  if(type==='audio/mp3')type='audio/mpeg';if(type==='audio/x-m4a'||type==='audio/aac')type='audio/mp4';
+  var st=$('#muState');st.className='savestate';st.textContent=T('កំពុងបញ្ចូល…','Uploading…');
+  fetch(mediaPath('/music'),{method:'POST',credentials:'same-origin',headers:{'content-type':type,'x-filename':encodeURIComponent(f.name)},body:f})
+    .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||'Error');MEDIA=j;INV.music='custom';renderMusic();push();st.className='savestate ok';st.textContent=T('បានបញ្ចូល ✓','Added ✓')})})
+    .catch(function(x){st.className='savestate err';st.textContent=x.message});
+};
+$('#muPlay').onclick=function(){var a=$('#muAudio');if(!a.paused){a.pause();return}a.src=MEDIA.music.url;a.play().catch(function(){})};
+$('#muDel').onclick=function(){if(!MEDIA.music||!confirm(T('លុបបទនេះ?','Remove this song?')))return;
+  apiCall('DELETE',mediaPath('/media/'+MEDIA.music.id)).then(function(j){MEDIA=j;if(INV.music==='custom')INV.music='none';$('#muAudio').pause();renderMusic();push()}).catch(function(x){toast(x.message)})};
 
 /* ---------- real payment (KHQR + Bakong) ---------- */
 var PAY={pkgs:[],sel:null,order:null,timer:null,tick:null,started:0,ready:false};

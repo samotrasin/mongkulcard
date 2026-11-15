@@ -11,6 +11,7 @@
 //   /signin, /account, /auth/telegram, /tg/webhook, /api/account/...   customer accounts (src/account.js)
 //   /api/invitations/...  the customer's own invitations, saved from the editor (src/invitations.js)
 //   /api/packages, /api/orders/...  packages and KHQR payments checked with Bakong (src/payments.js)
+//   /api/invitations/<id>/media|photos|music, /m/<invitation>/<file>   customers' uploads (src/media.js)
 
 // Rules that match the database: 7 characters from a-z and 2-9 without i, l, o.
 const CODE_RE = /^[a-hj-km-np-z2-9]{7}$/;
@@ -24,6 +25,7 @@ import { hostPage, appFile, api } from './host.js';
 import { siteRoute, accountApi } from './account.js';
 import { invitationsApi } from './invitations.js';
 import { paymentsApi, dailyJobs } from './payments.js';
+import { mediaApi, serveInvitationFile, cleanupMedia } from './media.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -32,7 +34,13 @@ export default {
 
     // Customer accounts for the self-service website (src/account.js).
     if (parts[0] === 'api' && parts[1] === 'account') return accountApi(request, env, url, parts);
+    if (parts[0] === 'api' && parts[1] === 'invitations' && parts.length >= 4 && ['media', 'photos', 'music'].includes(parts[3])) {
+      return mediaApi(request, env, url, parts);
+    }
     if (parts[0] === 'api' && parts[1] === 'invitations') return invitationsApi(request, env, url, parts);
+    if (parts[0] === 'm' && parts.length === 3 && (request.method === 'GET' || request.method === 'HEAD')) {
+      return (await serveInvitationFile(request, env, parts[1], parts[2])) || page(notFound(), 404);
+    }
     if (parts[0] === 'api' && (parts[1] === 'packages' || parts[1] === 'orders')) return paymentsApi(request, env, ctx, url, parts);
     if (['signin', 'auth', 'account', 'site', 'tg'].includes(parts[0])) {
       return (await siteRoute(request, env, ctx, url, parts)) || page(notFound(), 404);
@@ -85,6 +93,7 @@ export default {
   // Once a day (wrangler.jsonc "triggers"): expire old payment QRs, remind Samotra before the Bakong token expires.
   async scheduled(event, env, ctx) {
     ctx.waitUntil(dailyJobs(env));
+    ctx.waitUntil(cleanupMedia(env));
   },
 };
 
