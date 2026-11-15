@@ -9,6 +9,7 @@
 // Every request needs a signed-in customer (account.js) and only ever sees that customer's own rows.
 
 import { getAccount } from './account.js';
+import { streamDelete } from './media.js';
 
 const MAX_ACTIVE = 10;                       // drafts + paid + published per account
 const TEMPLATES = { 'golden-curtain': ['wedding'] };
@@ -17,7 +18,7 @@ const FONTS_KH = ['moul', 'moulpali', 'koulen', 'kantumruy', 'hanuman', 'fasthan
 const FONTS_EN = ['greatvibes', 'pinyon', 'parisienne', 'alexbrush', 'cinzel', 'playfair'];
 const OPENINGS = ['glitter', 'curtain'];
 const MUSIC = ['none', 'custom', 'golden-morning', 'khmer-strings', 'forever-waltz'];
-const SECTIONS = ['countdown', 'program', 'map', 'gallery', 'gift', 'rsvp', 'photos'];
+const SECTIONS = ['video', 'countdown', 'program', 'map', 'gallery', 'gift', 'rsvp', 'photos'];
 const ID_CHARS = 'abcdefghjkmnpqrstuvwxyz23456789';
 
 export async function invitationsApi(request, env, url, parts) {
@@ -99,8 +100,11 @@ async function save(request, env, me, row) {
 
 async function remove(env, me, row) {
   if (row.status !== 'draft') return json({ error: 'Only drafts can be deleted. Please contact MongkulCard.' }, 409);
-  const files = await env.DB.prepare(`SELECT r2_key FROM invitation_media WHERE invitation_id = ?1 AND r2_key IS NOT NULL`).bind(row.id).all();
-  for (const f of files.results) await env.PHOTOS.delete(f.r2_key);
+  const files = await env.DB.prepare(`SELECT r2_key, stream_uid FROM invitation_media WHERE invitation_id = ?1`).bind(row.id).all();
+  for (const f of files.results) {
+    if (f.r2_key) await env.PHOTOS.delete(f.r2_key);
+    if (f.stream_uid) await streamDelete(env, f.stream_uid);
+  }
   await env.DB.prepare(`DELETE FROM invitations WHERE id = ?1 AND account_id = ?2 AND status = 'draft'`).bind(row.id, me.id).run();
   return json({ ok: true });
 }

@@ -242,7 +242,10 @@ input[type=date]{color-scheme:dark}
 .ok{color:#8fe0b0}.no{color:#7f6d60}
 .hidden{display:none!important}.savestate{font-size:11.5px;letter-spacing:.04em;text-transform:none;font-family:var(--ui);color:var(--muted)}.savestate.ok{color:#8fe0b0}.savestate.err{color:#f0a0a0}
 .inv-row .ga{gap:8px}
-  .phhead{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 8px;font-size:13px;color:var(--muted)}
+   .vthumb{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000 center/cover no-repeat;border:1px solid var(--line)}
+.vthumb span{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:2px 9px;border-radius:10px}
+.vprog{height:6px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:10px}.vprog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold-d),var(--gold-l))}
+.phhead{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 8px;font-size:13px;color:var(--muted)}
 .upl .th{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:#000;border:1px solid var(--line)}
 .upl .th img{width:100%;height:100%;object-fit:cover;display:block}
 .upl .th .cv{position:absolute;top:5px;left:5px;background:var(--gold);color:#2a0a10;font-size:10px;font-weight:600;padding:1px 7px;border-radius:10px}
@@ -449,6 +452,7 @@ input[type=date]{color-scheme:dark}
         <button class="etab on" data-t="details"><span data-l="km">ព័ត៌មាន</span><span data-l="en">Details</span></button>
         <button class="etab" data-t="design"><span data-l="km">រចនា</span><span data-l="en">Design</span></button>
         <button class="etab" data-t="photos"><span data-l="km">រូបថត</span><span data-l="en">Photos</span></button>
+        <button class="etab" data-t="video"><span data-l="km">វីដេអូ</span><span data-l="en">Video</span></button>
         <button class="etab" data-t="music"><span data-l="km">តន្ត្រី</span><span data-l="en">Music</span></button>
         <button class="etab" data-t="sections"><span data-l="km">ផ្នែកនានា</span><span data-l="en">Sections</span></button>
       </div>
@@ -484,6 +488,16 @@ input[type=date]{color-scheme:dark}
           <div class="phhead"><span id="phCount"></span><span id="upState" class="savestate"></span></div>
           <div class="upl" id="upl"></div>
           <input type="file" accept="image/*" multiple hidden id="upIn">
+        </div>
+        <div class="epane" data-p="video">
+          <p class="sub" style="margin-bottom:10px"><span data-l="km">វីដេអូមួយ (Pre-wedding)។ MP4 ឬ MOV · មិនលើស ៣ នាទី · មិនលើស 200 MB។ វានឹងលេងបានល្អលើទូរស័ព្ទគ្រប់ប្រភេទ។</span><span data-l="en">One video (for example your pre-wedding film). MP4 or MOV · up to 3 minutes · up to 200 MB. It will play smoothly on every phone.</span></p>
+          <div id="vidBox"></div>
+          <div class="hero-btns" style="justify-content:flex-start;margin-top:10px">
+            <label class="btn sm" style="cursor:pointer" id="vidPick">⇪ <span data-l="km">ជ្រើសរើសវីដេអូ</span><span data-l="en">Choose a video</span><input type="file" accept="video/mp4,video/quicktime,video/x-m4v,.mp4,.mov,.m4v" hidden id="vidIn"></label>
+            <button type="button" class="btn sm hidden" id="vidDel">✕ <span data-l="km">លុប</span><span data-l="en">Remove</span></button>
+          </div>
+          <div class="vprog hidden" id="vidProg"><i></i></div>
+          <span id="vidState" class="savestate"></span>
         </div>
         <div class="epane" data-p="music">
           <div class="music" id="musicList">
@@ -695,7 +709,7 @@ function settings(guest,src){
   var own=!src;var INV=src||window.__INV();
   var d=new Date(INV.date+'T12:00:00'),ok=!isNaN(d),t=(INV.time||'17:00').split(':'),h=+t[0],m=t[1]||'00',h12=((h+11)%12)+1;
   var kmPart=h<12?'ព្រឹក':h<17?'រសៀល':'ល្ងាច',enPart=h<12?'in the morning':h<17?'in the afternoon':'in the evening';
-  return {photos:own?MEDIA.photos.map(function(p){return p.url}):[],musicUrl:own&&INV.music==='custom'&&MEDIA.music?MEDIA.music.url:'',sections:INV.sections,mapUrl:INV.mapUrl||'',
+  return {photos:own?MEDIA.photos.map(function(p){return p.url}):[],musicUrl:own&&INV.music==='custom'&&MEDIA.music?MEDIA.music.url:'',video:own&&MEDIA.video&&MEDIA.video.status==='ready'?{player:MEDIA.video.player,poster:MEDIA.video.poster}:null,sections:INV.sections,mapUrl:INV.mapUrl||'',
     theme:INV.theme,fontKh:INV.fontKh,fontEn:INV.fontEn,lang:guest?guest.lang==='zh'?'en':guest.lang:lang(),
     guest:guest?{km:guest.name,en:guest.name}:{km:'លោក សុខា និង ភរិយា',en:'Mr. & Mrs. Sokha'},
     groom:{en:INV.groom.en||INV.groom.km||'Groom',km:INV.groom.km||'',full_km:INV.groom.km||INV.groom.en||'កូនកំលោះ'},
@@ -765,7 +779,7 @@ $('#etabs').onclick=function(e){var b=e.target.closest('.etab');if(!b)return;$$(
 $('#swatches').onclick=function(e){var b=e.target.closest('.swt');if(!b)return;INV.theme=b.dataset.v;$$('#swatches .swt').forEach(function(x){x.classList.toggle('on',x===b)});push()};
 function pick(sel,key){$(sel).onclick=function(e){var b=e.target.closest('button');if(!b)return;$$(sel+' button').forEach(function(x){x.classList.toggle('on',x===b)});if(key){INV[key]=b.dataset.v;push()}}}
 ['#fontKh','#fontEn'].forEach(function(sel){$(sel).onclick=function(e){var b=e.target.closest('button');if(!b)return;INV[sel==='#fontKh'?'fontKh':'fontEn']=b.dataset.v;renderFontPickers();push()}});pick('#openings','opening');pick('#pkgs');
-var SEC=[['countdown','រាប់ថយក្រោយ','Countdown'],['program','កម្មវិធីពិធី','Programme'],['map','ផែនទី','Map'],['gallery','រូបថត','Gallery'],['gift','QR ចំណងដៃ','Gift QR'],['rsvp','ឆ្លើយតប (RSVP)','RSVP'],['photos','ភ្ញៀវចែករំលែករូបថត','Guest photo sharing']];
+var SEC=[['video','វីដេអូ','Video'],['countdown','រាប់ថយក្រោយ','Countdown'],['program','កម្មវិធីពិធី','Programme'],['map','ផែនទី','Map'],['gallery','រូបថត','Gallery'],['gift','QR ចំណងដៃ','Gift QR'],['rsvp','ឆ្លើយតប (RSVP)','RSVP'],['photos','ភ្ញៀវចែករំលែករូបថត','Guest photo sharing']];
 function renderSec(){$('#secToggles').innerHTML=SEC.map(function(s){return '<div class="toggle"><span><span data-l="km">'+s[1]+'</span><span data-l="en">'+s[2]+'</span></span><button class="sw'+(INV.sections[s[0]]?' on':'')+'" data-s="'+s[0]+'" aria-label="'+s[2]+'"></button></div>'}).join('')}
 renderSec();
 $('#secToggles').onclick=function(e){var b=e.target.closest('.sw');if(!b)return;INV.sections[b.dataset.s]=!INV.sections[b.dataset.s];b.classList.toggle('on');push()};
@@ -803,7 +817,7 @@ function syncUI(){
   $$('#musicList button').forEach(function(x){x.classList.toggle('on',x.dataset.v===INV.music)});
   renderSec();push();
 }
-function loadInv(inv){INV=merge(DEFAULTS,inv.settings);CURRENT=inv.id;MEDIA={photos:[],music:null,maxPhotos:20};loadMedia();lastSaved=JSON.stringify(payload());syncUI();saveState(lang()==='km'?'បានរក្សាទុក ✓':'Saved ✓','ok')}
+function loadInv(inv){INV=merge(DEFAULTS,inv.settings);CURRENT=inv.id;MEDIA={photos:[],music:null,video:null,maxPhotos:20};loadMedia();lastSaved=JSON.stringify(payload());syncUI();saveState(lang()==='km'?'បានរក្សាទុក ✓':'Saved ✓','ok')}
 function createDraft(from){
   return apiCall('POST','/api/invitations',{template:'golden-curtain',event_type:'wedding',settings:from}).then(function(j){loadInv(j.invitation);return j.invitation})
     .catch(function(e){if(e.code==='limit'){toast(lang()==='km'?'អ្នកមានធៀបដល់ ១០ ហើយ។ សូមលុបធៀបព្រាងចាស់ជាមុនសិន។':e.message);go('dashboard')}throw e});
@@ -843,10 +857,10 @@ $('#myInvs').onclick=function(e){
 $('#newInv').onclick=function(){var blank=merge(DEFAULTS,{groom:{en:'',km:''},bride:{en:'',km:''},venue:''});INV=blank;createDraft(payload()).then(function(){go('editor')}).catch(function(){})};
 
 /* ---------- photos + music ---------- */
-var MEDIA={photos:[],music:null,maxPhotos:20};
+var MEDIA={photos:[],music:null,video:null,maxPhotos:20};
 function mediaPath(p){return '/api/invitations/'+CURRENT+p}
-function loadMedia(){if(!REAL||!CURRENT){renderPhotos();renderMusic();return}
-  apiCall('GET',mediaPath('/media')).then(function(j){MEDIA=j;renderPhotos();renderMusic();push()}).catch(function(){})}
+function loadMedia(){if(!REAL||!CURRENT){renderPhotos();renderMusic();renderVideo();return}
+  apiCall('GET',mediaPath('/media')).then(function(j){MEDIA=j;renderPhotos();renderMusic();renderVideo();push()}).catch(function(){})}
 function setUpState(t,c){var e=$('#upState');e.textContent=t||'';e.className='savestate'+(c?' '+c:'')}
 function renderPhotos(){
   var n=MEDIA.photos.length;$('#phCount').textContent=n+' / '+MEDIA.maxPhotos;
@@ -906,6 +920,44 @@ $('#muIn').onchange=function(){
 $('#muPlay').onclick=function(){var a=$('#muAudio');if(!a.paused){a.pause();return}a.src=MEDIA.music.url;a.play().catch(function(){})};
 $('#muDel').onclick=function(){if(!MEDIA.music||!confirm(T('លុបបទនេះ?','Remove this song?')))return;
   apiCall('DELETE',mediaPath('/media/'+MEDIA.music.id)).then(function(j){MEDIA=j;if(INV.music==='custom')INV.music='none';$('#muAudio').pause();renderMusic();push()}).catch(function(x){toast(x.message)})};
+
+/* ---------- video (uploads straight to Cloudflare Stream) ---------- */
+var vidTimer=null;
+function renderVideo(){
+  var v=MEDIA.video,box=$('#vidBox'),st=$('#vidState');clearTimeout(vidTimer);
+  $('#vidDel').classList.toggle('hidden',!v);
+  if(REAL&&MEDIA.videoEnabled===false){box.innerHTML='';st.className='savestate';st.textContent=T('ការបញ្ចូលវីដេអូកំពុងរៀបចំ។ សូមសាកម្ដងទៀតឆាប់ៗនេះ។','Video upload is being set up. Please try again soon.');$('#vidPick').classList.add('hidden');return}
+  $('#vidPick').classList.remove('hidden');
+  if(!v){box.innerHTML='';if(!st.dataset.busy)st.textContent='';return}
+  var dur=v.duration?Math.floor(v.duration/60)+':'+String(Math.round(v.duration%60)).padStart(2,'0'):'';
+  if(v.status==='ready'){box.innerHTML='<div class="vthumb" style="background-image:url(\''+esc(v.poster)+'\')"><span>▶ '+dur+'</span></div>';st.className='savestate ok';st.textContent=T('វីដេអូរួចរាល់ ✓','Video ready ✓')}
+  else if(v.status==='error'){box.innerHTML='';st.className='savestate err';st.textContent=T('វីដេអូនេះមិនអាចដំណើរការបានទេ។ សូមសាកវីដេអូផ្សេង។','This video could not be processed. Please try another one.')}
+  else{box.innerHTML='<div class="vthumb"><span>'+T('កំពុងរៀបចំ…','Processing…')+'</span></div>';st.className='savestate';st.textContent=T('Cloudflare កំពុងរៀបចំវីដេអូឲ្យលេងបានគ្រប់ទូរស័ព្ទ (ប្រហែល ១-២ នាទី)…','Preparing the video for every phone (about 1–2 minutes)…');
+    vidTimer=setTimeout(function(){apiCall('GET',mediaPath('/media')).then(function(j){MEDIA=j;renderVideo();push()}).catch(function(){})},5000)}
+}
+function videoDuration(file){return new Promise(function(res){var v=document.createElement('video');v.preload='metadata';v.onloadedmetadata=function(){URL.revokeObjectURL(v.src);res(v.duration||0)};v.onerror=function(){res(0)};v.src=URL.createObjectURL(file)})}
+$('#vidIn').onchange=function(){
+  var f=this.files[0];this.value='';if(!f)return;var st=$('#vidState');
+  if(!REAL||!CURRENT){toast(T('សូមចូលគណនី ដើម្បីបញ្ចូលវីដេអូ','Please sign in to add a video'));return}
+  var ext=(f.name.split('.').pop()||'').toLowerCase(),type=(f.type||(ext==='mov'?'video/quicktime':'video/mp4')).toLowerCase();
+  if(['video/mp4','video/quicktime','video/x-m4v'].indexOf(type)<0){st.className='savestate err';st.textContent=T('សូមជ្រើសរើសវីដេអូ MP4 ឬ MOV','Please choose an MP4 or MOV video');return}
+  if(f.size>(MEDIA.videoMaxBytes||200*1048576)){st.className='savestate err';st.textContent=T('វីដេអូធំជាង 200 MB','The video is bigger than 200 MB');return}
+  videoDuration(f).then(function(sec){
+    if(sec>(MEDIA.videoMaxSeconds||180)+1){st.className='savestate err';st.textContent=T('វីដេអូវែងជាង ៣ នាទី','The video is longer than 3 minutes');return}
+    st.className='savestate';st.dataset.busy='1';st.textContent=T('កំពុងចាប់ផ្ដើម…','Starting…');
+    return apiCall('POST',mediaPath('/video'),{size:f.size,duration:Math.round(sec),type:type,name:f.name}).then(function(j){
+      return new Promise(function(res,rej){
+        var x=new XMLHttpRequest(),fd=new FormData();fd.append('file',f,f.name);x.open('POST',j.uploadURL);
+        var bar=$('#vidProg');bar.classList.remove('hidden');
+        x.upload.onprogress=function(e){if(e.lengthComputable){var p=Math.round(e.loaded/e.total*100);bar.firstChild.style.width=p+'%';st.textContent=T('កំពុងបញ្ចូល ','Uploading ')+p+'%'}};
+        x.onload=function(){bar.classList.add('hidden');x.status<300?res():rej(new Error('upload '+x.status))};
+        x.onerror=function(){bar.classList.add('hidden');rej(new Error('network'))};x.send(fd);
+      });
+    }).then(function(){delete st.dataset.busy;return apiCall('GET',mediaPath('/media')).then(function(j){MEDIA=j;renderVideo();push()})});
+  }).catch(function(x){delete st.dataset.busy;st.className='savestate err';st.textContent=x.code==='not_ready'?x.message:T('បញ្ចូលមិនបានសម្រេច។ សូមព្យាយាមម្ដងទៀត។','Upload failed. Please try again.')});
+};
+$('#vidDel').onclick=function(){if(!MEDIA.video||!confirm(T('លុបវីដេអូនេះ?','Remove this video?')))return;
+  apiCall('DELETE',mediaPath('/media/'+MEDIA.video.id)).then(function(j){MEDIA=j;renderVideo();push()}).catch(function(x){toast(x.message)})};
 
 /* ---------- real payment (KHQR + Bakong) ---------- */
 var PAY={pkgs:[],sel:null,order:null,timer:null,tick:null,started:0,ready:false};

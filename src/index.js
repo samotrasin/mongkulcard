@@ -34,7 +34,7 @@ export default {
 
     // Customer accounts for the self-service website (src/account.js).
     if (parts[0] === 'api' && parts[1] === 'account') return accountApi(request, env, url, parts);
-    if (parts[0] === 'api' && parts[1] === 'invitations' && parts.length >= 4 && ['media', 'photos', 'music'].includes(parts[3])) {
+    if (parts[0] === 'api' && parts[1] === 'invitations' && parts.length >= 4 && ['media', 'photos', 'music', 'video'].includes(parts[3])) {
       return mediaApi(request, env, url, parts);
     }
     if (parts[0] === 'api' && parts[1] === 'invitations') return invitationsApi(request, env, url, parts);

@@ -4,10 +4,17 @@
 //   POST   /api/invitations/<id>/photos           one photo (JPEG/PNG/WebP, already resized on the phone; max 20)
 //   PUT    /api/invitations/<id>/photos/order     new order { ids: [...] } (the first one is the cover)
 //   POST   /api/invitations/<id>/music            the couple's own song (MP3/M4A, max 10 MB; replaces the old one)
+//   POST   /api/invitations/<id>/video            ask Cloudflare Stream for a one-time upload link (the phone uploads straight to Stream)
 //   DELETE /api/invitations/<id>/media/<mid>      remove one file
 //   GET    /m/<invitation>/<file>                 the file itself, for guests (random names, cached for a year)
 //
 // Files are deleted 30 days after the guest links expire (event date + 7 days), see cleanupMedia().
+//
+// Video uses Cloudflare Stream (plays on every phone, adjusts quality to the guest's internet).
+// Settings: CF_ACCOUNT_ID and CF_STREAM_TOKEN (secrets; token needs "Stream: Edit"). Video is off until both are set.
+
+export const VIDEO_MAX_BYTES = 200 * 1024 * 1024;   // Stream's simple upload allows up to 200 MB
+export const VIDEO_MAX_SECONDS = 180;               // 3 minutes
 
 import { getAccount } from './account.js';
 
@@ -35,6 +42,7 @@ export async function mediaApi(request, env, url, parts) {
   if (what === 'photos' && parts.length === 4 && method === 'POST') return addPhoto(request, env, inv);
   if (what === 'photos' && parts[4] === 'order' && parts.length === 5 && method === 'PUT') return reorder(request, env, inv);
   if (what === 'music' && parts.length === 4 && method === 'POST') return setMusic(request, env, inv);
+  if (what === 'video' && parts.length === 4 && method === 'POST') return startVideo(request, env, inv);
   if (what === 'media' && parts.length === 5 && method === 'DELETE' && /^[a-z0-9]{12}$/.test(parts[4])) return removeMedia(env, inv, parts[4]);
   return json({ error: 'Not found.' }, 404);
 }
@@ -52,9 +60,17 @@ export async function mediaFor(env, inv) {
   const fileUrl = (r) => `/m/${inv.public_id}/${r.r2_key.split('/').pop()}`;
   const photos = results.filter((r) => r.kind === 'photo').map((r) => ({ id: r.public_id, url: fileUrl(r), w: r.width, h: r.height, bytes: r.bytes }));
   const m = results.find((r) => r.kind === 'music');
+  let v = results.find((r) => r.kind === 'video');
+  if (v && v.status !== 'ready' && v.status !== 'error' && streamReady(env)) v = await refreshVideo(env, v);
   return {
     photos, maxPhotos: MAX_PHOTOS,
     music: m ? { id: m.public_id, url: fileUrl(m), name: m.original_name, bytes: m.bytes } : null,
+    video: v ? {
+      id: v.public_id, uid: v.stream_uid, status: v.status, name: v.original_name, bytes: v.bytes, duration: v.duration,
+      poster: `https://videodelivery.net/${v.stream_uid}/thumbnails/thumbnail.jpg?time=1s&height=720`,
+      player: `https://iframe.videodelivery.net/${v.stream_uid}`,
+    } : null,
+    videoEnabled: streamReady(env), videoMaxBytes: VIDEO_MAX_BYTES, videoMaxSeconds: VIDEO_MAX_SECONDS,
   };
 }
 
@@ -115,11 +131,87 @@ async function setMusic(request, env, inv) {
 }
 
 async function removeMedia(env, inv, mid) {
-  const row = await env.DB.prepare(`SELECT id, r2_key FROM invitation_media WHERE public_id = ?1 AND invitation_id = ?2`).bind(mid, inv.id).first();
+  const row = await env.DB.prepare(`SELECT id, r2_key, stream_uid FROM invitation_media WHERE public_id = ?1 AND invitation_id = ?2`).bind(mid, inv.id).first();
   if (!row) return json({ error: 'Not found.' }, 404);
   if (row.r2_key) await env.PHOTOS.delete(row.r2_key);
+  if (row.stream_uid) await streamDelete(env, row.stream_uid);
   await env.DB.prepare(`DELETE FROM invitation_media WHERE id = ?1`).bind(row.id).run();
   return json(await mediaFor(env, inv));
+}
+
+// ---------------------------------------------------------------- video (Cloudflare Stream)
+
+function streamReady(env) { return !!(env.CF_ACCOUNT_ID && env.CF_STREAM_TOKEN); }
+function streamApi(env, path) {
+  return `${env.STREAM_API_BASE || 'https://api.cloudflare.com'}/client/v4/accounts/${env.CF_ACCOUNT_ID}/stream${path}`;   // STREAM_API_BASE only for local tests
+}
+async function streamFetch(env, path, init = {}) {
+  const ctl = new AbortController();
+  const t = setTimeout(() => ctl.abort(), 10000);
+  try {
+    const r = await fetch(streamApi(env, path), { ...init, signal: ctl.signal, headers: { authorization: `Bearer ${env.CF_STREAM_TOKEN}`, 'content-type': 'application/json', ...(init.headers || {}) } });
+    return await r.json().catch(() => ({ success: false }));
+  } catch (e) {
+    return { success: false, errors: [{ message: String(e && e.message) }] };
+  } finally { clearTimeout(t); }
+}
+export async function streamDelete(env, uid) {
+  if (!streamReady(env) || !uid) return;
+  await streamFetch(env, `/${encodeURIComponent(uid)}`, { method: 'DELETE' });
+}
+
+async function startVideo(request, env, inv) {
+  if (!streamReady(env)) return json({ error: 'Video upload is being set up. Please try again soon.', code: 'not_ready' }, 503);
+  let body;
+  try { body = await request.json(); } catch { body = null; }
+  const size = Number(body && body.size), seconds = Number(body && body.duration);
+  const type = String((body && body.type) || '').toLowerCase();
+  const name = String((body && body.name) || 'video').replace(/[\u0000-\u001f<>]/g, '').slice(0, 80);
+  if (!['video/mp4', 'video/quicktime', 'video/x-m4v'].includes(type)) return json({ error: 'Please choose an MP4 or MOV video.' }, 415);
+  if (!(size > 0) || size > VIDEO_MAX_BYTES) return json({ error: 'The video must be smaller than 200 MB.' }, 413);
+  if (seconds && seconds > VIDEO_MAX_SECONDS + 1) return json({ error: 'The video must be 3 minutes or shorter.' }, 413);
+
+  const res = await streamFetch(env, '/direct_upload', {
+    method: 'POST',
+    body: JSON.stringify({
+      maxDurationSeconds: VIDEO_MAX_SECONDS,
+      expiry: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+      requireSignedURLs: false,
+      allowedOrigins: ['mongkulcard.com', '*.mongkulcard.com'],
+      meta: { name, invitation: inv.public_id },
+    }),
+  });
+  if (!res.success || !res.result || !res.result.uploadURL) {
+    console.log('stream direct_upload failed', JSON.stringify(res.errors || res).slice(0, 300));
+    return json({ error: 'Could not start the upload. Please try again.' }, 502);
+  }
+  const old = await env.DB.prepare(`SELECT id, stream_uid FROM invitation_media WHERE invitation_id = ?1 AND kind = 'video'`).bind(inv.id).all();
+  const id = randomId(12);
+  await env.DB.prepare(
+    `INSERT INTO invitation_media (public_id, invitation_id, kind, stream_uid, mime, bytes, duration, original_name, status)
+     VALUES (?1, ?2, 'video', ?3, ?4, ?5, ?6, ?7, 'uploading')`
+  ).bind(id, inv.id, res.result.uid, type, Math.round(size), seconds || null, name).run();
+  for (const o of old.results) {
+    await streamDelete(env, o.stream_uid);
+    await env.DB.prepare(`DELETE FROM invitation_media WHERE id = ?1`).bind(o.id).run();
+  }
+  return json({ uploadURL: res.result.uploadURL, id, uid: res.result.uid }, 201);
+}
+
+// Ask Stream how the video is doing (uploading → processing → ready).
+async function refreshVideo(env, v) {
+  const r = await streamFetch(env, `/${encodeURIComponent(v.stream_uid)}`);
+  if (!r.success || !r.result) return v;
+  const st = r.result.status || {};
+  let status = v.status;
+  if (r.result.readyToStream) status = 'ready';
+  else if (st.state === 'error') status = 'error';
+  else if (['queued', 'inprogress', 'downloading'].includes(st.state)) status = 'processing';
+  const duration = r.result.duration > 0 ? r.result.duration : v.duration;
+  if (status !== v.status || duration !== v.duration) {
+    await env.DB.prepare(`UPDATE invitation_media SET status = ?1, duration = ?2 WHERE public_id = ?3`).bind(status, duration, v.public_id).run();
+  }
+  return { ...v, status, duration };
 }
 
 // ---------------------------------------------------------------- serving files to guests
@@ -154,13 +246,14 @@ export async function serveInvitationFile(request, env, invPublicId, file) {
 
 export async function cleanupMedia(env) {
   const { results } = await env.DB.prepare(
-    `SELECT m.id, m.r2_key FROM invitation_media m JOIN invitations i ON i.id = m.invitation_id
+    `SELECT m.id, m.r2_key, m.stream_uid FROM invitation_media m JOIN invitations i ON i.id = m.invitation_id
       WHERE json_extract(i.settings, '$.date') GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
         AND date(json_extract(i.settings, '$.date'), '+37 days') < date('now')
       LIMIT 500`
   ).all();
   for (const r of results) {
     if (r.r2_key) await env.PHOTOS.delete(r.r2_key);
+    if (r.stream_uid) await streamDelete(env, r.stream_uid);
     await env.DB.prepare(`DELETE FROM invitation_media WHERE id = ?1`).bind(r.id).run();
   }
   return results.length;

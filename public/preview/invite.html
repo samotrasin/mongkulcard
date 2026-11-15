@@ -76,6 +76,10 @@ html[data-khf=fasthand] .script.khs{font-size:clamp(30px,9vw,37px)}
 .lb button{position:absolute;border:1px solid rgba(246,227,161,.5);background:rgba(0,0,0,.45);color:#f6e3a1;width:42px;height:42px;border-radius:50%;font-size:22px;line-height:1;cursor:pointer}
 .lb-x{top:14px;right:14px;font-size:16px!important}.lb-p{left:10px;top:50%;margin-top:-21px}.lb-n{right:10px;top:50%;margin-top:-21px}
 .lb-c{position:absolute;bottom:16px;left:0;right:0;text-align:center;color:#e6d4b4;font:500 13px var(--en-d);letter-spacing:.2em}
+.vid{position:relative;aspect-ratio:16/9;border-radius:4px;overflow:hidden;background:#000 center/cover no-repeat;box-shadow:0 0 0 1px rgba(217,178,95,.5),0 14px 30px rgba(0,0,0,.4)}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid-play{position:absolute;left:50%;top:50%;width:66px;height:66px;margin:-33px 0 0 -33px;border-radius:50%;border:1px solid rgba(246,227,161,.8);background:rgba(20,4,8,.55);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.vid-play svg{width:28px;height:28px;fill:#f6e3a1;margin-left:4px}
 .mute{position:fixed;bottom:16px;right:14px;z-index:30;width:42px;height:42px;border-radius:50%;border:1px solid rgba(246,227,161,.55);background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);cursor:pointer;display:flex;align-items:center;justify-content:center}
 .mute svg{width:20px;height:20px;fill:none;stroke:#f6e3a1;stroke-width:1.5}.mute .off{display:none}.mute.muted .off{display:block}
 .mute:not(.muted) svg{animation:beat 1.6s ease-in-out infinite}@keyframes beat{50%{transform:scale(1.12)}}
@@ -321,6 +325,12 @@ var SETTINGS = {
     <div class="gal" id="gal"></div>
   </section>
 
+  <!-- ===== video ===== -->
+  <section class="sec vid-sec" id="vidSec" style="padding-top:20px" hidden>
+    <div class="dark-h rv"><div class="h-kh" data-l="km">វីដេអូអនុស្សាវរីយ៍</div><div class="h-en" data-l="en" style="color:var(--gold-l)">OUR FILM</div></div>
+    <div class="vid rv" id="vid"><button type="button" class="vid-play" id="vidPlay" aria-label="Play video"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button></div>
+  </section>
+
   <!-- ===== countdown ===== -->
   <section class="sec" style="padding-top:20px" id="cdSec">
     <div class="dark-h rv"><div class="h-kh" data-l="km">រាប់ថយក្រោយ</div><div class="h-en" data-l="en" style="color:var(--gold-l)">COUNTING DOWN</div></div>
@@ -413,6 +423,7 @@ var SETTINGS = {
     $('#cdSec').hidden=sec.countdown===false;
     $('#mapBtn').parentNode.hidden=sec.map===false||!S.mapUrl;
     renderGallery((S.photos||[]).slice(0,20),sec.gallery!==false);
+    renderVideo(sec.video!==false?S.video:null);
     setMusic(S.musicUrl||'');
     document.querySelectorAll('#optTheme button').forEach(function(b){b.classList.toggle('on',b.dataset.v===S.theme)});
     document.querySelectorAll('#optLang button').forEach(function(b){b.classList.toggle('on',b.dataset.v===S.lang)});
@@ -434,6 +445,20 @@ var SETTINGS = {
   addEventListener('keydown',function(e){if(!$('#lb').classList.contains('on'))return;if(e.key==='Escape')lbClose();if(e.key==='ArrowLeft')lbShow(lbI-1);if(e.key==='ArrowRight')lbShow(lbI+1)});
   var tx=null;$('#lb').addEventListener('touchstart',function(e){tx=e.touches[0].clientX},{passive:true});
   $('#lb').addEventListener('touchend',function(e){if(tx===null)return;var dx=e.changedTouches[0].clientX-tx;tx=null;if(Math.abs(dx)>45)lbShow(lbI+(dx<0?1:-1))});
+
+  /* ---- video (Cloudflare Stream): poster first, the player loads only when tapped ---- */
+  var vidKey='';
+  function renderVideo(v){
+    var key=v&&v.player?v.player:'';if(key===vidKey)return;vidKey=key;
+    $('#vidSec').hidden=!key;if(!key)return;
+    var box=$('#vid');box.querySelectorAll('iframe').forEach(function(f){f.remove()});
+    box.style.backgroundImage=v.poster?'url("'+String(v.poster).replace(/"/g,'')+'")':'';$('#vidPlay').hidden=false;
+  }
+  $('#vidPlay').onclick=function(){
+    if(!vidKey)return;if(bgm&&!bgm.paused){bgm.pause();muteBtn.classList.add('muted')}
+    var f=document.createElement('iframe');f.src=vidKey+'?autoplay=true&preload=auto';f.allow='autoplay; fullscreen; picture-in-picture';f.allowFullscreen=true;
+    $('#vid').appendChild(f);this.hidden=true;
+  };
 
   /* ---- music: starts when the guest opens the invitation (phones need that tap first) ---- */
   var bgm=$('#bgm'),muteBtn=$('#muteBtn'),musicSrc,userMuted=false;
