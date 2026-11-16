@@ -66,6 +66,13 @@
     <div id="list"></div>
   </div>
 
+  <div class="card" id="phCard" hidden>
+    <div class="phead"><h2>Guest photos</h2><span class="muted" id="phCount"></span></div>
+    <p class="hint" id="phHint">Photos your guests share from their invitation links. Only you can see them.</p>
+    <div class="actions mt10"><button class="btn small" id="phAll" type="button">Download all</button><button class="btn small ghost" id="phReload" type="button">Refresh</button></div>
+    <div class="pgrid" id="phGrid"></div>
+  </div>
+
   <div class="card" id="msgCard" hidden>
     <button class="linkbtn" id="msgToggle" type="button">Edit the message that "Copy message" creates</button>
     <div id="msgbox" hidden>
@@ -91,6 +98,12 @@
   <div class="field"><label for="pwNew">New password (at least 10 characters)</label><input id="pwNew" type="password" autocomplete="new-password"></div>
   <p class="err" id="pwErr" role="alert"></p>
   <div class="actions"><button class="btn ghost" id="pwNo" type="button">Cancel</button><button class="btn" id="pwYes" type="button">Save</button></div>
+</div></div>
+
+<div class="modalbg" id="phBg" hidden><div class="modal phmodal" role="dialog" aria-modal="true" aria-label="Photo">
+  <img id="phImg" alt="">
+  <p class="muted" id="phCap"></p>
+  <div class="actions"><a class="btn small" id="phDl" download>Download</a><button class="btn small danger" id="phDel" type="button">Delete</button><button class="btn small ghost" id="phClose" type="button">Close</button></div>
 </div></div>
 
 <div id="toast" role="status" aria-live="polite"></div>

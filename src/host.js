@@ -5,6 +5,8 @@
 //   /app/<file>                 the page's script and style
 //   /api/...                    what the manage page talks to
 
+import { hostPhotos } from './guestphotos.js';
+
 const enc = new TextEncoder();
 
 const PBKDF2_ITERATIONS = 100000;   // 100,000 is the most Cloudflare Workers allows
@@ -68,6 +70,11 @@ export async function api(request, env, ctx, url, parts) {
   if (route === 'password' && method === 'POST') return changePassword(request, env, session);
   if (route === 'guests' && method === 'GET') return listGuests(env, session, url);
   if (route === 'guests' && method === 'POST') return addGuests(request, env, session);
+
+  if (route === 'photos' || route.startsWith('photos/')) {
+    const r = await hostPhotos(request, env, session, route, url, json, audit);
+    if (r) return r;
+  }
 
   const m = /^guests\/(\d{1,12})$/.exec(route);
   if (m && method === 'PATCH') return renameGuest(request, env, session, Number(m[1]));

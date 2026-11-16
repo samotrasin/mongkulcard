@@ -82,7 +82,8 @@
     var c = el('span', 'chip' + (state.ev.status === 'live' ? ' live' : ''), state.ev.status === 'draft' ? 'not live yet' : state.ev.status);
     meta.appendChild(c);
     $('result').hidden = true;
-    ['addCard', 'listCard', 'msgCard'].forEach(function (id) { $(id).hidden = false; });
+    ['addCard', 'listCard', 'msgCard', 'phCard'].forEach(function (id) { $(id).hidden = false; });
+    loadPhotos();
     $('msgText').value = getTemplate();
     loadGuests();
   }
@@ -248,4 +249,93 @@
   });
 
   init();
+
+  // ---------- guest photos (the couple's private album)
+  var photos = [], phOpen = null, phArm = false;
+  function loadPhotos() {
+    if (!state.ev) return;
+    api('GET', '/api/photos?event=' + state.ev.id).then(function (d) {
+      photos = d.photos || []; paintPhotos();
+    }).catch(function (e) { $('phGrid').textContent = e.message; });
+  }
+  function fmtWhen(iso) { try { return new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); } catch (e) { return iso; } }
+  function who(p) { return p.name || p.guest || 'A guest'; }
+  function paintPhotos() {
+    var g = $('phGrid'); g.textContent = '';
+    $('phCount').textContent = photos.length ? photos.length + (photos.length > 1 ? ' photos' : ' photo') : '';
+    $('phAll').disabled = !photos.length;
+    if (!photos.length) { g.appendChild(el('div', 'empty', 'No photos yet.')); return; }
+    photos.forEach(function (p) {
+      var b = el('button', 'pthumb'); b.type = 'button';
+      var im = el('img'); im.loading = 'lazy'; im.alt = 'Photo from ' + who(p); im.src = '/api/photos/' + p.id + '/thumb';
+      var cap = el('span', 'pcap', who(p));
+      b.appendChild(im); b.appendChild(cap);
+      b.addEventListener('click', function () { showPhoto(p); });
+      g.appendChild(b);
+    });
+  }
+  function showPhoto(p) {
+    phOpen = p; phArm = false; $('phDel').textContent = 'Delete';
+    $('phImg').src = '/api/photos/' + p.id + '/full';
+    $('phCap').textContent = who(p) + (p.name && p.guest && p.name !== p.guest ? ' (link: ' + p.guest + ')' : '') + ' · ' + fmtWhen(p.at);
+    $('phDl').href = '/api/photos/' + p.id + '/full'; $('phDl').setAttribute('download', 'photo-' + p.id + '.jpg');
+    $('phBg').hidden = false;
+  }
+  function closePhoto() { $('phBg').hidden = true; $('phImg').removeAttribute('src'); phOpen = null; }
+  $('phClose').addEventListener('click', closePhoto);
+  $('phBg').addEventListener('click', function (e) { if (e.target === $('phBg')) closePhoto(); });
+  $('phDel').addEventListener('click', function () {
+    if (!phOpen) return;
+    if (!phArm) { phArm = true; $('phDel').textContent = 'Tap again to delete'; return; }
+    var id = phOpen.id;
+    api('DELETE', '/api/photos/' + id).then(function () {
+      photos = photos.filter(function (p) { return p.id !== id; }); paintPhotos(); closePhoto(); toast('Photo deleted');
+    }).catch(function (e) { toast(e.message); });
+  });
+  $('phReload').addEventListener('click', loadPhotos);
+
+  // Download all: the photos are fetched one by one and packed into a single .zip file (no compression; JPEGs are already small).
+  var CRC = (function () { var t = new Uint32Array(256); for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+  function crc32(u8) { var c = 0xffffffff; for (var i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; }
+  function zip(files) {
+    var parts = [], central = [], off = 0, enc = new TextEncoder();
+    files.forEach(function (f) {
+      var name = enc.encode(f.name), crc = crc32(f.data), sz = f.data.length;
+      var h = new DataView(new ArrayBuffer(30));
+      h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(8, 0, true); h.setUint32(14, crc, true);
+      h.setUint32(18, sz, true); h.setUint32(22, sz, true); h.setUint16(26, name.length, true);
+      parts.push(h.buffer, name, f.data);
+      var c = new DataView(new ArrayBuffer(46));
+      c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint32(16, crc, true);
+      c.setUint32(20, sz, true); c.setUint32(24, sz, true); c.setUint16(28, name.length, true); c.setUint32(42, off, true);
+      central.push(c.buffer, name);
+      off += 30 + name.length + sz;
+    });
+    var csize = central.reduce(function (a, b) { return a + b.byteLength; }, 0);
+    var e = new DataView(new ArrayBuffer(22));
+    e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true);
+    e.setUint32(12, csize, true); e.setUint32(16, off, true);
+    return new Blob(parts.concat(central, [e.buffer]), { type: 'application/zip' });
+  }
+  $('phAll').addEventListener('click', function () {
+    if (!photos.length) return;
+    var btn = $('phAll'), list = photos.slice(), files = [], i = 0, used = {};
+    btn.disabled = true;
+    function next() {
+      if (i >= list.length) {
+        var blob = zip(files), a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = (state.slug || 'photos') + '-guest-photos.zip';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 60000);
+        btn.textContent = 'Download all'; btn.disabled = false; return;
+      }
+      var p = list[i++]; btn.textContent = 'Preparing ' + i + ' / ' + list.length + '…';
+      fetch('/api/photos/' + p.id + '/full').then(function (r) { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(function (b) {
+        var base = who(p).replace(/[\\\/:*?"<>|]+/g, '').slice(0, 40) || 'guest', n = base, k = 1;
+        while (used[n]) n = base + '-' + (++k);
+        used[n] = 1; files.push({ name: n + '.jpg', data: new Uint8Array(b) }); next();
+      }).catch(function () { next(); });
+    }
+    next();
+  });
 })();

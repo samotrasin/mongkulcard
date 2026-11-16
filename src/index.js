@@ -28,6 +28,7 @@ import { invitationsApi } from './invitations.js';
 import { paymentsApi, dailyJobs } from './payments.js';
 import { mediaApi, serveInvitationFile, cleanupMedia } from './media.js';
 import { publishApi, selfServicePage, replyApi } from './publish.js';
+import { guestPhotos } from './guestphotos.js';
 
 export default {
   async fetch(request, env, ctx) {
@@ -54,6 +55,8 @@ export default {
 
     // A guest's own RSVP: /api/rsvp/<event>/<code> (the personal link is the key).
     if (parts[0] === 'api' && parts[1] === 'rsvp') return guestRsvp(request, env, url, parts);
+    // A guest's photos: /api/gphotos/<event>/<code> (src/guestphotos.js).
+    if (parts[0] === 'api' && parts[1] === 'gphotos') return guestPhotos(request, env, url, parts);
 
     // The host's manage page and its data. Only /api/... may change anything.
     if (parts[0] === 'api') return api(request, env, ctx, url, parts);
