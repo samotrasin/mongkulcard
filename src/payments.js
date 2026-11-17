@@ -324,7 +324,7 @@ export function normalizePhone(p) {
 function isAdmin(me, env) {
   return !!(env.ADMIN_PHONE && me.phone_verified_at && me.phone === normalizePhone(env.ADMIN_PHONE));
 }
-async function adminTelegramId(env) {
+export async function adminTelegramId(env) {
   if (!env.ADMIN_PHONE) return null;
   const row = await env.DB.prepare(
     `SELECT telegram_id FROM accounts WHERE phone = ?1 AND phone_verified_at IS NOT NULL AND disabled_at IS NULL LIMIT 1`

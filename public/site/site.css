@@ -39,3 +39,6 @@ html[data-lang=en] .h{font-family:var(--caps);font-size:21px;letter-spacing:.1em
 .card-box .brand{font:600 14px var(--caps);letter-spacing:.25em;color:var(--gold-l);margin-bottom:14px}
 .card-box p{color:var(--muted);margin-bottom:8px}.card-box .km{color:var(--ivory)}
 .card-box .btn{margin-top:14px}
+.tgbtn{width:100%;margin-top:18px;background:#2aabee;border:0;color:#fff;font-weight:600}
+.sub.small{font-size:13px;margin-top:10px}.sub.small b{color:var(--gold-l);font-weight:500}
+.or-line{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;margin:16px 0 4px}.or-line::before,.or-line::after{content:"";flex:1;height:1px;background:var(--line)}

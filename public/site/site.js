@@ -26,6 +26,28 @@
     s.setAttribute('data-auth-url', body.dataset.authUrl);
     s.setAttribute('data-request-access', 'write');   // lets the MongkulCard bot send order updates
     $('#tgBox').appendChild(s);
+
+    // the bot way (works inside Facebook / Messenger, where Telegram's button often does not)
+    var phone = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent), waiting = false, timer = null, until = 0;
+    var btn = $('#botBtn');
+    fetch('/api/account/botlogin', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: '{}' })
+      .then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+        if (!j) return;
+        until = Date.now() + j.expiresIn * 1000;
+        btn.href = phone ? j.app : j.link; if (!phone) { btn.target = '_blank'; btn.rel = 'noopener'; }
+        btn.classList.remove('hidden');
+      }).catch(function () {});
+    function poll() {
+      clearTimeout(timer); if (!waiting) return;
+      if (Date.now() > until) { location.reload(); return; }
+      fetch('/api/account/botlogin', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (j) {
+        if (j.status === 'done') { location.href = j.next || '/preview/'; return; }
+        if (j.status === 'refused' || j.status === 'expired' || j.status === 'none') { location.reload(); return; }
+        timer = setTimeout(poll, document.hidden ? 6000 : 2000);
+      }).catch(function () { timer = setTimeout(poll, 4000); });
+    }
+    btn.addEventListener('click', function () { waiting = true; $('#botWait').classList.remove('hidden'); timer = setTimeout(poll, 2500); });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden && waiting) poll(); });
   }
 
   // ---- account page

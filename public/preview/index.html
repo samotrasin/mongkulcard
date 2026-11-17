@@ -175,9 +175,15 @@ input[type=date]{color-scheme:dark}
 
 .login{max-width:400px;margin:20px auto;text-align:center}
 .login .panel{padding:30px 22px}
-.sso{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border-radius:14px;padding:13px;border:0;font-weight:500;font-size:15px;margin-top:12px}
+.sso{text-decoration:none;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border-radius:14px;padding:13px;border:0;font-weight:500;font-size:15px;margin-top:12px}
 .sso.tg{background:#2aabee;color:#fff}.sso.gg{background:#fff;color:#222}
 .sso svg{width:20px;height:20px}
+.lg-how{font-size:13px;color:var(--muted);margin-top:10px}.lg-how b{color:var(--ivory)}
+.lg-alt{display:inline-block;margin-top:14px;font-size:13px;color:var(--gold-l);text-decoration:underline;text-underline-offset:3px;background:none;border:0;cursor:pointer}
+.lg-foot{font-size:12px;color:var(--muted);margin-top:18px;opacity:.8}
+.lg-spin{width:38px;height:38px;margin:8px auto 10px;border-radius:50%;border:3px solid var(--line2);border-top-color:var(--gold);animation:lgs 1s linear infinite}@keyframes lgs{to{transform:rotate(360deg)}}
+.lg-h{font-size:17px;font-weight:500;margin-bottom:10px}
+.lg-steps{text-align:left;margin:0 auto 14px;padding-left:22px;max-width:280px;font-size:14px;line-height:1.9}.lg-steps b{color:var(--gold-l);font-weight:500}
 .or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;margin:14px 0 2px}.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
 .sheet{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center}
 .sheet.on{display:flex}
@@ -240,7 +246,7 @@ input[type=date]{color-scheme:dark}
 .glist .ga{grid-row:1/3;grid-column:2;display:flex;gap:6px;align-items:center}
 .glist .st{font-size:11.5px}
 .ok{color:#8fe0b0}.no{color:#7f6d60}
-.hidden{display:none!important}.savestate{font-size:11.5px;letter-spacing:.04em;text-transform:none;font-family:var(--ui);color:var(--muted)}.savestate.ok{color:#8fe0b0}.savestate.err{color:#f0a0a0}
+.hidden,[hidden]{display:none!important}.savestate{font-size:11.5px;letter-spacing:.04em;text-transform:none;font-family:var(--ui);color:var(--muted)}.savestate.ok{color:#8fe0b0}.savestate.err{color:#f0a0a0}
 .inv-row .ga{gap:8px}
    .vthumb{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000 center/cover no-repeat;border:1px solid var(--line)}
 .vthumb span{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:2px 9px;border-radius:10px}
@@ -469,11 +475,24 @@ input[type=date]{color-scheme:dark}
   <div class="login"><div class="panel">
     <svg viewBox="0 0 32 32" width="44" height="44"><path d="M16 2c3 4 3 9 0 13-3-4-3-9 0-13z" fill="url(#lg)"/><path d="M16 15c4-5 9-6 13-4-2 5-8 7-13 4zM16 15c-4-5-9-6-13-4 2 5 8 7 13 4z" fill="none" stroke="url(#lg)" stroke-width="1.4"/><path d="M5 20h22M7 24h18M10 28h12" stroke="url(#lg)" stroke-width="1.3"/></svg>
     <h2 class="h2" style="margin-top:6px"><span data-l="km">ចូលគណនី</span><span data-l="en">Sign in</span></h2>
-    <p class="sub"><span data-l="km">ដើម្បីរក្សាទុក និងផ្ញើធៀបរបស់អ្នក។ ការរចនារបស់អ្នកនៅដដែល។</span><span data-l="en">To save and send your invitation. Your design is kept.</span></p>
-    <button class="sso tg" id="tgLogin"><svg viewBox="0 0 24 24" fill="#fff"><path d="M21.9 4.3l-3.2 15c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.2 13l-4.8-1.5c-1-.3-1-1 .2-1.5L20.5 2.8c.9-.3 1.6.2 1.4 1.5z"/></svg><span data-l="km">បន្តជាមួយ Telegram</span><span data-l="en">Continue with Telegram</span></button>
-    <div class="or"><span data-l="km">ឬ</span><span data-l="en">or</span></div>
-    <button class="sso gg" id="ggLogin"><svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.6 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9c-.3 1.4-1 2.5-2.2 3.3v2.7h3.6c2.1-1.9 3.3-4.8 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.6-2.7c-1 .7-2.2 1.1-3.7 1.1-2.9 0-5.3-1.9-6.2-4.5H2.1v2.8C3.9 20.6 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.8 14.2c-.2-.7-.4-1.4-.4-2.2s.1-1.5.4-2.2V7H2.1C1.4 8.5 1 10.2 1 12s.4 3.5 1.1 5l3.7-2.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.2-3.2C17.5 2.1 15 1 12 1 7.7 1 3.9 3.4 2.1 7l3.7 2.8C6.7 7.3 9.1 5.4 12 5.4z"/></svg><span data-l="km">បន្តជាមួយ Google</span><span data-l="en">Continue with Google</span></button>
-    <div class="note"><b>How it would work:</b> Telegram shows a "Log in to MongkulCard" confirmation. Then the MongkulCard bot asks the customer to tap "Share my phone number", so you have their number for support. No passwords, and no SMS costs.</div>
+    <p class="sub"><span data-l="km">មួយជំហានប៉ុណ្ណោះ រួចអ្នកអាចចាប់ផ្ដើមរចនា។ មិនចាំបាច់មានពាក្យសម្ងាត់ទេ។</span><span data-l="en">Just one step, then you can start designing. No password needed.</span></p>
+    <div id="lgStart">
+      <a class="sso tg" id="tgLogin" href="#" role="button"><svg viewBox="0 0 24 24" fill="#fff"><path d="M21.9 4.3l-3.2 15c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.2 13l-4.8-1.5c-1-.3-1-1 .2-1.5L20.5 2.8c.9-.3 1.6.2 1.4 1.5z"/></svg><span data-l="km">ចូលតាម Telegram</span><span data-l="en">Sign in with Telegram</span></a>
+      <p class="lg-how"><span data-l="km">Telegram នឹងបើក។ ចុច <b>Start</b> រួច <b>✅ បាទ/ចាស</b> ហើយត្រឡប់មកទីនេះវិញ។</span><span data-l="en">Telegram opens. Tap <b>Start</b>, then <b>✅ Yes</b>, and come back here.</span></p>
+      <a class="lg-alt" id="tgWidget" href="/signin"><span data-l="km">ប្រើកុំព្យូទ័រ? ចូលតាមទំព័រ Telegram</span><span data-l="en">On a computer? Use Telegram's login page</span></a>
+    </div>
+    <div id="lgWait" hidden>
+      <div class="lg-spin" aria-hidden="true"></div>
+      <h3 class="lg-h"><span data-l="km">កំពុងរង់ចាំ Telegram…</span><span data-l="en">Waiting for Telegram…</span></h3>
+      <ol class="lg-steps">
+        <li><span data-l="km">ចុច <b>Start</b> ក្នុង Telegram</span><span data-l="en">Tap <b>Start</b> in Telegram</span></li>
+        <li><span data-l="km">ចុច <b>✅ បាទ/ចាស</b></span><span data-l="en">Tap <b>✅ Yes, it's me</b></span></li>
+        <li><span data-l="km">ត្រឡប់មកទីនេះ វានឹងបន្តដោយខ្លួនឯង</span><span data-l="en">Come back here, it continues by itself</span></li>
+      </ol>
+      <a class="btn block" id="lgOpen" href="#" target="_blank" rel="noopener"><span data-l="km">Telegram មិនបើក? ចុចទីនេះ</span><span data-l="en">Telegram didn't open? Tap here</span></a>
+      <button type="button" class="lg-alt" id="lgCancel"><span data-l="km">បោះបង់</span><span data-l="en">Cancel</span></button>
+    </div>
+    <p class="lg-foot"><span data-l="km">មិនទាន់មាន Telegram? ទាញយកដោយឥតគិតថ្លៃពី App Store ឬ Google Play។</span><span data-l="en">No Telegram yet? It's free on the App Store and Google Play.</span></p>
   </div></div>
 </div></section>
 <div class="sheet" id="tgSheet"><div class="box">
@@ -869,7 +888,8 @@ var NAV_I=0;
 /* ---------- views ---------- */
 var VIEWS=['home','templates','try','login','editor','pay','dashboard'];
 function go(v,o){o=o||{};if(VIEWS.indexOf(v)<0)v='home';
-  if((v==='editor'||v==='pay'||v==='dashboard')&&!loggedIn)v='login';
+  if((v==='editor'||v==='pay'||v==='dashboard')&&!loggedIn){AFTER_LOGIN=v;v='login'}
+  if(v==='login'&&loggedIn)v=AFTER_LOGIN||'dashboard';
   var cur=curView(),from=o.from||null,toFn=o.to?function(){return typeof o.to==='string'?$(o.to):o.to()}:null;
   if(o.back&&!from&&BACK[v]){from=PAGE_EL[cur]?$(PAGE_EL[cur]):null;var bs=BACK[v].sel;toFn=function(){return $(bs)}}
   if(!o.fromHistory&&location.hash!=='#'+v){if(o.replace)history.replaceState({i:NAV_I},'','#'+v);else history.pushState({i:++NAV_I},'','#'+v)}
@@ -882,6 +902,7 @@ function render(v,o){
   $('#loginBtn').innerHTML=loggedIn?'<span>'+(ACCOUNT?esc(ACCOUNT.name.split(' ')[0]):(lang()==='km'?'ធៀបរបស់ខ្ញុំ':'My invitations'))+'</span>':'<span data-l="km">ចូល</span><span data-l="en">Log in</span>';
   $('#loginBtn').dataset.go=loggedIn?'dashboard':'login';
   if(v==='editor'){loadEditorFonts();renderFontPickers()}
+  if(v==='login'){lgPrepare()}else if(LG.on)lgShow(false);
   if(REAL&&loggedIn&&v==='editor'&&!CURRENT)ensureDraft();
   if(REAL&&loggedIn&&v==='dashboard')renderMyInvs();
   if(REAL&&loggedIn&&v==='pay')openPay();else if(v!=='pay')stopPay();
@@ -893,11 +914,50 @@ document.addEventListener('click',function(e){var g=e.target.closest('[data-go]'
 // the phone's back/forward gesture: "back goes back" to the card it came from
 addEventListener('popstate',function(e){var i=e.state&&typeof e.state.i==='number'?e.state.i:0,back=i<NAV_I;NAV_I=i;go(location.hash.slice(1)||'home',{fromHistory:true,back:back})});
 
-/* ---------- login (simulated) ---------- */
-$('#tgLogin').onclick=function(){if(REAL){location.href='/signin?next='+encodeURIComponent('/preview/#editor');return}$('#tgSheet').classList.add('on')};
+/* ---------- sign in ----------
+   Real site: through the MongkulCard bot. The page gets a code first, so tapping the button opens Telegram straight away
+   (also inside Facebook / Messenger). The page then waits; once the customer taps "Yes" in Telegram it continues by itself. */
+var AFTER_LOGIN='dashboard',LG={link:null,app:null,until:0,on:false,t:null,busy:false};
+function isPhone(){return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)}
+function lgPrepare(){
+  if(!REAL||loggedIn||LG.busy||(LG.link&&Date.now()<LG.until-120000))return Promise.resolve();
+  LG.busy=true;
+  return fetch('/api/account/botlogin',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:'{}'})
+    .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.code||'err');return j})})
+    .then(function(j){LG.link=j.link;LG.app=j.app;LG.until=Date.now()+j.expiresIn*1000;$('#tgLogin').href=isPhone()?j.app:j.link;$('#lgOpen').href=j.link})
+    .catch(function(){LG.link=null}).then(function(){LG.busy=false});
+}
+function lgShow(wait){$('#lgStart').hidden=wait;$('#lgWait').hidden=!wait;LG.on=wait;clearTimeout(LG.t);if(wait)LG.t=setTimeout(lgPoll,2500)}
+function lgPoll(){
+  clearTimeout(LG.t);if(!LG.on)return;
+  if(Date.now()>LG.until){lgShow(false);LG.link=null;lgPrepare();toast(T('ផុតពេលហើយ សូមចុចម្ដងទៀត','That took too long, please tap again'));return}
+  fetch('/api/account/botlogin',{credentials:'same-origin'}).then(function(r){return r.json()}).then(function(j){
+    if(!LG.on)return;
+    if(j.status==='done'){LG.on=false;lgDone();return}
+    if(j.status==='refused'){lgShow(false);LG.link=null;lgPrepare();return}
+    if(j.status==='expired'||j.status==='none'||j.status==='used'){lgShow(false);LG.link=null;lgPrepare();return}
+    LG.t=setTimeout(lgPoll,document.hidden?6000:2000);
+  }).catch(function(){LG.t=setTimeout(lgPoll,4000)});
+}
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&LG.on)lgPoll()});
+function lgDone(){
+  fetch('/api/account/me',{credentials:'same-origin'}).then(function(r){return r.json()}).then(function(a){
+    if(!a||!a.signedIn)throw 0;loggedIn=true;ACCOUNT=a;lgShow(false);
+    toast(T('សួស្ដី ','Hello ')+(a.name||'').split(' ')[0]+' ✦');
+    var to=AFTER_LOGIN;AFTER_LOGIN='dashboard';go(to,{replace:true});
+  }).catch(function(){lgShow(false)});
+}
+$('#tgLogin').onclick=function(e){
+  if(!REAL){e.preventDefault();$('#tgSheet').classList.add('on');return}
+  if(!LG.link){e.preventDefault();var b=this;b.style.opacity=.6;
+    lgPrepare().then(function(){b.style.opacity='';if(!LG.link){toast(T('មិនអាចភ្ជាប់បាន សូមពិនិត្យអ៊ីនធឺណិត','Could not connect, please check your internet'));return}lgShow(true);location.href=isPhone()?LG.app:LG.link});return}
+  if(!isPhone()){e.preventDefault();window.open(LG.link,'_blank','noopener')}
+  lgShow(true);
+};
+$('#lgCancel').onclick=function(){lgShow(false)};
+$('#tgWidget').onclick=function(){this.href='/signin?next='+encodeURIComponent('/preview/#'+AFTER_LOGIN)};
 $('#tgNo').onclick=function(){$('#tgSheet').classList.remove('on')};
-$('#tgYes').onclick=function(){$('#tgSheet').classList.remove('on');loggedIn=true;toast('hello');go('editor')};
-$('#ggLogin').onclick=function(){if(REAL){toast(lang()==='km'?'ការចូលតាម Google នឹងមានឆាប់ៗ':'Google sign-in is coming soon');return}loggedIn=true;toast('hello');go('editor')};
+$('#tgYes').onclick=function(){$('#tgSheet').classList.remove('on');loggedIn=true;toast('hello');go(AFTER_LOGIN)};
 
 /* ---------- editor ---------- */
 $('#etabs').onclick=function(e){var b=e.target.closest('.etab');if(!b||b.classList.contains('on'))return;
@@ -961,7 +1021,7 @@ function ensureDraft(){
   })).catch(function(){}).then(function(){ensuring=false});
 }
 $('#useTpl').onclick=function(){
-  if(!REAL||!loggedIn){try{sessionStorage.setItem('mc_new','1');sessionStorage.setItem('mc_try',JSON.stringify(fromTry()))}catch(e){}if(!REAL){INV=fromTry();bindInputs()}go('login');return}
+  if(!REAL||!loggedIn){try{sessionStorage.setItem('mc_new','1');sessionStorage.setItem('mc_try',JSON.stringify(fromTry()))}catch(e){}INV=fromTry();bindInputs();AFTER_LOGIN='editor';go('login');return}
   INV=fromTry();createDraft(payload()).then(function(){rememberCard('#v-try .phone');go('editor',{from:$('#v-try .phone'),to:'#v-editor .stick .phone'})}).catch(function(){});
 };
 function fmtDate(iso){try{var d=new Date(iso);return d.toLocaleDateString(lang()==='km'?'km-KH':'en-GB',{day:'numeric',month:'short',year:'numeric'})}catch(e){return ''}}
