@@ -53,6 +53,9 @@ html[data-lang=en] .h2{font-family:var(--caps);font-size:20px;letter-spacing:.12
 .lang{display:flex;border:1px solid var(--line2);border-radius:30px;overflow:hidden;font-size:12.5px}
 .lang button{background:none;border:0;padding:5px 10px;color:var(--muted)}
 .lang button.on{background:var(--gold);color:#2a0a10;font-weight:600}
+@media(max-width:380px){.logo b{font-size:11.5px!important;letter-spacing:.08em!important}.hdr .wrap{gap:6px!important;padding:0 10px!important}.logo svg{width:20px!important;height:20px!important}}
+@media(max-width:859px){.lang button.on{display:none}.lang button{padding:7px 11px;color:var(--gold-l);font-weight:600}}
+.pop.help a.btn.tg{background:#2aabee;color:#fff;justify-content:center;border:0}
 @media(min-width:860px){.nav{display:flex}}
 
 /* hero */
@@ -215,6 +218,16 @@ input[type=date]{color-scheme:dark}
 .sh{font-family:var(--caps);font-weight:500;font-size:12.5px;letter-spacing:.14em;color:var(--gold);margin:22px 0 8px;text-transform:uppercase}
 html[data-lang=km] .sh{font-family:var(--ui);letter-spacing:0;font-size:14px;text-transform:none}
 .epane .sh:first-of-type{margin-top:6px}
+.nextsteps{list-style:none;padding:0;margin:10px 0 14px;display:grid;gap:6px;counter-reset:ns}
+.nextsteps li{display:flex;align-items:center;gap:10px;font-size:14px;padding:9px 12px;border:1px solid var(--line);border-radius:12px}
+.nextsteps li i{font-style:normal;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;border:1px solid var(--line2);flex:none}
+.nextsteps li.done{opacity:.7}.nextsteps li.done i{background:var(--gold-d);border-color:var(--gold-d);color:#2a0a10}
+.nextsteps li.now{border-color:var(--gold);background:rgba(217,178,95,.07)}.nextsteps li.now i{border-color:var(--gold);color:var(--gold-l)}
+.nextsteps li button{margin-left:auto}
+.imp{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 10px}
+.gtools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px}.gtools .gsearch{flex:1;min-width:140px;margin:0}
+.tgs{background:#2aabee!important;border:0!important;color:#fff!important}
+.tgs::before{content:"";width:16px;height:16px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23fff'%3E%3Cpath d='M21.9 4.3l-3.2 15c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.2 13l-4.8-1.5c-1-.3-1-1 .2-1.5L20.5 2.8c.9-.3 1.6.2 1.4 1.5z'/%3E%3C/svg%3E") center/contain no-repeat}
 .ready{list-style:none;padding:0;margin:0 0 12px;display:grid;gap:6px}
 .ready li{display:flex;align-items:center;gap:10px;font-size:14px;padding:9px 12px;border:1px solid var(--line);border-radius:12px}
 .ready li b{font-weight:500}.ready li.ok i{color:#8fe0b0}.ready li.no{border-color:rgba(224,138,138,.5)}.ready li.no i{color:#f0a0a0}.ready li.opt i{color:var(--muted)}
@@ -305,6 +318,12 @@ html[data-lang=km] .sh{font-family:var(--ui);letter-spacing:0;font-size:14px;tex
 ::view-transition-group(mc-morph){animation-duration:.52s;animation-timing-function:cubic-bezier(.2,.85,.22,1)}
 ::view-transition-old(mc-morph),::view-transition-new(mc-morph){animation-duration:.52s;height:100%;object-fit:cover;overflow:clip}
 ::view-transition-group(mc-hdr){animation:none}
+.helpBtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line2);background:none;color:var(--gold-l);font:600 16px var(--serif);flex:none;cursor:pointer}
+.pop.help{width:min(340px,calc(100vw - 24px));max-height:min(70vh,560px);overflow:auto;padding:12px}
+.pop.help h5{font:500 13px var(--ui);color:var(--gold);margin:4px 6px 8px;letter-spacing:.04em}
+.pop.help details{border-bottom:1px solid var(--line);padding:2px 6px}.pop.help summary{cursor:pointer;padding:10px 0;font-size:14.5px;list-style:none}.pop.help summary::-webkit-details-marker{display:none}.pop.help summary::before{content:"+ ";color:var(--gold)}.pop.help details[open] summary::before{content:"− "}
+.pop.help details p{font-size:13.5px;color:var(--muted);padding:0 0 10px;line-height:1.65}
+.pop.help .btn{width:100%;margin-top:12px}
 .menuBtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line2);background:none;display:flex;align-items:center;justify-content:center;flex:none}
 .menuBtn i,.menuBtn i::before,.menuBtn i::after{display:block;width:14px;height:1.5px;background:var(--gold-l);border-radius:2px;position:relative}
 .menuBtn i::before,.menuBtn i::after{content:"";position:absolute;left:0}.menuBtn i::before{top:-5px}.menuBtn i::after{top:5px}
@@ -364,6 +383,7 @@ html[data-lang=km] .sh{font-family:var(--ui);letter-spacing:0;font-size:14px;tex
       <a data-jump="faq"><span data-l="km">សំណួរ</span><span data-l="en">FAQ</span></a>
     </nav>
     <div class="sp"></div>
+    <button type="button" class="helpBtn" id="helpBtn" aria-label="Help" title="Help">?</button>
     <button type="button" class="menuBtn" id="menuBtn" aria-label="Menu"><i></i></button>
     <button type="button" class="sndbtn" id="sndBtn" aria-label="Music" title="Music"><svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="16" r="2"/><path class="off" d="M3 3l18 18"/></svg></button>
     <div class="lang" id="langSw"><button data-v="km">ខ្មែរ</button><button data-v="en">EN</button></div>
@@ -672,15 +692,25 @@ html[data-lang=km] .sh{font-family:var(--ui);letter-spacing:0;font-size:14px;tex
       <div class="panel" id="gpPanel">
         <div class="eyebrow"><span data-l="km">ភ្ញៀវ និងតំណ</span><span data-l="en">Guests &amp; links</span></div>
         <h3 id="gpTitle" style="font:600 20px var(--serif);margin:4px 0 6px"></h3>
+        <ol class="nextsteps" id="gpNext"></ol>
         <div id="gpPublish"></div>
         <div id="gpLive" class="hidden">
           <div class="f"><span><span data-l="km">តំណរួម (សម្រាប់ផ្ញើក្នុងក្រុម)</span><span data-l="en">Shared link (for group chats)</span></span></div>
-          <div class="linkrow"><code id="gpShared"></code><button class="btn sm" type="button" id="gpCopyShared">⧉</button></div>
+          <div class="linkrow"><code id="gpShared"></code><button class="btn sm" type="button" id="gpCopyShared">⧉</button><a class="btn sm tgs" id="gpShareShared" target="_blank" rel="noopener" aria-label="Telegram"></a></div>
           <div class="stats4" id="gpStats"></div>
-          <div class="f" style="margin-top:14px"><span><span data-l="km">បន្ថែមភ្ញៀវ — ឈ្មោះមួយក្នុងមួយបន្ទាត់</span><span data-l="en">Add guests: one name per line</span></span></div>
+        </div>
+        <div id="gpGuests">
+          <h4 class="sh" id="gpAddH"><span data-l="km">បន្ថែមភ្ញៀវ</span><span data-l="en">Add guests</span></h4>
+          <p class="sub" id="gpPreNote" style="font-size:13px"></p>
+          <div class="imp">
+            <button type="button" class="btn sm" id="gpPasteTip">📋 <span data-l="km">ពី Excel</span><span data-l="en">From Excel</span></button>
+            <label class="btn sm" style="cursor:pointer">⇪ <span data-l="km">ឯកសារ Excel / CSV</span><span data-l="en">Excel / CSV file</span><input type="file" id="gpFile" accept=".xlsx,.csv,.txt,text/csv,text/plain,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden></label>
+            <button type="button" class="btn sm hidden" id="gpContacts">👥 <span data-l="km">ពីទំនាក់ទំនង</span><span data-l="en">From contacts</span></button>
+          </div>
+          <p class="ftip hidden" id="gpTip"><span data-l="km">ក្នុង Excel ឬ Google Sheets៖ ជ្រើសរើសជួរឈ្មោះ → Copy → មកទីនេះ ចុចក្នុងប្រអប់ខាងក្រោម → Paste។ ឈ្មោះមួយក្នុងមួយបន្ទាត់។</span><span data-l="en">In Excel or Google Sheets: select the names column → Copy → come back, tap the box below → Paste. One name per line.</span></p>
           <textarea id="gpNames" rows="4" placeholder="លោក ដារ៉ា និងភរិយា&#10;Ms. Lina&#10;…"></textarea>
           <div class="addg2"><select id="gpLang"><option value="km">ខ្មែរ</option><option value="en">English</option><option value="zh">中文</option></select><button class="btn gold sm" type="button" id="gpAdd">+ <span data-l="km">បន្ថែម</span><span data-l="en">Add</span></button><span id="gpCount" class="savestate"></span></div>
-          <input id="gpSearch" class="gsearch" placeholder="🔍">
+          <div class="gtools"><input id="gpSearch" class="gsearch" placeholder="🔍"><button type="button" class="btn sm" id="gpCopyAll">⧉ <span data-l="km">ចម្លងតំណទាំងអស់</span><span data-l="en">Copy all links</span></button><button type="button" class="btn sm" id="gpCsv">⇩ <span data-l="km">ទាញយកបញ្ជី</span><span data-l="en">Download list</span></button></div>
           <ul class="glist" id="gpList"></ul>
           <div id="gpSharedReplies"></div>
         </div>
@@ -900,6 +930,35 @@ function ask(anchor,q,yes,danger){
     p.el.querySelector('[data-yes]').onclick=function(){p.done=null;popClose();res(true)};
   });
 }
+/* ---------- help: short answers for the page you are on, and a chat with us ---------- */
+var CHAT_URL='https://t.me/mongkulcard_bot?start=help';
+var HELP={
+ home:[['តើភ្ញៀវត្រូវដំឡើងកម្មវិធីទេ?','Do guests need an app?','មិនត្រូវទេ។ ពួកគាត់គ្រាន់តែចុចតំណ ក៏បើកបានភ្លាម ក្នុង Telegram, Messenger ឬ Facebook។','No. They just tap the link and it opens, in Telegram, Messenger or Facebook.'],
+   ['ខ្ញុំត្រូវបង់ប្រាក់ពេលណា?','When do I pay?','ការរចនាគឺឥតគិតថ្លៃ។ អ្នកបង់តែពេលចង់ផ្សព្វផ្សាយ ហើយផ្ញើតំណទៅភ្ញៀវ។','Designing is free. You pay only when you want to publish and send links.'],
+   ['តើវាពិបាកទេ?','Is it hard?','មិនពិបាកទេ។ ជ្រើសគំរូ បំពេញឈ្មោះ ថ្ងៃ និងទីកន្លែង រួចមើល។ ប្រហែល ៥ នាទី។','No. Pick a design, type the names, date and venue, and look. About 5 minutes.']],
+ try:[['ព័ត៌មានផ្សេងៗមកពីណា?','Where do the other details come from?','ទាំងនោះជាឧទាហរណ៍។ ពេលអ្នកចុច «ប្រើគំរូនេះ» អ្នកនឹងបំពេញព័ត៌មានពិតរបស់អ្នក។','They are examples. When you tap "Use this template" you fill in your own.'],
+   ['ឈ្មោះភ្ញៀវនៅលើក្រប?','The guest name on the cover?','ភ្ញៀវម្នាក់ៗទទួលបានតំណផ្ទាល់ខ្លួន ដែលមានឈ្មោះគាត់នៅលើក្រប។','Each guest gets their own link with their name on the cover.']],
+ login:[['ហេតុអ្វីប្រើ Telegram?','Why Telegram?','គ្មានពាក្យសម្ងាត់ត្រូវចាំ ហើយយើងអាចផ្ញើព័ត៌មានការបញ្ជាទិញ និងជួយអ្នកនៅទីនោះ។','No password to remember, and we can send your order updates and help you there.'],
+   ['Telegram មិនបើក?','Telegram did not open?','ចុច «Telegram មិនបើក? ចុចទីនេះ»។ ប្រសិនបើនៅតែមិនបាន សូមបើកតំណនេះក្នុង Chrome ឬ Safari។','Tap "Telegram didn\'t open? Tap here". If it still does not work, open this page in Chrome or Safari.'],
+   ['ចុច Yes ហើយ ប៉ុន្តែនៅតែរង់ចាំ?','Tapped Yes but still waiting?','ត្រឡប់មកទំព័រនេះវិញ វានឹងបន្តក្នុងពីរបីវិនាទី។','Come back to this page; it continues within a few seconds.']],
+ editor:[['ការងាររបស់ខ្ញុំត្រូវបានរក្សាទុកទេ?','Is my work saved?','បាទ/ចាស ដោយខ្លួនឯង។ អ្នកអាចបិទ ហើយត្រឡប់មកវិញពីទូរស័ព្ទណាក៏បាន។','Yes, automatically. You can close it and come back from any phone.'],
+   ['យកតំណ Google Maps ដោយរបៀបណា?','How do I get the Google Maps link?','បើក Google Maps → ស្វែងរកទីកន្លែង → Share → Copy link → បិទភ្ជាប់ក្នុងជំហាន «ទីកន្លែង»។','Open Google Maps → find the place → Share → Copy link → paste it in the Venue step.'],
+   ['អាចបន្ថែមរូបថតពេលក្រោយបានទេ?','Can I add photos later?','បាន។ សូម្បីតែក្រោយពេលផ្សព្វផ្សាយ ភ្ញៀវនឹងឃើញការកែប្រែភ្លាមៗ។','Yes. Even after publishing, guests see changes right away.'],
+   ['មើលធៀបពេញអេក្រង់?','See the whole invitation?','ចុចប៊ូតុង 👁 មើល នៅខាងក្រោម។','Tap the 👁 Preview button at the bottom.']],
+ pay:[['បង់ដោយរបៀបណា?','How do I pay?','ស្កេន KHQR ដោយកម្មវិធីធនាគារណាមួយ (ABA, ACLEDA, Wing…)។ ទំព័រនេះនឹងដឹងដោយខ្លួនឯង។','Scan the KHQR with any bank app (ABA, ACLEDA, Wing…). This page notices by itself.'],
+   ['បង់ដោយ ABA ប៉ុន្តែមិនទាន់ដោះសោ?','Paid with ABA but not unlocked?','ចុច «ខ្ញុំបានបង់តាម ABA»។ យើងនឹងពិនិត្យ ហើយដោះសោឲ្យក្នុងពីរបីនាទី។','Tap "I paid with ABA". We check and unlock it within minutes.'],
+   ['ខ្ញុំបិទទំព័រមុនពេលបញ្ចប់?','I closed the page by mistake?','គ្មានបញ្ហាទេ។ បើកវាម្ដងទៀត ការបង់ប្រាក់របស់អ្នកនឹងបង្ហាញ។','No problem. Open it again and your payment will show.']],
+ dashboard:[['ផ្ញើទៅភ្ញៀវច្រើននាក់ឲ្យលឿន?','Send to many guests quickly?','ចុចប៊ូតុង Telegram ក្បែរឈ្មោះម្នាក់ៗ ឬ «ចម្លងតំណទាំងអស់»។ សម្រាប់ក្រុម ប្រើតំណរួម។','Tap the Telegram button beside each name, or "Copy all links". For group chats, use the shared link.'],
+   ['មានបញ្ជីក្នុង Excel?','My list is in Excel?','ចុច «ពី Excel» ហើយបិទភ្ជាប់ជួរឈ្មោះ ឬជ្រើសរើសឯកសារ Excel / CSV។','Tap "From Excel" and paste the names column, or choose the Excel / CSV file.'],
+   ['អាចបន្ថែមភ្ញៀវមុនបង់ប្រាក់បានទេ?','Add guests before paying?','បាន។ តំណរបស់ពួកគាត់ចាប់ផ្ដើមដំណើរការ ក្រោយពេលអ្នកផ្សព្វផ្សាយ។','Yes. Their links start working after you publish.'],
+   ['ដឹងថាអ្នកណាបានបើក?','Who opened it?','មើលចំណាំ ● បានបើក ក្បែរឈ្មោះនីមួយៗ និងការឆ្លើយតប RSVP។','Look for ● Opened beside each name, and their RSVP reply.']]};
+HELP.templates=HELP.home;
+$('#helpBtn').onclick=function(){var v=curView(),list=HELP[v]||HELP.home;
+  var p=popover(this,'<h5>'+T('ជំនួយ','Help')+'</h5>'+list.map(function(q){return '<details><summary>'+esc(T(q[0],q[1]))+'</summary><p>'+esc(T(q[2],q[3]))+'</p></details>'}).join('')+
+    '<a class="btn tg" href="'+CHAT_URL+'" target="_blank" rel="noopener">'+T('សួរយើងតាម Telegram','Ask us on Telegram')+'</a>');
+  p.el.classList.add('help');
+  var r=this.getBoundingClientRect();p.el.style.left=Math.max(12,Math.min(innerWidth-p.el.offsetWidth-12,r.right-p.el.offsetWidth))+'px';
+};
 $('#menuBtn').onclick=function(){
   var p=popover(this,'<a data-m="templates">'+T('គំរូធៀប','Templates')+'</a><a data-m="#how">'+T('របៀបប្រើ','How it works')+'</a><a data-m="#pricing">'+T('តម្លៃ','Packages')+'</a><a data-m="#faq">'+T('សំណួរ','Questions')+'</a>'+
     '<a data-m="'+(loggedIn?'dashboard':'login')+'">'+(loggedIn?T('ធៀបរបស់ខ្ញុំ','My invitations'):T('ចូលគណនី','Sign in'))+'</a>');
@@ -1094,9 +1153,24 @@ $('#secToggles').onclick=function(e){var b=e.target.closest('.sw');if(!b)return;
 /* ---------- saving to the customer's account (real site only) ---------- */
 function apiCall(method,path,body){
   return fetch(path,{method:method,credentials:'same-origin',headers:body?{'content-type':'application/json'}:{},body:body?JSON.stringify(body):undefined})
+    .catch(function(){var e=new Error('offline');e.code='offline';throw e})
     .then(function(r){return r.json().catch(function(){return{}}).then(function(j){
-      if(r.status===401){loggedIn=false;ACCOUNT=null;go('login');throw new Error('signed out')}
-      if(!r.ok){var e=new Error(j.error||'Error');e.code=j.code;throw e}return j})})}
+      if(r.status===401){loggedIn=false;ACCOUNT=null;AFTER_LOGIN=curView()==='login'?AFTER_LOGIN:curView();go('login');throw new Error('signed out')}
+      if(!r.ok){var e=new Error(j.error||'Error');e.code=j.code||(r.status>=500?'server':'');e.data=j;throw e}return j})})}
+/* every error in plain Khmer / English, with what to do next */
+var ERR={offline:['មិនមានអ៊ីនធឺណិត។ ការងាររបស់អ្នកនៅដដែល សូមព្យាយាមម្ដងទៀតពេលមានអ៊ីនធឺណិត។','No internet. Your work is kept; please try again when you are back online.'],
+  server:['ម៉ាស៊ីនមេរវល់បន្តិច។ សូមព្យាយាមម្ដងទៀតក្នុងមួយភ្លែត។','Our server is busy. Please try again in a moment.'],
+  not_ready:['ផ្នែកនេះកំពុងរៀបចំ។ សូមសាកម្ដងទៀតឆាប់ៗ ឬសួរយើងតាម Telegram។','This part is being set up. Please try again soon, or ask us on Telegram.'],
+  limit:['ដល់ចំនួនកំណត់ហើយ។','You have reached the limit.'],
+  too_many_guests:['អ្នកមានភ្ញៀវច្រើនជាងកញ្ចប់នេះ។ សូមជ្រើសកញ្ចប់ធំជាងនេះ ឬលុបឈ្មោះខ្លះ។','You have more guests than this package covers. Please choose a bigger package or remove some names.'],
+  missing:['សូមបំពេញ ឈ្មោះ កាលបរិច្ឆេទ និងទីកន្លែងជាមុនសិន។','Please fill in the names, date and venue first.'],
+  unpaid:['សូមបង់ប្រាក់ជាមុនសិន ទើបអាចផ្សព្វផ្សាយបាន។','Please pay first, then publish.'],
+  already_paid:['ធៀបនេះបានបង់ប្រាក់រួចហើយ។','This invitation is already paid.'],
+  too_big:['ឯកសារធំពេក។','That file is too big.'],bad_type:['ប្រភេទឯកសារនេះមិនអាចប្រើបានទេ។','That kind of file cannot be used.']};
+function friendly(e){if(!e)return T('មានបញ្ហា។ សូមព្យាយាមម្ដងទៀត។','Something went wrong. Please try again.');
+  if(e.code&&ERR[e.code]){var m=T(ERR[e.code][0],ERR[e.code][1]);return e.code==='limit'&&lang()==='en'&&e.message&&e.message!=='Error'?e.message:m}
+  if(lang()==='km')return 'មានបញ្ហា៖ '+(e.message||'')+' — សូមព្យាយាមម្ដងទៀត ឬសួរយើងតាម Telegram។';
+  return (e.message&&e.message!=='Error'?e.message+' ':'')+'If this keeps happening, ask us on Telegram.'}
 function payload(){return{groom:INV.groom,bride:INV.bride,date:INV.date,time:INV.time,venue:INV.venue,mapUrl:INV.mapUrl,theme:INV.theme,fontKh:INV.fontKh,fontEn:INV.fontEn,opening:INV.opening,music:INV.music,rsvpBy:INV.rsvpBy,sections:INV.sections}}
 function saveState(t,c){var e=$('#saveState');if(!e)return;e.textContent=t;e.className='savestate'+(c?' '+c:'')}
 function scheduleSave(){
@@ -1110,8 +1184,13 @@ function saveNow(announce){
   var p=payload(),txt=JSON.stringify(p),id=CURRENT;
   apiCall('PUT','/api/invitations/'+id,{settings:p}).then(function(){
     if(id!==CURRENT)return;lastSaved=txt;saveState(lang()==='km'?'បានរក្សាទុក ✓':'Saved ✓','ok');if(announce)toast('saved')
-  }).catch(function(e){if(e.message!=='signed out')saveState(lang()==='km'?'មិនទាន់រក្សាទុក — ពិនិត្យអ៊ីនធឺណិត':'Not saved, check your connection','err')});
+  }).catch(function(e){if(e.message==='signed out')return;
+    saveState(e.code==='offline'?T('គ្មានអ៊ីនធឺណិត — នឹងរក្សាទុកពេលមានវិញ','No internet. Will save when you are back online'):T('មិនទាន់រក្សាទុក — កំពុងព្យាយាមម្ដងទៀត','Not saved yet. Trying again…'),'err');
+    clearTimeout(saveTimer);saveTimer=setTimeout(function(){saveNow()},e.code==='offline'?15000:6000)});
 }
+addEventListener('online',function(){if(REAL&&loggedIn&&CURRENT&&JSON.stringify(payload())!==lastSaved)saveNow()});
+// leaving with unsaved changes: save straight away
+document.addEventListener('visibilitychange',function(){if(document.hidden&&REAL&&loggedIn&&CURRENT&&JSON.stringify(payload())!==lastSaved)saveNow()});
 function merge(def,src){var o=JSON.parse(JSON.stringify(def));if(!src)return o;
   Object.keys(o).forEach(function(k){if(src[k]===undefined)return;if(o[k]&&typeof o[k]==='object'){Object.keys(o[k]).forEach(function(j){if(src[k][j]!==undefined)o[k][j]=src[k][j]})}else o[k]=src[k]});return o}
 function syncUI(){
@@ -1160,7 +1239,7 @@ $('#myInvs').onclick=function(e){
   var ed=e.target.closest('[data-edit]'),dl=e.target.closest('[data-del]');
   if(ed){var row=ed.closest('li'),rid=ed.dataset.edit;apiCall('GET','/api/invitations/'+rid).then(function(k){loadInv(k.invitation);rememberCard('#myInvs li[data-row="'+rid+'"]');go('editor',{from:row,to:'#v-editor .split>div:first-child'})}).catch(function(){})}
   if(dl){ask(dl,T('លុបធៀបព្រាងនេះ? មិនអាចយកមកវិញបានទេ។','Delete this draft? This cannot be undone.'),T('លុប','Delete'),true).then(function(ok){if(!ok)return;
-    apiCall('DELETE','/api/invitations/'+dl.dataset.del).then(function(){if(CURRENT===dl.dataset.del)CURRENT=null;renderMyInvs()}).catch(function(e){toast(e.message)})})}
+    apiCall('DELETE','/api/invitations/'+dl.dataset.del).then(function(){if(CURRENT===dl.dataset.del)CURRENT=null;renderMyInvs()}).catch(function(e){toast(friendly(e))})})}
 };
 $('#newInv').onclick=function(){var blank=merge(DEFAULTS,{groom:{en:'',km:''},bride:{en:'',km:''},venue:''});INV=blank;createDraft(payload()).then(function(){go('editor')}).catch(function(){})};
 
@@ -1202,10 +1281,10 @@ $('#upIn').onchange=function(){
 };
 $('#upl').onclick=function(e){
   var d=e.target.closest('[data-del]'),c=e.target.closest('[data-cover]'),l=e.target.closest('[data-left]');
-  if(d){ask(d,T('លុបរូបនេះ?','Delete this photo?'),T('លុប','Delete'),true).then(function(ok){if(ok)apiCall('DELETE',mediaPath('/media/'+d.dataset.del)).then(function(j){MEDIA=j;renderPhotos();push()}).catch(function(x){toast(x.message)})});return}
+  if(d){ask(d,T('លុបរូបនេះ?','Delete this photo?'),T('លុប','Delete'),true).then(function(ok){if(ok)apiCall('DELETE',mediaPath('/media/'+d.dataset.del)).then(function(j){MEDIA=j;renderPhotos();push()}).catch(function(x){toast(friendly(x))})});return}
   var ids=MEDIA.photos.map(function(p){return p.id}),id=(c||l||{}).dataset;if(!id)return;id=c?c.dataset.cover:l.dataset.left;var k=ids.indexOf(id);if(k<1)return;
   ids.splice(k,1);if(c)ids.unshift(id);else ids.splice(k-1,0,id);
-  apiCall('PUT',mediaPath('/photos/order'),{ids:ids}).then(function(j){MEDIA=j;renderPhotos();push()}).catch(function(x){toast(x.message)});
+  apiCall('PUT',mediaPath('/photos/order'),{ids:ids}).then(function(j){MEDIA=j;renderPhotos();push()}).catch(function(x){toast(friendly(x))});
 };
 function renderMusic(){
   $$('#musicList [data-v]').forEach(function(b){b.classList.toggle('on',b.dataset.v===INV.music)});
@@ -1223,11 +1302,11 @@ $('#muIn').onchange=function(){
   var st=$('#muState');st.className='savestate';st.textContent=T('កំពុងបញ្ចូល…','Uploading…');
   fetch(mediaPath('/music'),{method:'POST',credentials:'same-origin',headers:{'content-type':type,'x-filename':encodeURIComponent(f.name)},body:f})
     .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||'Error');MEDIA=j;INV.music='custom';renderMusic();push();st.className='savestate ok';st.textContent=T('បានបញ្ចូល ✓','Added ✓')})})
-    .catch(function(x){st.className='savestate err';st.textContent=x.message});
+    .catch(function(x){st.className='savestate err';st.textContent=friendly(x)});
 };
 $('#muPlay').onclick=function(){var a=$('#muAudio');if(!a.paused){a.pause();return}a.src=MEDIA.music.url;a.play().catch(function(){})};
 $('#muDel').onclick=function(){if(!MEDIA.music)return;ask(this,T('លុបបទនេះ?','Remove this song?'),T('លុប','Remove'),true).then(function(ok){if(!ok)return;
-  apiCall('DELETE',mediaPath('/media/'+MEDIA.music.id)).then(function(j){MEDIA=j;if(INV.music==='custom')INV.music='none';$('#muAudio').pause();renderMusic();push()}).catch(function(x){toast(x.message)})})};
+  apiCall('DELETE',mediaPath('/media/'+MEDIA.music.id)).then(function(j){MEDIA=j;if(INV.music==='custom')INV.music='none';$('#muAudio').pause();renderMusic();push()}).catch(function(x){toast(friendly(x))})})};
 
 /* ---------- video (uploads straight to Cloudflare Stream) ---------- */
 var vidTimer=null;
@@ -1262,49 +1341,126 @@ $('#vidIn').onchange=function(){
         x.onerror=function(){bar.classList.add('hidden');rej(new Error('network'))};x.send(fd);
       });
     }).then(function(){delete st.dataset.busy;return apiCall('GET',mediaPath('/media')).then(function(j){MEDIA=j;renderVideo();push()})});
-  }).catch(function(x){delete st.dataset.busy;st.className='savestate err';st.textContent=x.code==='not_ready'?x.message:T('បញ្ចូលមិនបានសម្រេច។ សូមព្យាយាមម្ដងទៀត។','Upload failed. Please try again.')});
+  }).catch(function(x){delete st.dataset.busy;st.className='savestate err';st.textContent=x.code==='not_ready'||x.code==='offline'?friendly(x):T('បញ្ចូលមិនបានសម្រេច។ សូមព្យាយាមម្ដងទៀត។','Upload failed. Please try again.')});
 };
 $('#vidDel').onclick=function(){if(!MEDIA.video)return;ask(this,T('លុបវីដេអូនេះ?','Remove this video?'),T('លុប','Remove'),true).then(function(ok){if(!ok)return;
-  apiCall('DELETE',mediaPath('/media/'+MEDIA.video.id)).then(function(j){MEDIA=j;renderVideo();push()}).catch(function(x){toast(x.message)})})};
+  apiCall('DELETE',mediaPath('/media/'+MEDIA.video.id)).then(function(j){MEDIA=j;renderVideo();push()}).catch(function(x){toast(friendly(x))})})};
 
 /* ---------- publishing + guests + RSVP (dashboard) ---------- */
-var GP={id:null,data:null,title:''};
+var GP={id:null,data:null,title:'',inv:null};
 function gpOpen(id,title){GP.id=id;GP.title=title||'';$('#gpWrap').classList.remove('hidden');$('#demoSplit').classList.add('hidden');$('#gpTitle').textContent=GP.title;gpLoad();
   setTimeout(function(){$('#gpWrap').scrollIntoView({behavior:'smooth',block:'start'})},50)}
-function gpLoad(){apiCall('GET','/api/invitations/'+GP.id+'/guests').then(function(j){GP.data=j;gpRender()}).catch(function(x){toast(x.message)})}
+function gpLoad(){Promise.all([apiCall('GET','/api/invitations/'+GP.id+'/guests'),apiCall('GET','/api/invitations/'+GP.id)]).then(function(r){GP.data=r[0];GP.inv=r[1].invitation;gpRender()}).catch(function(x){toast(friendly(x))})}
+function designed(s){s=s||{};var g=s.groom||{},b=s.bride||{};return !!((g.en||g.km)&&(b.en||b.km)&&/^\d{4}-\d{2}-\d{2}$/.test(s.date||'')&&(s.venue||'').trim())}
+/* "What to do next": the same five steps for everyone; the first one not done yet is highlighted */
+function gpNextSteps(){
+  var d=GP.data,st=d.status,t=d.totals;
+  var steps=[[designed(GP.inv&&GP.inv.settings),T('រចនាធៀប','Design your invitation'),'edit',T('កែ','Edit')],
+    [t.guests>0,T('បន្ថែមឈ្មោះភ្ញៀវ (អាចធ្វើមុនបង់ប្រាក់)','Add guest names (you can do this before paying)'),'guests',T('បន្ថែម','Add')],
+    [st!=='draft',T('បង់ប្រាក់','Pay'),'pay',T('បង់ប្រាក់','Pay')],
+    [st==='published',T('ផ្សព្វផ្សាយ ដើម្បីបើកតំណ','Publish to switch the links on'),'publish',T('ផ្សព្វផ្សាយ','Publish')],
+    [t.opened>0,T('ផ្ញើតំណទៅភ្ញៀវ','Send the links to your guests'),'send',T('ផ្ញើ','Send')]];
+  if(d.admin&&st==='draft')steps[2][0]=true;          // Samotra can publish without paying (tests)
+  var now=-1;steps.forEach(function(x,i){if(now<0&&!x[0])now=i});
+  $('#gpNext').innerHTML=steps.map(function(x,i){var c=x[0]?'done':i===now?'now':'';
+    var showBtn=!x[0]&&(i===now||x[2]==='guests'||x[2]==='edit');
+    if(x[2]==='publish'&&st==='draft'&&!d.admin)showBtn=false;if(x[2]==='send'&&st!=='published')showBtn=false;
+    return '<li class="'+c+'"><i>'+(x[0]?'✓':khOr(i+1))+'</i><span>'+x[1]+'</span>'+(showBtn?'<button type="button" class="btn sm'+(i===now?' gold':'')+'" data-next="'+x[2]+'">'+x[3]+'</button>':'')+'</li>'}).join('');
+}
+$('#gpNext').onclick=function(e){var b=e.target.closest('[data-next]');if(!b)return;var a=b.dataset.next;
+  if(a==='edit'){apiCall('GET','/api/invitations/'+GP.id).then(function(k){loadInv(k.invitation);go('editor')}).catch(function(){})}
+  if(a==='pay'){apiCall('GET','/api/invitations/'+GP.id).then(function(k){loadInv(k.invitation);go('pay')}).catch(function(){})}
+  if(a==='guests'){$('#gpAddH').scrollIntoView({behavior:RM?'auto':'smooth',block:'start'});setTimeout(function(){$('#gpNames').focus({preventScroll:true})},350)}
+  if(a==='send'){$('#gpList').scrollIntoView({behavior:RM?'auto':'smooth',block:'start'});toast(T('ចុចប៊ូតុង Telegram ក្បែរឈ្មោះភ្ញៀវ','Tap the Telegram button beside each guest'))}
+  if(a==='publish'){b.disabled=true;apiCall('POST','/api/invitations/'+GP.id+'/publish',{}).then(function(){toast(T('បានផ្សព្វផ្សាយ ✓ តំណដំណើរការហើយ','Published ✓ Your links work now'));gpLoad();renderMyInvs()}).catch(function(x){b.disabled=false;
+    $('#gpPublish').innerHTML='<p class="paystate err">'+(x.code==='missing'?T('សូមបំពេញ ឈ្មោះ កាលបរិច្ឆេទ និងទីកន្លែង ក្នុងកម្មវិធីកែជាមុនសិន។','Please fill in the names, date and venue in the editor first.'):esc(friendly(x)))+'</p>'})}
+};
 function gpRender(){
-  var d=GP.data,pub=d.status==='published';
+  var d=GP.data,pub=d.status==='published',t=d.totals;
+  gpNextSteps();$('#gpPublish').innerHTML='';
   $('#gpLive').classList.toggle('hidden',!pub);
-  if(!pub){
-    var canPublish=d.status==='paid'||d.admin;
-    $('#gpPublish').innerHTML='<p class="sub">'+(canPublish?T('ធៀបរបស់អ្នករួចរាល់។ ចុច «ផ្សព្វផ្សាយ» ដើម្បីបង្កើតតំណ ហើយបន្ថែមភ្ញៀវ។','Ready. Tap Publish to get your link and add guests.'):T('បង់ប្រាក់ជាមុនសិន ដើម្បីផ្សព្វផ្សាយ និងបន្ថែមភ្ញៀវ។','Pay first to publish and add guests.'))+'</p>'+
-      (canPublish?'<button class="btn gold block" id="gpPub">'+T('ផ្សព្វផ្សាយ','Publish')+(d.admin&&d.status!=='paid'?' (admin test)':'')+'</button>':'<button class="btn gold block" id="gpPay">'+T('បង់ប្រាក់','Pay')+'</button>')+'<p class="sub" id="gpPubErr" style="color:#f0a0a0"></p>';
-    var p=$('#gpPub');if(p)p.onclick=function(){p.disabled=true;apiCall('POST','/api/invitations/'+GP.id+'/publish',{}).then(function(){toast(T('បានផ្សព្វផ្សាយ ✓','Published ✓'));gpLoad();renderMyInvs()}).catch(function(x){p.disabled=false;
-      $('#gpPubErr').textContent=x.code==='missing'?T('សូមបំពេញ ឈ្មោះ កាលបរិច្ឆេទ និងទីកន្លែង ក្នុងកម្មវិធីកែ។','Please fill in the names, date and venue in the editor first.'):x.message})};
-    var q=$('#gpPay');if(q)q.onclick=function(){apiCall('GET','/api/invitations/'+GP.id).then(function(k){loadInv(k.invitation);go('pay')})};
-    $('#gpCap').textContent='';return;
+  $('#gpPreNote').textContent=pub?'':T('រៀបចំបញ្ជីភ្ញៀវឥឡូវនេះបាន។ តំណផ្ទាល់ខ្លួនរបស់ពួកគាត់ចាប់ផ្ដើមដំណើរការ ក្រោយពេលអ្នកបង់ប្រាក់ និងផ្សព្វផ្សាយ។','You can prepare your guest list now. Their personal links start working after you pay and publish.');
+  $('#gpCopyAll').classList.toggle('hidden',!pub||!t.guests);$('#gpCsv').classList.toggle('hidden',!t.guests);
+  if(pub){
+    $('#gpShared').textContent=d.url.replace('https://','');
+    $('#gpShareShared').href='https://t.me/share/url?url='+encodeURIComponent(d.url)+'&text='+encodeURIComponent(T('សូមគោរពអញ្ជើញចូលរួមពិធីមង្គលការ '+GP.title,'You are warmly invited to the wedding of '+GP.title));
+    $('#gpStats').innerHTML=[[t.guests,T('ភ្ញៀវ','Guests')],[t.opened,T('បានបើក','Opened')],[t.people,T('នឹងមក (នាក់)','Coming')],[t.notComing,T('មិនមក','Not coming')]].map(function(x){return '<div><b>'+x[0]+'</b><span>'+x[1]+'</span></div>'}).join('');
   }
-  $('#gpPublish').innerHTML='';$('#gpShared').textContent=d.url.replace('https://','');
-  var t=d.totals;$('#gpStats').innerHTML=[[t.guests,T('ភ្ញៀវ','Guests')],[t.opened,T('បានបើក','Opened')],[t.people,T('នឹងមក (នាក់)','Coming')],[t.notComing,T('មិនមក','Not coming')]].map(function(x){return '<div><b>'+x[0]+'</b><span>'+x[1]+'</span></div>'}).join('');
   $('#gpCount').textContent=t.guests+' / '+d.limit;gpList();
   $('#gpSharedReplies').innerHTML=d.shared.length?'<div class="f" style="margin-top:14px"><span>'+T('ការឆ្លើយតបពីតំណរួម','Replies from the shared link')+'</span></div><ul class="glist">'+d.shared.map(function(r){return '<li><div class="gn">'+esc(r.name)+'</div><div class="gl">'+(r.attending?'✓ '+T('មក ','Coming · ')+r.party:'✕ '+T('មិនមក','Not coming'))+(r.message?' · “'+esc(r.message)+'”':'')+'</div></li>'}).join('')+'</ul>':'';
   if(!$('#gpCap').textContent)gpPreview(null);
 }
+function guestMsg(g,link){return g.lang==='km'?'សូមគោរពអញ្ជើញ '+g.name+' ចូលរួមពិធីមង្គលការ '+GP.title+' ។ សូមចុចបើកធៀបរបស់អ្នកនៅទីនេះ៖ '+link:'Dear '+g.name+', you are warmly invited to the wedding of '+GP.title+'. Please open your invitation here: '+link}
+function gpVisible(){var q=($('#gpSearch').value||'').trim().toLowerCase();return GP.data.guests.filter(function(g){return !q||g.name.toLowerCase().indexOf(q)>=0})}
 function gpList(){
-  var q=($('#gpSearch').value||'').trim().toLowerCase(),d=GP.data;
-  $('#gpList').innerHTML=d.guests.filter(function(g){return !q||g.name.toLowerCase().indexOf(q)>=0}).slice(0,300).map(function(g){
-    var link=d.url+'/'+g.code,r=g.attending===null?'<span class="no">'+T('មិនទាន់ឆ្លើយ','No reply')+'</span>':g.attending?'<span class="ok">✓ '+T('មក ','Coming · ')+g.party+'</span>':'<span class="no">✕ '+T('មិនមក','Not coming')+'</span>';
-    return '<li><div class="gn">'+esc(g.name)+' <small style="color:var(--muted)">· '+({km:'ខ្មែរ',en:'EN',zh:'中文'})[g.lang]+'</small></div><div class="gl">'+esc(link.replace('https://',''))+'<br><span class="st '+(g.first_opened_at?'ok':'no')+'">'+(g.first_opened_at?'● '+T('បានបើក','Opened'):'○ '+T('មិនទាន់បើក','Not opened'))+'</span> · <span class="rsv">'+r+'</span>'+(g.message?' · “'+esc(g.message)+'”':'')+'</div>'+
-      '<div class="ga"><button class="btn sm" data-msg="'+g.code+'" title="Copy message">✉</button><button class="btn sm" data-copy="'+esc(link)+'" title="Copy link">⧉</button><button class="btn sm" data-view="'+g.code+'" title="Preview">👁</button><button class="btn sm" data-gdel="'+g.code+'" title="Delete">✕</button></div></li>'}).join('')||
-    '<li style="display:block;color:var(--muted);font-size:13.5px">'+T('មិនទាន់មានភ្ញៀវ។','No guests yet.')+'</li>';
+  var d=GP.data,pub=d.status==='published';
+  $('#gpList').innerHTML=gpVisible().slice(0,300).map(function(g){
+    var link=pub?d.url+'/'+g.code:'',r=g.attending===null?'<span class="no">'+T('មិនទាន់ឆ្លើយ','No reply')+'</span>':g.attending?'<span class="ok">✓ '+T('មក ','Coming · ')+g.party+'</span>':'<span class="no">✕ '+T('មិនមក','Not coming')+'</span>';
+    var share=pub?'https://t.me/share/url?url='+encodeURIComponent(link)+'&text='+encodeURIComponent(guestMsg(g,'').replace(/[:：៖]\s*$/,'')):'';
+    return '<li><div class="gn">'+esc(g.name)+' <small style="color:var(--muted)">· '+({km:'ខ្មែរ',en:'EN',zh:'中文'})[g.lang]+'</small></div>'+
+      (pub?'<div class="gl">'+esc(link.replace('https://',''))+'<br><span class="st '+(g.first_opened_at?'ok':'no')+'">'+(g.first_opened_at?'● '+T('បានបើក','Opened'):'○ '+T('មិនទាន់បើក','Not opened'))+'</span> · <span class="rsv">'+r+'</span>'+(g.message?' · “'+esc(g.message)+'”':'')+'</div>'
+        :'<div class="gl">'+T('តំណនឹងមាន ក្រោយពេលផ្សព្វផ្សាយ','Link appears after you publish')+'</div>')+
+      '<div class="ga">'+(pub?'<a class="btn sm tgs" href="'+esc(share)+'" target="_blank" rel="noopener" title="Telegram"></a><button class="btn sm" data-msg="'+g.code+'" title="'+T('ចម្លងសារ','Copy message')+'">✉</button><button class="btn sm" data-copy="'+esc(link)+'" title="'+T('ចម្លងតំណ','Copy link')+'">⧉</button>':'')+
+      '<button class="btn sm" data-view="'+g.code+'" title="Preview">👁</button><button class="btn sm" data-gdel="'+g.code+'" title="Delete">✕</button></div></li>'}).join('')||
+    '<li style="display:block;color:var(--muted);font-size:13.5px">'+T('មិនទាន់មានភ្ញៀវ។ សរសេរ ឬបិទភ្ជាប់ឈ្មោះខាងលើ។','No guests yet. Type or paste names above.')+'</li>';
 }
 $('#gpSearch').addEventListener('input',gpList);
 function copyText(t){try{navigator.clipboard.writeText(t).then(function(){toast('copied')},function(){prompt('',t)})}catch(e){prompt('',t)}}
 $('#gpCopyShared').onclick=function(){copyText(GP.data.url)};
+$('#gpCopyAll').onclick=function(){var d=GP.data;copyText(gpVisible().map(function(g){return g.name+' — '+d.url+'/'+g.code}).join('\n'))};
+$('#gpCsv').onclick=function(){var d=GP.data,pub=d.status==='published';
+  var q=function(v){v=String(v==null?'':v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+  var rows=[['Name','Language','Link','Opened','Reply','People','Message']].concat(d.guests.map(function(g){return [g.name,g.lang,pub?d.url+'/'+g.code:'',g.first_opened_at?'yes':'',g.attending===null?'':g.attending?'coming':'not coming',g.attending?g.party:'',g.message||'']}));
+  var blob=new Blob(['﻿'+rows.map(function(r){return r.map(q).join(',')}).join('\r\n')],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='guests-'+(d.slug||'mongkulcard')+'.csv';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000)};
+
+/* adding names: typed, pasted from Excel / Google Sheets, from an Excel or CSV file, or (Android) from contacts */
+var HEADER_WORDS=/^(names?|guests?|full ?name|ឈ្មោះ|ឈ្មោះភ្ញៀវ|姓名|no\.?|#)$/i;
+function cleanNames(list){var seen={},out=[];list.forEach(function(n){n=String(n||'').replace(/^\s*\d+\s*[.)\-–]\s+/,'').replace(/\s+/g,' ').trim().slice(0,80);
+  if(!n||HEADER_WORDS.test(n)||/^[\d\s+().-]+$/.test(n))return;var k=n.toLowerCase();if(seen[k])return;seen[k]=1;out.push(n)});return out}
+function bestColumn(rows){   // rows of cells -> the column that looks most like names
+  var score={};rows.forEach(function(r){r.forEach(function(c,i){c=String(c||'').trim();if(c&&!/^[\d\s+().,:\/-]+$/.test(c))score[i]=(score[i]||0)+1})});
+  var best=0,bi=-1;Object.keys(score).forEach(function(i){if(score[i]>best){best=score[i];bi=+i}});return bi<0?[]:rows.map(function(r){return r[bi]})}
+function parseCsv(text){var rows=[],row=[],cell='',q=false,sep=text.indexOf('\t')>=0&&text.split('\n')[0].indexOf(',')<0?'\t':',';
+  for(var i=0;i<text.length;i++){var c=text[i];
+    if(q){if(c==='"'){if(text[i+1]==='"'){cell+='"';i++}else q=false}else cell+=c}
+    else if(c==='"')q=true;else if(c===sep){row.push(cell);cell=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);rows.push(row);row=[];cell=''}else cell+=c}
+  if(cell||row.length){row.push(cell);rows.push(row)}return rows}
+function readXlsx(buf){   // a small .xlsx reader: first sheet, every row -> cells (needs DecompressionStream; all current phones have it)
+  var u8=new Uint8Array(buf),dv=new DataView(buf),eocd=-1,td=new TextDecoder();
+  for(var i=u8.length-22;i>=Math.max(0,u8.length-66000);i--){if(dv.getUint32(i,true)===0x06054b50){eocd=i;break}}
+  if(eocd<0)return Promise.reject(new Error('not xlsx'));
+  var n=dv.getUint16(eocd+10,true),off=dv.getUint32(eocd+16,true),files={};
+  for(var k=0;k<n;k++){var nl=dv.getUint16(off+28,true),el=dv.getUint16(off+30,true),cl=dv.getUint16(off+32,true);
+    files[td.decode(u8.subarray(off+46,off+46+nl))]={m:dv.getUint16(off+10,true),cs:dv.getUint32(off+20,true),lh:dv.getUint32(off+42,true)};off+=46+nl+el+cl}
+  function get(name){var f=files[name];if(!f)return Promise.resolve(null);var l=f.lh,st=l+30+dv.getUint16(l+26,true)+dv.getUint16(l+28,true),data=u8.subarray(st,st+f.cs);
+    if(f.m===0)return Promise.resolve(td.decode(data));if(typeof DecompressionStream==='undefined')return Promise.reject(new Error('old browser'));
+    return new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text()}
+  var sheet=Object.keys(files).filter(function(x){return /^xl\/worksheets\/sheet\d+\.xml$/.test(x)}).sort(function(a,b){return parseInt(a.replace(/\D/g,''))-parseInt(b.replace(/\D/g,''))})[0];
+  if(!sheet)return Promise.reject(new Error('no sheet'));
+  return Promise.all([get('xl/sharedStrings.xml'),get(sheet)]).then(function(r){
+    var P=new DOMParser(),strs=[];
+    if(r[0])[].forEach.call(P.parseFromString(r[0],'application/xml').getElementsByTagName('si'),function(si){strs.push([].map.call(si.getElementsByTagName('t'),function(t){return t.textContent}).join(''))});
+    var col=function(ref){var m=/^([A-Z]+)/.exec(ref||'');if(!m)return -1;var v=0;for(var j=0;j<m[1].length;j++)v=v*26+m[1].charCodeAt(j)-64;return v-1};
+    return [].map.call(P.parseFromString(r[1],'application/xml').getElementsByTagName('row'),function(row){var out=[];
+      [].forEach.call(row.getElementsByTagName('c'),function(c,ci){var t=c.getAttribute('t'),v=c.getElementsByTagName('v')[0],val;
+        if(t==='s')val=v?strs[+v.textContent]:'';else if(t==='inlineStr')val=[].map.call(c.getElementsByTagName('t'),function(x){return x.textContent}).join('');else val=v?v.textContent:'';
+        var ix=col(c.getAttribute('r'));out[ix<0?ci:ix]=val});return out})})}
+function addToBox(names){names=cleanNames(names);if(!names.length){toast(T('រកមិនឃើញឈ្មោះទេ','No names found'));return}
+  var box=$('#gpNames'),cur=box.value.trim();box.value=(cur?cur+'\n':'')+names.join('\n');box.scrollIntoView({block:'center',behavior:RM?'auto':'smooth'});
+  toast(T('បានដាក់ '+khOr(names.length)+' ឈ្មោះ។ ពិនិត្យ ហើយចុច «បន្ថែម»','Loaded '+names.length+' names. Check them, then tap Add'))}
+$('#gpPasteTip').onclick=function(){$('#gpTip').classList.toggle('hidden');$('#gpNames').focus()};
+$('#gpFile').onchange=function(){var f=this.files[0];this.value='';if(!f)return;
+  if(f.size>5*1024*1024){toast(T('ឯកសារធំពេក (មិនលើស 5 MB)','File too big (max 5 MB)'));return}
+  var isX=/\.xlsx$/i.test(f.name)||/sheet/.test(f.type);
+  (isX?f.arrayBuffer().then(readXlsx):f.text().then(parseCsv)).then(function(rows){addToBox(bestColumn(rows))})
+    .catch(function(){toast(T('អានឯកសារមិនបាន។ សាក Copy ជួរឈ្មោះពី Excel ហើយ Paste វិញ។','Could not read that file. Try copying the names column in Excel and pasting it.'))})};
+if('contacts' in navigator&&'select' in navigator.contacts){$('#gpContacts').classList.remove('hidden');
+  $('#gpContacts').onclick=function(){navigator.contacts.select(['name'],{multiple:true}).then(function(list){addToBox(list.map(function(c){return (c.name||[])[0]}))}).catch(function(){})}}
 $('#gpAdd').onclick=function(){
-  var names=$('#gpNames').value.split(/\n/).map(function(x){return x.trim()}).filter(Boolean);if(!names.length){$('#gpNames').focus();return}
-  var b=this;b.disabled=true;apiCall('POST','/api/invitations/'+GP.id+'/guests',{names:names,lang:$('#gpLang').value}).then(function(j){GP.data=j;$('#gpNames').value='';gpRender();toast(T('បានបន្ថែម '+names.length+' នាក់','Added '+names.length))})
-    .catch(function(x){toast(x.message)}).then(function(){b.disabled=false});
+  var raw=$('#gpNames').value.split(/\r?\n/).map(function(l){return l.split('\t')[0]}),names=cleanNames(raw);if(!names.length){$('#gpNames').focus();return}
+  var b=this;b.disabled=true;apiCall('POST','/api/invitations/'+GP.id+'/guests',{names:names,lang:$('#gpLang').value}).then(function(j){GP.data=j;$('#gpNames').value='';gpRender();toast(T('បានបន្ថែម '+khOr(names.length)+' នាក់ ✓','Added '+names.length+' ✓'))})
+    .catch(function(x){toast(friendly(x))}).then(function(){b.disabled=false});
 };
 function gpPreview(g){
   var d=GP.data;apiCall('GET','/api/invitations/'+GP.id).then(function(k){
@@ -1321,10 +1477,10 @@ $('#gpList').onclick=function(e){
   var c=e.target.closest('[data-copy]'),m=e.target.closest('[data-msg]'),v=e.target.closest('[data-view]'),x=e.target.closest('[data-gdel]');var d=GP.data;
   if(c)copyText(c.dataset.copy);
   if(m){var g=d.guests.find(function(z){return z.code===m.dataset.msg}),link=d.url+'/'+g.code;
-    copyText(g.lang==='km'?'សូមគោរពអញ្ជើញ '+g.name+' ចូលរួមពិធីមង្គលការ '+GP.title+' ។ សូមចុចបើកធៀបនៅទីនេះ៖ '+link:'Dear '+g.name+', you are warmly invited to the wedding of '+GP.title+'. Please open your invitation here: '+link)}
+    copyText(guestMsg(g,link))}
   if(v)gpPreview(d.guests.find(function(z){return z.code===v.dataset.view}));
   if(x){ask(x,T('លុបភ្ញៀវនេះ? តំណរបស់គាត់នឹងលែងដំណើរការ។','Delete this guest? Their link will stop working.'),T('លុប','Delete'),true).then(function(ok){if(!ok)return;
-    apiCall('DELETE','/api/invitations/'+GP.id+'/guests/'+x.dataset.gdel).then(function(j){GP.data=j;gpRender()}).catch(function(z){toast(z.message)})})}
+    apiCall('DELETE','/api/invitations/'+GP.id+'/guests/'+x.dataset.gdel).then(function(j){GP.data=j;gpRender()}).catch(function(z){toast(friendly(z))})})}
 };
 
 /* ---------- soft background music for the website (not inside the editor or checkout) ----------
@@ -1357,20 +1513,23 @@ function stopPay(){clearTimeout(PAY.timer);clearInterval(PAY.tick);PAY.timer=nul
 function openPay(){
   stopPay();var box=$('#payBox');box.innerHTML='<p class="sub">…</p>';$('#realPkgs').innerHTML='';
   if(!CURRENT){ensureDraft();setTimeout(function(){if(CURRENT)openPay()},1500);return}
-  Promise.all([apiCall('GET','/api/packages'),apiCall('GET','/api/invitations/'+CURRENT)]).then(function(r){
-    var j=r[0],inv=r[1].invitation;PAY.ready=j.ready;PAY.pkgs=j.packages;
+  Promise.all([apiCall('GET','/api/packages'),apiCall('GET','/api/invitations/'+CURRENT),apiCall('GET','/api/invitations/'+CURRENT+'/guests').catch(function(){return null})]).then(function(r){
+    var j=r[0],inv=r[1].invitation;PAY.ready=j.ready;PAY.pkgs=j.packages;PAY.guests=r[2]?r[2].totals.guests:0;
+    PAY.pkgs.forEach(function(p){p.tooSmall=!!(p.named_guests&&PAY.guests>p.named_guests&&!p.admin_only)});
     if(inv.status!=='draft'){showPaid(inv.package_code);return}
     renderPkgs();
     if(!j.ready){box.innerHTML='<p class="paystate wait">'+T('ការបង់ប្រាក់កំពុងរៀបចំ។ សូមសាកម្ដងទៀតឆាប់ៗនេះ។','Payment is being set up. Please try again soon.')+'</p>';return}
-    var forSale=PAY.pkgs.filter(function(p){return p.forSale});
+    var forSale=PAY.pkgs.filter(function(p){return p.forSale&&!p.tooSmall});
     if(!forSale.length){box.innerHTML='<p class="paystate wait">'+T('កញ្ចប់តម្លៃនឹងបើកលក់ឆាប់ៗនេះ។','Packages open for sale soon.')+'</p>';return}
     if(!PAY.sel||!forSale.some(function(p){return p.code===PAY.sel}))PAY.sel=forSale[0].code;renderPkgs();showChoose();
-  }).catch(function(e){box.innerHTML='<p class="paystate err">'+esc(e.message)+'</p>'});
+  }).catch(function(e){box.innerHTML='<p class="paystate err">'+esc(friendly(e))+'</p>'});
 }
 function renderPkgs(){
   $('#realPkgs').innerHTML=PAY.pkgs.map(function(p){
     var info=(p.named_guests?p.named_guests+T(' ឈ្មោះភ្ញៀវ',' named guests'):'')+(p.photos?' · '+p.photos+T(' រូបថត',' photos'):'');
-    return '<button class="fs pkg'+(p.forSale?'':' off')+(p.code===PAY.sel?' on':'')+'" data-pkg="'+p.code+'"'+(p.forSale?'':' disabled')+'><div><b>'+esc(lang()==='km'?p.name_km:p.name_en)+(p.admin_only?' <small style="display:inline;color:#f0a0a0">(admin test)</small>':'')+'</b><small>'+info+'</small></div><span class="pp">'+(p.forSale?money(p.price_cents/100):T('ឆាប់ៗ','Soon'))+'</span></button>'}).join('');
+    if(p.tooSmall)info=T('តូចពេកសម្រាប់ភ្ញៀវ '+khOr(PAY.guests)+' នាក់របស់អ្នក','Too small for your '+PAY.guests+' guests');
+    var off=!p.forSale||p.tooSmall;
+    return '<button class="fs pkg'+(off?' off':'')+(p.code===PAY.sel?' on':'')+'" data-pkg="'+p.code+'"'+(off?' disabled':'')+'><div><b>'+esc(lang()==='km'?p.name_km:p.name_en)+(p.admin_only?' <small style="display:inline;color:#f0a0a0">(admin test)</small>':'')+'</b><small>'+info+'</small></div><span class="pp">'+(p.forSale?money(p.price_cents/100):T('ឆាប់ៗ','Soon'))+'</span></button>'}).join('');
 }
 $('#realPkgs').onclick=function(e){var b=e.target.closest('[data-pkg]');if(!b||b.disabled||PAY.order&&PAY.order.status==='pending')return;PAY.sel=b.dataset.pkg;renderPkgs();showChoose()};
 function showChoose(){
@@ -1379,7 +1538,7 @@ function showChoose(){
     '<button class="btn gold block" id="makeQr" style="margin-top:12px">'+T('បង់ប្រាក់តាម KHQR','Pay with KHQR')+'</button>';
   $('#makeQr').onclick=function(){this.disabled=true;apiCall('POST','/api/orders',{invitation:CURRENT,package:PAY.sel}).then(function(j){PAY.started=Date.now();
     carry(function(){showOrder(j.order)},$('#realPkgs .on'),function(){return $('.khqr-card')});poll()}).catch(function(e){
-    if(e.code==='already_paid'){openPay();return}$('#payBox').insertAdjacentHTML('beforeend','<p class="paystate err">'+esc(e.message)+'</p>');$('#makeQr').disabled=false})};
+    if(e.code==='already_paid'){openPay();return}$('#payBox').insertAdjacentHTML('beforeend','<p class="paystate err">'+esc(friendly(e))+'</p>');$('#makeQr').disabled=false})};
 }
 function drawQr(text){
   var q=qrcode(0,'M');q.addData(text);q.make();var n=q.getModuleCount(),sc=8,m=2,c=document.createElement('canvas');c.width=c.height=(n+m*2)*sc;
@@ -1398,7 +1557,7 @@ function showOrder(o){
     var cv=drawQr(o.qr);$('#qrHere').appendChild(cv);
     $('#saveQr').onclick=function(){var a=document.createElement('a');a.download='MongkulCard-KHQR-'+o.bill+'.png';a.href=cv.toDataURL('image/png');document.body.appendChild(a);a.click();a.remove()};
     $('#claimBtn').onclick=function(){ask(this,T('តើអ្នកបានបង់ '+money(o.amount)+' រួចហើយមែនទេ?','Have you already paid '+money(o.amount)+'?'),T('បាទ/ចាស បានបង់','Yes, I paid')).then(function(ok){if(!ok)return;
-      apiCall('POST','/api/orders/'+o.id+'/claim',{}).then(function(j){showOrder(j.order)}).catch(function(e){toast(e.message)})})};
+      apiCall('POST','/api/orders/'+o.id+'/claim',{}).then(function(j){showOrder(j.order)}).catch(function(e){toast(friendly(e))})})};
     clearInterval(PAY.tick);PAY.tick=setInterval(function(){var left=Math.max(0,Date.parse(PAY.order.expiresAt)-Date.now());var t=$('#qrTimer');if(!t)return;
       t.textContent=PAY.order.status==='claimed'?'':T('QR ផុតកំណត់ក្នុង ','QR expires in ')+Math.floor(left/60000)+':'+String(Math.floor(left/1000)%60).padStart(2,'0')},1000);
   }

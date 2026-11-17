@@ -18,6 +18,7 @@ import { mediaFor } from './media.js';
 
 const CODE_CHARS = 'abcdefghjkmnpqrstuvwxyz23456789';
 const ADMIN_GUEST_LIMIT = 1000;
+const PREPAY_GUEST_LIMIT = 1000;   // before paying, names can be prepared up to the biggest package
 const MAX_SHARED_REPLIES = 3000;
 const BOT_RE = /bot|crawl|spider|preview|facebookexternalhit|telegrambot|whatsapp|slurp|discord/i;
 
@@ -49,6 +50,7 @@ function isAdmin(me, env) {
   return !!(env.ADMIN_PHONE && me.phone_verified_at && me.phone === normalizePhone(env.ADMIN_PHONE));
 }
 function guestLimit(inv, admin) {
+  if (inv.status === 'draft') return admin ? ADMIN_GUEST_LIMIT : PREPAY_GUEST_LIMIT;   // links only work once published
   return inv.named_guests || (admin ? ADMIN_GUEST_LIMIT : 0);
 }
 
@@ -114,7 +116,7 @@ async function guestList(env, inv, admin) {
 }
 
 async function addGuests(request, env, inv, admin) {
-  if (inv.status !== 'published') return json({ error: 'Please publish the invitation first.', code: 'not_published' }, 409);
+  // Names can be prepared before paying; their links start working once the invitation is published.
   let body;
   try { body = await request.json(); } catch { body = null; }
   const lang = ['km', 'en', 'zh'].includes(body && body.lang) ? body.lang : 'km';

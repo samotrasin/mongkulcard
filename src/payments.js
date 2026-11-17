@@ -78,9 +78,14 @@ async function createOrder(request, env, me, admin) {
   if (inv.status !== 'draft') return json({ error: 'This invitation is already paid.', code: 'already_paid' }, 409);
 
   const pkg = await env.DB.prepare(
-    `SELECT code, name_en, price_cents, admin_only FROM packages WHERE code = ?1 AND active = 1`
+    `SELECT code, name_en, price_cents, admin_only, named_guests FROM packages WHERE code = ?1 AND active = 1`
   ).bind(pkgCode).first();
   if (!pkg || pkg.price_cents == null || (pkg.admin_only && !admin)) return json({ error: 'This package is not available.' }, 400);
+  // Guests prepared before paying must fit the package.
+  const prepared = (await env.DB.prepare(`SELECT COUNT(*) AS n FROM inv_guests WHERE invitation_id = ?1`).bind(inv.id).first()).n;
+  if (pkg.named_guests && prepared > pkg.named_guests && !admin) {
+    return json({ error: `You have ${prepared} guests; this package covers ${pkg.named_guests}. Please choose a bigger package or remove some names.`, code: 'too_many_guests', guests: prepared }, 409);
+  }
 
   // Same invitation + package with a QR that is still fresh: show that one again.
   const existing = await env.DB.prepare(
