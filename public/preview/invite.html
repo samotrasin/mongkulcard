@@ -223,6 +223,10 @@ html[data-lang=en] .btn{font-family:var(--en-d);font-size:13px;letter-spacing:.1
 .replay{background:#3b2a20;color:#f6e3a1}
 .close{background:#eee4d6;color:#3b2a20}
 @media (prefers-reduced-motion:reduce){.goldtext{animation:none}}
+/* iPhone: never wider than the screen, and no zoom-in when typing (iOS zooms into boxes under 16px) */
+html,body{max-width:100%;overflow-x:clip}
+@supports not (overflow:clip){html,body{overflow-x:hidden}}
+@media (hover:none) and (pointer:coarse){input,select,textarea{font-size:16px!important}}
 </style>
 </head>
 <body>
