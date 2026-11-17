@@ -193,10 +193,35 @@ input[type=date]{color-scheme:dark}
 .sheet .row2{display:flex;gap:10px}.sheet .row2 button{flex:1;border:0;border-radius:12px;padding:12px;font-weight:600}
 
 /* editor */
-.etabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -20px 16px;padding:0 20px}
-.etabs::-webkit-scrollbar{display:none}
-.etab{flex:none;border:1px solid var(--line);background:none;border-radius:30px;padding:8px 14px;font-size:13.5px;color:var(--muted)}
-.etab.on{background:var(--gold);color:#2a0a10;border-color:var(--gold);font-weight:600}
+/* guided editor */
+.steps{margin:0 0 14px}
+.stp-top{display:flex;gap:8px;align-items:baseline;font-size:12.5px;color:var(--muted);margin-bottom:8px}.stp-top b{color:var(--gold-l);font-weight:500;font-size:14px}
+.stp-bar{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.stp{background:none;border:0;padding:0;color:var(--muted);font-size:11px;text-align:center;cursor:pointer;line-height:1.4}
+.stp i{display:block;height:5px;border-radius:5px;background:var(--line);margin-bottom:5px;transition:background .3s}
+.stp.done i{background:var(--gold-d)}.stp.on i{background:var(--gold)}.stp.on{color:var(--gold-l)}
+.stp.miss i{background:repeating-linear-gradient(90deg,var(--gold-d) 0 6px,transparent 6px 9px)}
+.ehint{margin:-2px 0 12px;font-size:14px}
+.f.req>span:first-child::after{content:" *";color:var(--gold)}
+.f.bad input,.f.bad .dbox{border-color:#e08a8a!important;box-shadow:0 0 0 3px rgba(224,138,138,.15)}
+.f .ferr{display:block;color:#f0a0a0;font-size:12px;margin-top:4px}
+.nm-box{margin-bottom:10px}
+.alt-add{background:none;border:0;color:var(--gold-l);font-size:12.5px;padding:6px 2px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;opacity:.85}
+.f.alt{margin-top:8px}.f.alt>span{font-size:12px}
+.dbox{position:relative;display:flex;align-items:center;min-height:48px;border:1px solid var(--line);border-radius:12px;padding:0 14px;background:rgba(0,0,0,.3);cursor:pointer}
+.dbox .dshow{pointer-events:none;font-size:14.5px}.dbox .dshow.ph{color:var(--muted)}
+.dbox input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0}
+.ftip{font-size:12.5px;color:var(--muted);margin-top:8px}.ftip b{color:var(--ivory);font-weight:500}
+.sh{font-family:var(--caps);font-weight:500;font-size:12.5px;letter-spacing:.14em;color:var(--gold);margin:22px 0 8px;text-transform:uppercase}
+html[data-lang=km] .sh{font-family:var(--ui);letter-spacing:0;font-size:14px;text-transform:none}
+.epane .sh:first-of-type{margin-top:6px}
+.ready{list-style:none;padding:0;margin:0 0 12px;display:grid;gap:6px}
+.ready li{display:flex;align-items:center;gap:10px;font-size:14px;padding:9px 12px;border:1px solid var(--line);border-radius:12px}
+.ready li b{font-weight:500}.ready li.ok i{color:#8fe0b0}.ready li.no{border-color:rgba(224,138,138,.5)}.ready li.no i{color:#f0a0a0}.ready li.opt i{color:var(--muted)}
+.ready li i{font-style:normal;width:18px;text-align:center}.ready li button{margin-left:auto}
+.autosave{text-align:center;font-size:12px;color:var(--muted);margin-top:10px}
+.pv-fab{display:none;position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:40;align-items:center;gap:6px;border:0;border-radius:30px;padding:12px 18px;background:linear-gradient(100deg,var(--gold-d),var(--gold-l) 50%,var(--gold-d));color:#2a0a10;font:600 14.5px var(--ui);box-shadow:0 8px 24px rgba(0,0,0,.45)}
+@media(max-width:859px){body[data-view=editor]{padding-bottom:90px}body[data-view=editor] .pv-fab{display:flex}body[data-view=editor] .ed-stick{display:none}}
 .epane{display:none}.epane.on{display:block}
 .swatches{display:flex;gap:10px;flex-wrap:wrap}
 .swt{border:2px solid transparent;border-radius:14px;padding:6px;background:none;text-align:center;font-size:12px;color:var(--muted)}
@@ -506,28 +531,41 @@ input[type=date]{color-scheme:dark}
     <div>
       <div class="eyebrow"><span data-l="km">កំពុងកែប្រែ</span><span data-l="en">Editing</span> · Golden Curtain · <span class="pill draft"><span data-l="km">ព្រាង</span><span data-l="en">Draft</span></span> <span id="saveState" class="savestate"></span></div>
       <h2 class="h1" style="margin:6px 0 14px;font-size:22px" id="edTitle"></h2>
-      <div class="etabs" id="etabs">
-        <button class="etab on" data-t="details"><span data-l="km">ព័ត៌មាន</span><span data-l="en">Details</span></button>
-        <button class="etab" data-t="design"><span data-l="km">រចនា</span><span data-l="en">Design</span></button>
-        <button class="etab" data-t="photos"><span data-l="km">រូបថត</span><span data-l="en">Photos</span></button>
-        <button class="etab" data-t="video"><span data-l="km">វីដេអូ</span><span data-l="en">Video</span></button>
-        <button class="etab" data-t="music"><span data-l="km">តន្ត្រី</span><span data-l="en">Music</span></button>
-        <button class="etab" data-t="sections"><span data-l="km">ផ្នែកនានា</span><span data-l="en">Sections</span></button>
+      <div class="steps" id="steps">
+        <div class="stp-top"><span id="stpNum"></span><b id="stpName"></b></div>
+        <div class="stp-bar" id="stpBar">
+          <button type="button" class="stp on" data-s="0"><i></i><span data-l="km">ឈ្មោះ</span><span data-l="en">Names</span></button>
+          <button type="button" class="stp" data-s="1"><i></i><span data-l="km">ទីកន្លែង</span><span data-l="en">Venue</span></button>
+          <button type="button" class="stp" data-s="2"><i></i><span data-l="km">រចនា</span><span data-l="en">Look</span></button>
+          <button type="button" class="stp" data-s="3"><i></i><span data-l="km">រូប · តន្ត្រី</span><span data-l="en">Media</span></button>
+          <button type="button" class="stp" data-s="4"><i></i><span data-l="km">ផ្សព្វផ្សាយ</span><span data-l="en">Publish</span></button>
+        </div>
       </div>
       <div class="panel">
-        <div class="epane on" data-p="details">
-          <div class="fields two">
-            <label class="f"><span><span data-l="km">កូនកំលោះ (EN)</span><span data-l="en">Groom (English)</span></span><input data-k="groom.en"></label>
-            <label class="f"><span><span data-l="km">កូនក្រមុំ (EN)</span><span data-l="en">Bride (English)</span></span><input data-k="bride.en"></label>
-            <label class="f"><span><span data-l="km">កូនកំលោះ (ខ្មែរ)</span><span data-l="en">Groom (Khmer)</span></span><input data-k="groom.km"></label>
-            <label class="f"><span><span data-l="km">កូនក្រមុំ (ខ្មែរ)</span><span data-l="en">Bride (Khmer)</span></span><input data-k="bride.km"></label>
-            <label class="f"><span><span data-l="km">កាលបរិច្ឆេទ</span><span data-l="en">Date</span></span><input type="date" data-k="date"></label>
+        <div class="epane on" data-p="names">
+          <p class="sub ehint"><span data-l="km">នរណារៀបការ ហើយនៅថ្ងៃណា? សរសេរជាខ្មែរ ឬអង់គ្លេសក៏បាន។</span><span data-l="en">Who is getting married, and when? Type in Khmer or English.</span></p>
+          <div class="nm-box" data-person="groom">
+            <label class="f req"><span><span data-l="km">ឈ្មោះកូនកំលោះ</span><span data-l="en">Groom's name</span></span><input data-nm="groom" maxlength="40" autocomplete="off" placeholder="សុវណ្ណ / Sovann"></label>
+            <button type="button" class="alt-add" data-altadd="groom"></button>
+            <label class="f alt hidden"><span class="alt-l"></span><input data-nma="groom" maxlength="40" autocomplete="off"></label>
+          </div>
+          <div class="nm-box" data-person="bride">
+            <label class="f req"><span><span data-l="km">ឈ្មោះកូនក្រមុំ</span><span data-l="en">Bride's name</span></span><input data-nm="bride" maxlength="40" autocomplete="off" placeholder="ស្រីពៅ / Sreypov"></label>
+            <button type="button" class="alt-add" data-altadd="bride"></button>
+            <label class="f alt hidden"><span class="alt-l"></span><input data-nma="bride" maxlength="40" autocomplete="off"></label>
+          </div>
+          <div class="fields two" style="margin-top:4px">
+            <label class="f req" data-need="date"><span><span data-l="km">កាលបរិច្ឆេទ</span><span data-l="en">Date</span></span><div class="dbox"><span class="dshow"></span><input type="date" data-k="date"></div></label>
             <label class="f"><span><span data-l="km">ម៉ោង</span><span data-l="en">Time</span></span><input type="time" data-k="time" value="17:00"></label>
           </div>
-          <label class="f"><span><span data-l="km">ទីកន្លែង</span><span data-l="en">Venue</span></span><input data-k="venue"></label>
-          <label class="f" style="margin-top:10px"><span><span data-l="km">តំណ Google Maps</span><span data-l="en">Google Maps link</span></span><input data-k="mapUrl" inputmode="url" placeholder="https://maps.app.goo.gl/…"></label>
         </div>
-        <div class="epane" data-p="design">
+        <div class="epane" data-p="venue">
+          <p class="sub ehint"><span data-l="km">កម្មវិធីធ្វើនៅឯណា?</span><span data-l="en">Where is the celebration?</span></p>
+          <label class="f req" data-need="venue"><span><span data-l="km">ទីកន្លែង</span><span data-l="en">Venue</span></span><input data-k="venue" maxlength="140" placeholder="Golden Lotus Ballroom, Phnom Penh"></label>
+          <label class="f" style="margin-top:12px"><span><span data-l="km">តំណ Google Maps (មិនចាំបាច់)</span><span data-l="en">Google Maps link (optional)</span></span><input data-k="mapUrl" inputmode="url" placeholder="https://maps.app.goo.gl/…"></label>
+          <p class="ftip"><span data-l="km">របៀបយក៖ បើក Google Maps → ស្វែងរកទីកន្លែង → ចុច <b>Share</b> → <b>Copy link</b> → ដាក់នៅទីនេះ។ ភ្ញៀវនឹងចុចមើលផ្លូវបាន។</span><span data-l="en">How: open Google Maps → find the place → tap <b>Share</b> → <b>Copy link</b> → paste it here. Guests can tap it for directions.</span></p>
+        </div>
+        <div class="epane" data-p="look">
           <div class="f"><span><span data-l="km">ពណ៌</span><span data-l="en">Colour theme</span></span></div>
           <div class="swatches" id="swatches">
             <button class="swt on" data-v="burgundy"><i style="background:linear-gradient(135deg,#8c2238,#22050c)"></i>Burgundy</button>
@@ -541,13 +579,14 @@ input[type=date]{color-scheme:dark}
           <div class="f" style="margin-top:16px"><span><span data-l="km">ការបើកធៀប</span><span data-l="en">Opening animation</span></span></div>
           <div class="swatches" id="openings"><button class="swt on" data-v="glitter"><i style="background:radial-gradient(circle,#f6e3a1 1px,transparent 1.5px) 0 0/7px 7px,#3f0916"></i>Gold glitter</button><button class="swt" data-v="curtain"><i style="background:linear-gradient(90deg,#661326 0 45%,#000 45% 55%,#661326 55%)"></i>Curtain only</button></div>
         </div>
-        <div class="epane" data-p="photos">
+        <div class="epane" data-p="media">
+          <p class="sub ehint"><span data-l="km">ទាំងអស់នេះមិនចាំបាច់ទេ។ អ្នកអាចរំលង ហើយបន្ថែមពេលក្រោយ។</span><span data-l="en">All optional. You can skip this step and add them later.</span></p>
+          <h4 class="sh"><span data-l="km">រូបថត</span><span data-l="en">Photos</span></h4>
           <p class="sub" style="margin-bottom:6px"><span data-l="km">រូបថតរហូតដល់ ២០ សន្លឹក។ រូបទីមួយជារូបធំ។ យើងបង្រួមទំហំឲ្យស្រាប់ ដោយរក្សាគុណភាព។</span><span data-l="en">Up to 20 photos. The first one is shown large. We resize them for you and keep them sharp.</span></p>
           <div class="phhead"><span id="phCount"></span><span id="upState" class="savestate"></span></div>
           <div class="upl" id="upl"></div>
           <input type="file" accept="image/*" multiple hidden id="upIn">
-        </div>
-        <div class="epane" data-p="video">
+          <h4 class="sh"><span data-l="km">វីដេអូ</span><span data-l="en">Video</span></h4>
           <p class="sub" style="margin-bottom:10px"><span data-l="km">វីដេអូមួយ (Pre-wedding)។ MP4 ឬ MOV · មិនលើស ៣ នាទី · មិនលើស 200 MB។ វានឹងលេងបានល្អលើទូរស័ព្ទគ្រប់ប្រភេទ។</span><span data-l="en">One video (for example your pre-wedding film). MP4 or MOV · up to 3 minutes · up to 200 MB. It will play smoothly on every phone.</span></p>
           <div id="vidBox"></div>
           <div class="hero-btns" style="justify-content:flex-start;margin-top:10px">
@@ -556,8 +595,7 @@ input[type=date]{color-scheme:dark}
           </div>
           <div class="vprog hidden" id="vidProg"><i></i></div>
           <span id="vidState" class="savestate"></span>
-        </div>
-        <div class="epane" data-p="music">
+          <h4 class="sh"><span data-l="km">តន្ត្រី</span><span data-l="en">Music</span></h4>
           <div class="music" id="musicList">
             <button class="mu" data-v="none"><span class="pl">✕</span><div><span data-l="km">គ្មានតន្ត្រី</span><span data-l="en">No music</span></div></button>
             <button class="mu" data-v="custom" id="muCustom"><span class="pl">♪</span><div><span id="muName"><span data-l="km">បទផ្ទាល់ខ្លួន</span><span data-l="en">Your own song</span></span><small id="muInfo">MP3 / M4A · max 10 MB</small></div></button>
@@ -573,18 +611,22 @@ input[type=date]{color-scheme:dark}
             <audio id="muAudio" preload="none"></audio>
           </div>
         </div>
-        <div class="epane" data-p="sections">
+        <div class="epane" data-p="finish">
+          <p class="sub ehint"><span data-l="km">ពិនិត្យមើលចុងក្រោយ មុនផ្សព្វផ្សាយ។</span><span data-l="en">A last look before you publish.</span></p>
+          <ul class="ready" id="readyList"></ul>
+          <button type="button" class="btn block" id="pvBig">👁 <span data-l="km">មើលធៀបពេញអេក្រង់</span><span data-l="en">See it full screen</span></button>
+          <h4 class="sh"><span data-l="km">ផ្នែកដែលភ្ញៀវនឹងឃើញ</span><span data-l="en">What guests will see</span></h4>
           <div id="secToggles"></div>
-          <label class="f" style="margin-top:12px"><span><span data-l="km">ឆ្លើយតប (RSVP) មុនថ្ងៃ — មិនចាំបាច់</span><span data-l="en">RSVP reply-by date (optional)</span></span><input type="date" data-k="rsvpBy"></label>
+          <label class="f" style="margin-top:12px"><span><span data-l="km">ឆ្លើយតប (RSVP) មុនថ្ងៃ (មិនចាំបាច់)</span><span data-l="en">Reply-by date for RSVP (optional)</span></span><div class="dbox"><span class="dshow"></span><input type="date" data-k="rsvpBy"></div></label>
         </div>
       </div>
       <div class="ebar">
-        <button class="btn" id="saveBtn"><span data-l="km">រក្សាទុកព្រាង</span><span data-l="en">Save draft</span></button>
-        <button class="btn gold" data-go="pay"><span data-l="km">ផ្សព្វផ្សាយ</span><span data-l="en">Publish</span> →</button>
+        <button type="button" class="btn" id="stBack">← <span data-l="km">ថយក្រោយ</span><span data-l="en">Back</span></button>
+        <button type="button" class="btn gold" id="stNext"><span data-l="km">បន្ទាប់</span><span data-l="en">Next</span> →</button>
       </div>
-      <div class="note"><b>Real site:</b> every change saves to the database automatically. The guest page is the same template filled with these settings.</div>
+      <p class="autosave"><span data-l="km">អ្វីៗរក្សាទុកដោយខ្លួនឯង។ អ្នកអាចបិទ ហើយត្រឡប់មកវិញពេលណាក៏បាន។</span><span data-l="en">Everything saves by itself. You can close this and come back any time.</span></p>
     </div>
-    <div class="stick"><div class="phone"><iframe class="pv" src="/preview/invite.html" title="Live preview"></iframe></div>
+    <div class="stick ed-stick"><div class="phone"><iframe class="pv" src="/preview/invite.html" title="Live preview"></iframe></div>
       <div class="preview-toggle"><button class="btn sm" data-replay>↻ <span data-l="km">មើលការបើក</span><span data-l="en">Replay opening</span></button></div></div>
   </div>
 </div></section>
@@ -687,6 +729,7 @@ input[type=date]{color-scheme:dark}
   <button class="btn gold" data-go="templates"><span data-l="km">បង្កើតធៀប</span><span data-l="en">Create invitation</span></button>
   <a class="btn tg" href="#" onclick="return false" aria-label="Telegram"><svg class="tg-ic" viewBox="0 0 24 24" fill="#2aabee"><path d="M21.9 4.3l-3.2 15c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.2 13l-4.8-1.5c-1-.3-1-1 .2-1.5L20.5 2.8c.9-.3 1.6.2 1.4 1.5z"/></svg></a>
 </div>
+<button type="button" class="pv-fab" id="pvFab">👁 <span data-l="km">មើល</span><span data-l="en">Preview</span></button>
 <div class="fs-over" id="fsOver" aria-hidden="true"><iframe id="fsFrame" title="Full screen preview"></iframe><button type="button" id="fsClose" aria-label="Close">✕</button></div>
 <div class="toast" id="toast"></div>
 <audio id="siteBgm" src="/preview/bgm.mp3?v=4" loop preload="none"></audio>
@@ -709,9 +752,9 @@ function loadEditorFonts(){if(fontsLoaded)return;fontsLoaded=true;var l=document
   l.href='https://fonts.googleapis.com/css2?'+FONTS_KH.concat(FONTS_EN).map(function(f){return 'family='+f[3]}).join('&')+'&display=swap';document.head.appendChild(l)}
 function renderFontPickers(){
   var g=INV.groom.km||'សុវណ្ណ',b=INV.bride.km||'ស្រីពៅ',ge=INV.groom.en||'Sovann',be=INV.bride.en||'Sreypov';
-  $('#fontKh').innerHTML=FONTS_KH.map(function(f){return '<button type="button" data-v="'+f[0]+'"'+(INV.fontKh===f[0]?' class="on"':'')+'><span class="smp" style="font-family:'+f[2]+'">'+esc(g)+' · '+esc(b)+'</span><small>'+f[1]+'</small></button>'}).join('');
+  $('#fontKh').innerHTML=FONTS_KH.map(function(f){return '<button type="button" data-v="'+f[0]+'"'+(INV.fontKh===f[0]?' class="on"':'')+'><span class="smp" style="font-family:'+f[2]+'">'+esc(g)+'</span><small>'+f[1]+'</small></button>'}).join('');
   $('#fontEn').innerHTML=FONTS_EN.map(function(f){var st=f[0]==='cinzel'?';text-transform:uppercase;font-size:14px;letter-spacing:.08em':f[0]==='playfair'?';font-style:italic;font-size:17px':';font-size:23px';
-    return '<button type="button" data-v="'+f[0]+'"'+(INV.fontEn===f[0]?' class="on"':'')+'><span class="smp" style="font-family:'+f[2]+st+'">'+esc(ge)+' &amp; '+esc(be)+'</span><small>'+f[1]+'</small></button>'}).join('');
+    return '<button type="button" data-v="'+f[0]+'"'+(INV.fontEn===f[0]?' class="on"':'')+'><span class="smp" style="font-family:'+f[2]+st+'">'+esc(ge)+'</span><small>'+f[1]+'</small></button>'}).join('');
 }
 window.__INV=function(){return INV};
 /* the try page has its own names, so it never touches a saved invitation */
@@ -732,7 +775,8 @@ var TXT={km:{p1:'គំរូ + ព័ត៌មានរបស់អ្នក',p
    copied:'Copied ✓',saved:'Saved ✓',paid:'Paid ✓ Your invitation is live',hello:'Welcome! You are signed in'}};
 function lang(){return root.dataset.lang}
 function setLang(l){root.dataset.lang=l;root.lang=l;$$('#langSw button').forEach(function(b){b.classList.toggle('on',b.dataset.v===l)});
-  $$('[data-i]').forEach(function(e){e.textContent=TXT[l][e.dataset.i]});renderFaq();renderFeats();renderGrids();push()}
+  $$('[data-i]').forEach(function(e){e.textContent=TXT[l][e.dataset.i]});renderFaq();renderFeats();renderGrids();push();
+  if(typeof STEPS!=='undefined'&&STEPS){renderSteps();syncNames();$$('.dbox input').forEach(showDate);if(STEPS[STEP]==='finish')renderReady()}}
 $('#langSw').onclick=function(e){var b=e.target.closest('button');if(b)setLang(b.dataset.v)};
 function toast(k){var t=$('#toast');t.textContent=TXT[lang()][k]||k;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('on')},1800)}
 
@@ -807,7 +851,7 @@ function post(f,msg){try{f.contentWindow.postMessage(msg,'*')}catch(e){}}
 function push(){
   var s=settings();
   var ts=trySettings();
-  post($('#heroFrame'),{type:'settings',data:ts});post($('#tryFrame'),{type:'settings',data:ts});if($('#fsOver').classList.contains('on'))post($('#fsFrame'),{type:'settings',data:ts});
+  post($('#heroFrame'),{type:'settings',data:ts});post($('#tryFrame'),{type:'settings',data:ts});if($('#fsOver').classList.contains('on'))post($('#fsFrame'),{type:'settings',data:FS_SRC==='editor'?s:ts});
   post($('#v-editor iframe'),{type:'settings',data:s});
   var dg=GUESTS[GUESTS.length-1];var df=$('#demoSplit iframe');post(df,{type:'settings',data:settings(dg||null)});
   var gN=INV.groom.en||INV.groom.km,bN=INV.bride.en||INV.bride.km;var title=gN&&bN?gN+' & '+bN:(gN||bN||(lang()==='km'?'ធៀបថ្មី':'New invitation'));$('#edTitle').textContent=title;$('#dashTitle').textContent=title;
@@ -819,19 +863,18 @@ function push(){
 $$('iframe').forEach(function(f){f.addEventListener('load',function(){setTimeout(push,60)})});
 $('#heroFrame').addEventListener('load',function(){post(this,{type:'noscroll'})});
 function bindInputs(){$$('[data-k]').forEach(function(inp){
-  var k=inp.dataset.k.split('.');inp.value=k.length>1?INV[k[0]][k[1]]:INV[k[0]];
-  inp.oninput=function(){if(k.length>1)INV[k[0]][k[1]]=inp.value;else INV[k[0]]=inp.value;
-    $$('[data-k="'+inp.dataset.k+'"]').forEach(function(o){if(o!==inp)o.value=inp.value});push()}})}
+  var k=inp.dataset.k.split('.');inp.value=k.length>1?INV[k[0]][k[1]]:INV[k[0]];if(inp.type==='date')showDate(inp);
+  inp.oninput=function(){if(k.length>1)INV[k[0]][k[1]]=inp.value;else INV[k[0]]=inp.value;if(inp.type==='date')showDate(inp);
+    var f=inp.closest('.f.bad');if(f&&inp.value.trim()){f.classList.remove('bad');var e=f.querySelector('.ferr');if(e)e.remove()}
+    $$('[data-k="'+inp.dataset.k+'"]').forEach(function(o){if(o!==inp)o.value=inp.value});push()}});
+  nlInit();syncNames()}
 bindInputs();
 $('#hTry').onclick=function(){TRY.groom=$('#hG').value;TRY.bride=$('#hB').value;TRY.guest=$('#hGuest').value;syncTry();rememberCard('#v-home .try');go('try',{from:$('#v-home .try'),to:'#v-try .phone'});setTimeout(function(){post($('#tryFrame'),{type:'replay'})},300)};
 function syncTry(){$('#tryG').value=TRY.groom;$('#tryB').value=TRY.bride;$('#tryGuest').value=TRY.guest}
 [['#tryG','groom'],['#tryB','bride'],['#tryGuest','guest']].forEach(function(x){$(x[0]).addEventListener('input',function(){TRY[x[1]]=this.value;push()})});
 var guestTimer;$('#tryGuest').addEventListener('input',function(){clearTimeout(guestTimer);guestTimer=setTimeout(function(){post($('#tryFrame'),{type:'replay'})},1200)});
-$('#fullBtn').onclick=function(){var o=$('#fsOver'),f=$('#fsFrame'),ph=$('#v-try .phone'),shown=false;
-  var show=function(){if(shown)return;shown=true;carry(function(){o.classList.add('on');o.setAttribute('aria-hidden','false')},ph,function(){return o});setTimeout(bgmUpdate,0)};
-  f.onload=function(){if(f.src.indexOf('fs=')<0)return;post(f,{type:'settings',data:trySettings()});setTimeout(show,120)};
-  f.src='/preview/invite.html?fs='+Date.now();setTimeout(show,1500)};
-$('#fsClose').onclick=function(){var o=$('#fsOver');carry(function(){o.classList.remove('on');o.setAttribute('aria-hidden','true')},o,function(){return $('#v-try .phone')});
+$('#fullBtn').onclick=function(){openFull($('#v-try .phone'),'try',function(){return $('#v-try .phone')})};
+$('#fsClose').onclick=function(){var o=$('#fsOver'),back=FS_BACK||function(){return $('#v-try .phone')};carry(function(){o.classList.remove('on');o.setAttribute('aria-hidden','true')},o,back);
   setTimeout(function(){$('#fsFrame').src='about:blank';bgmUpdate()},600)};
 $$('[data-replay]').forEach(function(b){b.onclick=function(){var f=b.closest('.split').querySelector('iframe');post(f,{type:'replay'})}});
 
@@ -897,11 +940,11 @@ function go(v,o){o=o||{};if(VIEWS.indexOf(v)<0)v='home';
   if(o.instant||v===cur)job();else carry(job,from,toFn);
 }
 function render(v,o){
-  $$('.view').forEach(function(x){x.classList.toggle('on',x.id==='v-'+v)});
+  $$('.view').forEach(function(x){x.classList.toggle('on',x.id==='v-'+v)});document.body.dataset.view=v;
   if(o.back&&BACK[v])scrollTo(0,BACK[v].scroll);else scrollTo(0,0);$('.bbar').style.display=(v==='home'||v==='templates')?'':'none';
   $('#loginBtn').innerHTML=loggedIn?'<span>'+(ACCOUNT?esc(ACCOUNT.name.split(' ')[0]):(lang()==='km'?'ធៀបរបស់ខ្ញុំ':'My invitations'))+'</span>':'<span data-l="km">ចូល</span><span data-l="en">Log in</span>';
   $('#loginBtn').dataset.go=loggedIn?'dashboard':'login';
-  if(v==='editor'){loadEditorFonts();renderFontPickers()}
+  if(v==='editor'){loadEditorFonts();renderFontPickers();renderSteps()}
   if(v==='login'){lgPrepare()}else if(LG.on)lgShow(false);
   if(REAL&&loggedIn&&v==='editor'&&!CURRENT)ensureDraft();
   if(REAL&&loggedIn&&v==='dashboard')renderMyInvs();
@@ -960,11 +1003,87 @@ $('#tgNo').onclick=function(){$('#tgSheet').classList.remove('on')};
 $('#tgYes').onclick=function(){$('#tgSheet').classList.remove('on');loggedIn=true;toast('hello');go(AFTER_LOGIN)};
 
 /* ---------- editor ---------- */
-$('#etabs').onclick=function(e){var b=e.target.closest('.etab');if(!b||b.classList.contains('on'))return;
-  var tabs=$$('.etab'),from=tabs.indexOf($('.etab.on')),to=tabs.indexOf(b);
-  tabs.forEach(function(x){x.classList.toggle('on',x===b)});
-  $$('.epane').forEach(function(p){var on=p.dataset.p===b.dataset.t;p.classList.toggle('on',on);p.classList.remove('in-l','in-r');if(on){void p.offsetWidth;p.classList.add(to>from?'in-r':'in-l')}});
-  b.scrollIntoView({block:'nearest',inline:'center',behavior:RM?'auto':'smooth'})};
+/* ---------- guided editor: 5 steps ---------- */
+var STEPS=['names','venue','look','media','finish'],STEP=0;
+var STEP_NAME={names:['ឈ្មោះ និងកាលបរិច្ឆេទ','Names & date'],venue:['ទីកន្លែង និងផែនទី','Venue & map'],look:['ពណ៌ និងពុម្ពអក្សរ','Colours & fonts'],media:['រូបថត វីដេអូ តន្ត្រី','Photos, video & music'],finish:['ពិនិត្យ និងផ្សព្វផ្សាយ','Check & publish']};
+function missing(){var m=[];
+  if(!(INV.groom.en||INV.groom.km).trim())m.push(['names','groom']);
+  if(!(INV.bride.en||INV.bride.km).trim())m.push(['names','bride']);
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(INV.date||''))m.push(['names','date']);
+  if(!(INV.venue||'').trim())m.push(['venue','venue']);
+  return m}
+var NEED_MSG={groom:['សូមបញ្ចូលឈ្មោះកូនកំលោះ','Please add the groom\'s name'],bride:['សូមបញ្ចូលឈ្មោះកូនក្រមុំ','Please add the bride\'s name'],date:['សូមជ្រើសរើសថ្ងៃ','Please choose the date'],venue:['សូមបញ្ចូលទីកន្លែង','Please add the venue']};
+function needEl(k){return k==='groom'||k==='bride'?$('[data-nm="'+k+'"]').closest('.f'):$('[data-need="'+k+'"]')}
+function clearBad(){$$('#v-editor .f.bad').forEach(function(f){f.classList.remove('bad');var e=f.querySelector('.ferr');if(e)e.remove()})}
+function showBad(list){clearBad();list.forEach(function(x){var f=needEl(x[1]);if(!f)return;f.classList.add('bad');var e=document.createElement('small');e.className='ferr';e.textContent=T(NEED_MSG[x[1]][0],NEED_MSG[x[1]][1]);f.appendChild(e)});
+  var first=list[0]&&needEl(list[0][1]);if(first){first.scrollIntoView({block:'center',behavior:RM?'auto':'smooth'});var i=first.querySelector('input');if(i&&i.type!=='date')setTimeout(function(){i.focus({preventScroll:true})},250)}}
+function setStep(i,o){o=o||{};i=Math.max(0,Math.min(STEPS.length-1,i));var from=STEP;STEP=i;
+  $$('.epane').forEach(function(p){var on=p.dataset.p===STEPS[i];p.classList.toggle('on',on);p.classList.remove('in-l','in-r');if(on&&from!==i&&!o.quiet){void p.offsetWidth;p.classList.add(i>from?'in-r':'in-l')}});
+  renderSteps();clearBad();
+  if(STEPS[i]==='finish')renderReady();
+  if(from!==i&&!o.quiet){var top=$('#steps');if(top&&top.getBoundingClientRect().top<0)top.scrollIntoView({block:'start',behavior:RM?'auto':'smooth'})}
+}
+function renderSteps(){var miss=missing();
+  $('#stpNum').textContent=T('ជំហាន '+khNum(STEP+1)+' / ៥ ·','Step '+(STEP+1)+' of 5 ·');$('#stpName').textContent=T(STEP_NAME[STEPS[STEP]][0],STEP_NAME[STEPS[STEP]][1]);
+  $$('.stp').forEach(function(b,j){b.classList.toggle('on',j===STEP);b.classList.toggle('done',j<STEP);b.classList.toggle('miss',j!==STEP&&miss.some(function(x){return x[0]===STEPS[j]})&&j<STEP)});
+  $('#stBack').style.visibility=STEP===0?'hidden':'';
+  $('#stNext').innerHTML=STEP===STEPS.length-1?T('ផ្សព្វផ្សាយ →','Publish →'):STEPS[STEP]==='media'?T('បន្ទាប់ (ឬរំលង) →','Next (or skip) →'):T('បន្ទាប់ →','Next →');
+}
+$('#stpBar').onclick=function(e){var b=e.target.closest('.stp');if(b)setStep(+b.dataset.s)};
+$('#stBack').onclick=function(){setStep(STEP-1)};
+$('#stNext').onclick=function(){
+  var here=missing().filter(function(x){return x[0]===STEPS[STEP]});
+  if(here.length){showBad(here);return}
+  if(STEP<STEPS.length-1){setStep(STEP+1);return}
+  var all=missing();if(all.length){setStep(STEPS.indexOf(all[0][0]));showBad(all.filter(function(x){return x[0]===all[0][0]}));return}
+  rememberCard('#stNext');go('pay',{from:$('#stNext'),to:'#payBox'});
+};
+function renderReady(){
+  var nm=!!((INV.groom.en||INV.groom.km)&&(INV.bride.en||INV.bride.km)),dt=/^\d{4}-\d{2}-\d{2}$/.test(INV.date||''),vn=(INV.venue||'').trim();
+  var rows=[[nm,'names',T('ឈ្មោះ','Names'),nm?esc((INV.groom.km||INV.groom.en)+' & '+(INV.bride.km||INV.bride.en)):''],
+    [dt,'names',T('កាលបរិច្ឆេទ','Date'),dt?fmtDMY(INV.date):''],[!!vn,'venue',T('ទីកន្លែង','Venue'),esc(vn)],
+    [MEDIA.photos.length?true:null,'media',T('រូបថត','Photos'),MEDIA.photos.length?khOr(MEDIA.photos.length):T('មិនចាំបាច់','optional')],
+    [INV.music==='custom'&&MEDIA.music?true:null,'media',T('តន្ត្រី','Music'),INV.music==='custom'&&MEDIA.music?'♪':T('មិនចាំបាច់','optional')]];
+  $('#readyList').innerHTML=rows.map(function(r){var c=r[0]===true?'ok':r[0]===null?'opt':'no';
+    return '<li class="'+c+'"><i>'+(c==='ok'?'✓':c==='opt'?'○':'!')+'</i><span><b>'+r[2]+'</b>'+(r[3]?' · '+r[3]:'')+'</span>'+(c!=='ok'?'<button type="button" class="btn sm" data-tostep="'+STEPS.indexOf(r[1])+'">'+(c==='no'?T('បំពេញ','Fill in'):T('បន្ថែម','Add'))+'</button>':'')+'</li>'}).join('');
+}
+$('#readyList').onclick=function(e){var b=e.target.closest('[data-tostep]');if(b)setStep(+b.dataset.tostep)};
+function khOr(n){return lang()==='km'?khNum(n):String(n)}
+function fmtDMY(iso){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||'');if(!m)return '';var d=new Date(iso+'T12:00:00');
+  return lang()==='km'?khNum(m[3]+'/'+m[2]+'/'+m[1])+' · ថ្ងៃ'+KM_D[d.getDay()]:m[3]+'/'+m[2]+'/'+m[1]+' · '+EN_D[d.getDay()]}
+function showDate(inp){var b=inp.closest('.dbox');if(!b)return;var sp=b.querySelector('.dshow'),v=fmtDMY(inp.value);sp.textContent=v||T('ជ្រើសរើសថ្ងៃ','Choose a date');sp.classList.toggle('ph',!v)}
+$$('.dbox').forEach(function(b){b.addEventListener('click',function(e){var i=b.querySelector('input');if(e.target!==i)i.focus();try{i.showPicker()}catch(_){}})});
+
+/* one name box per person: type in Khmer or English; the other spelling is optional */
+var NL={groom:'km',bride:'km'};
+function nlInit(){NL=NL||{};['groom','bride'].forEach(function(k){NL[k]=INV[k].km?'km':INV[k].en?'en':(lang()==='km'?'km':'en')})}
+function syncNames(){['groom','bride'].forEach(function(k){
+  var main=$('[data-nm="'+k+'"]'),alt=$('[data-nma="'+k+'"]'),other=NL[k]==='km'?'en':'km';
+  if(document.activeElement!==main)main.value=INV[k][NL[k]]||'';
+  if(document.activeElement!==alt)alt.value=INV[k][other]||'';
+  var box=main.closest('.nm-box'),altF=alt.closest('.f'),add=box.querySelector('.alt-add');
+  var lbl=other==='en'?T('ឈ្មោះជាអក្សរឡាតាំង (សម្រាប់ធៀបភាសាអង់គ្លេស និងតំណរបស់អ្នក)','English spelling (for the English version and your link)'):T('ឈ្មោះជាអក្សរខ្មែរ (មិនចាំបាច់)','Khmer spelling (optional)');
+  altF.querySelector('.alt-l').textContent=lbl;
+  var showAlt=!!INV[k][other]||altF.dataset.open==='1';altF.classList.toggle('hidden',!showAlt);add.classList.toggle('hidden',showAlt);
+  add.textContent=other==='en'?T('+ សរសេរជាអក្សរអង់គ្លេសផង (មិនចាំបាច់)','+ Add English spelling (optional)'):T('+ សរសេរជាអក្សរខ្មែរផង (មិនចាំបាច់)','+ Add Khmer spelling (optional)');
+})}
+$$('[data-nm]').forEach(function(inp){inp.addEventListener('input',function(){var k=inp.dataset.nm,v=inp.value,t=v.trim();
+  var det=t?(KH.test(t)?'km':'en'):NL[k];if(det!==NL[k]){INV[k][NL[k]]='';NL[k]=det}
+  INV[k][NL[k]]=v;syncNames();var f=inp.closest('.f');if(f.classList.contains('bad')&&t){f.classList.remove('bad');var e=f.querySelector('.ferr');if(e)e.remove()}push()})});
+$$('[data-nma]').forEach(function(inp){inp.addEventListener('input',function(){var k=inp.dataset.nma;INV[k][NL[k]==='km'?'en':'km']=inp.value;push()})});
+$$('.alt-add').forEach(function(b){b.onclick=function(){var k=b.dataset.altadd,f=$('[data-nma="'+k+'"]').closest('.f');f.dataset.open='1';syncNames();$('[data-nma="'+k+'"]').focus()}});
+
+/* full-screen preview from the editor (the 👁 button on phones, and "See it full screen") */
+var FS_SRC='try';
+function openFull(fromEl,src,backFn){var o=$('#fsOver'),f=$('#fsFrame'),shown=false;FS_SRC=src;FS_BACK=backFn;
+  var data=function(){return src==='editor'?settings():trySettings()};
+  var show=function(){if(shown)return;shown=true;carry(function(){o.classList.add('on');o.setAttribute('aria-hidden','false')},fromEl,function(){return o});setTimeout(bgmUpdate,0)};
+  f.onload=function(){if(f.src.indexOf('fs=')<0)return;post(f,{type:'settings',data:data()});setTimeout(show,120)};
+  f.src='/preview/invite.html?fs='+Date.now();setTimeout(show,1500)}
+var FS_BACK=null;
+$('#pvFab').onclick=function(){openFull(this,'editor',function(){return $('#pvFab')})};
+$('#pvBig').onclick=function(){openFull(this,'editor',function(){return $('#pvBig')})};
+
 $('#swatches').onclick=function(e){var b=e.target.closest('.swt');if(!b)return;INV.theme=b.dataset.v;$$('#swatches .swt').forEach(function(x){x.classList.toggle('on',x===b)});push()};
 function pick(sel,key){$(sel).onclick=function(e){var b=e.target.closest('button');if(!b)return;$$(sel+' button').forEach(function(x){x.classList.toggle('on',x===b)});if(key){INV[key]=b.dataset.v;push()}}}
 ['#fontKh','#fontEn'].forEach(function(sel){$(sel).onclick=function(e){var b=e.target.closest('button');if(!b)return;INV[sel==='#fontKh'?'fontKh':'fontEn']=b.dataset.v;renderFontPickers();push()}});pick('#openings','opening');pick('#pkgs');
@@ -973,7 +1092,6 @@ function renderSec(){$('#secToggles').innerHTML=SEC.map(function(s){return '<div
 renderSec();
 $('#secToggles').onclick=function(e){var b=e.target.closest('.sw');if(!b)return;INV.sections[b.dataset.s]=!INV.sections[b.dataset.s];b.classList.toggle('on');push()};
 
-$('#saveBtn').onclick=function(){if(REAL&&CURRENT){saveNow(true)}else toast('saved')};
 
 /* ---------- saving to the customer's account (real site only) ---------- */
 function apiCall(method,path,body){
@@ -1005,8 +1123,9 @@ function syncUI(){
   $$('#openings button').forEach(function(x){x.classList.toggle('on',x.dataset.v===INV.opening)});
   $$('#musicList button').forEach(function(x){x.classList.toggle('on',x.dataset.v===INV.music)});
   renderSec();push();
+  var m=missing();setStep(m.length?STEPS.indexOf(m[0][0]):0,{quiet:true});
 }
-function loadInv(inv){INV=merge(DEFAULTS,inv.settings);CURRENT=inv.id;MEDIA={photos:[],music:null,video:null,maxPhotos:20};loadMedia();lastSaved=JSON.stringify(payload());syncUI();saveState(lang()==='km'?'បានរក្សាទុក ✓':'Saved ✓','ok')}
+function loadInv(inv){INV=merge(DEFAULTS,inv.settings);STEP=0;CURRENT=inv.id;MEDIA={photos:[],music:null,video:null,maxPhotos:20};loadMedia();lastSaved=JSON.stringify(payload());syncUI();saveState(lang()==='km'?'បានរក្សាទុក ✓':'Saved ✓','ok')}
 function createDraft(from){
   return apiCall('POST','/api/invitations',{template:'golden-curtain',event_type:'wedding',settings:from}).then(function(j){loadInv(j.invitation);return j.invitation})
     .catch(function(e){if(e.code==='limit'){toast(lang()==='km'?'អ្នកមានធៀបដល់ ១០ ហើយ។ សូមលុបធៀបព្រាងចាស់ជាមុនសិន។':e.message);go('dashboard')}throw e});
@@ -1022,7 +1141,7 @@ function ensureDraft(){
 }
 $('#useTpl').onclick=function(){
   if(!REAL||!loggedIn){try{sessionStorage.setItem('mc_new','1');sessionStorage.setItem('mc_try',JSON.stringify(fromTry()))}catch(e){}INV=fromTry();bindInputs();AFTER_LOGIN='editor';go('login');return}
-  INV=fromTry();createDraft(payload()).then(function(){rememberCard('#v-try .phone');go('editor',{from:$('#v-try .phone'),to:'#v-editor .stick .phone'})}).catch(function(){});
+  INV=fromTry();createDraft(payload()).then(function(){setStep(0,{quiet:true});rememberCard('#v-try .phone');go('editor',{from:$('#v-try .phone'),to:'#v-editor .split>div:first-child'})}).catch(function(){});
 };
 function fmtDate(iso){try{var d=new Date(iso);return d.toLocaleDateString(lang()==='km'?'km-KH':'en-GB',{day:'numeric',month:'short',year:'numeric'})}catch(e){return ''}}
 function renderMyInvs(){
