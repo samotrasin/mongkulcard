@@ -62,6 +62,14 @@ async function publish(env, inv, admin) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(s.date || '')) missing.push('date');
   if (!s.venue) missing.push('venue');
   if (missing.length) return json({ error: 'Please fill in: ' + missing.join(', '), code: 'missing', missing }, 400);
+  // Names prepared before paying must fit the package that was bought (they could be added while the QR was open).
+  if (!admin && inv.named_guests) {
+    const have = (await env.DB.prepare(`SELECT COUNT(*) AS n FROM inv_guests WHERE invitation_id = ?1`).bind(inv.id).first()).n;
+    if (have > inv.named_guests) {
+      return json({ error: `Your package covers ${inv.named_guests} guests and you have ${have}. Please remove ${have - inv.named_guests} name${have - inv.named_guests === 1 ? "" : "s"}, then publish.`,
+        code: 'too_many_guests', guests: have, limit: inv.named_guests }, 409);
+    }
+  }
 
   let slug = inv.slug;
   if (!slug) slug = await freeSlug(env, slugBase(s));

@@ -34,6 +34,7 @@
       .then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
         if (!j) return;
         until = Date.now() + j.expiresIn * 1000;
+        document.querySelectorAll('.lgNum').forEach(function (e) { e.textContent = j.check; });
         btn.href = phone ? j.app : j.link; if (!phone) { btn.target = '_blank'; btn.rel = 'noopener'; }
         btn.classList.remove('hidden');
       }).catch(function () {});

@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="km" data-lang="km" data-theme="burgundy" class="locked">
+<html lang="km" data-lang="km" data-theme="burgundy" class="locked" translate="no">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#22050c">
 <meta name="robots" content="noindex">
 <title>MongkulCard · Golden Curtain (demo template)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -227,6 +228,12 @@ html[data-lang=en] .btn{font-family:var(--en-d);font-size:13px;letter-spacing:.1
 html,body{max-width:100%;overflow-x:clip}
 @supports not (overflow:clip){html,body{overflow-x:hidden}}
 @media (hover:none) and (pointer:coarse){input,select,textarea{font-size:16px!important}}
+/* phones: no double-tap zoom, dark browser parts, keyboard focus visible */
+html{color-scheme:dark;touch-action:manipulation}
+a,button,input,select,textarea,label,summary{touch-action:manipulation}
+:focus-visible{outline:2px solid var(--gold-l,#f6e3a1);outline-offset:2px}
+html.noscroll,html.noscroll body{overflow:hidden}
+.lb{overscroll-behavior:contain}
 </style>
 </head>
 <body>

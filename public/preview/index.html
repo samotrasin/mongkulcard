@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#120609">
 <meta name="robots" content="noindex, nofollow">
 <title>MongkulCard · ធៀបអេឡិចត្រូនិច · E-invitations</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -185,6 +186,7 @@ input[type=date]{color-scheme:dark}
 .lg-alt{display:inline-block;margin-top:14px;font-size:13px;color:var(--gold-l);text-decoration:underline;text-underline-offset:3px;background:none;border:0;cursor:pointer}
 .lg-foot{font-size:12px;color:var(--muted);margin-top:18px;opacity:.8}
 .lg-spin{width:38px;height:38px;margin:8px auto 10px;border-radius:50%;border:3px solid var(--line2);border-top-color:var(--gold);animation:lgs 1s linear infinite}@keyframes lgs{to{transform:rotate(360deg)}}
+.lg-big{display:flex;flex-direction:column;align-items:center;gap:2px;margin:4px 0 6px;font-size:12.5px;color:var(--muted)}.lg-big b{font:600 44px/1.1 var(--serif);color:var(--gold-l);letter-spacing:.06em;font-variant-numeric:tabular-nums}
 .lg-h{font-size:17px;font-weight:500;margin-bottom:10px}
 .lg-steps{text-align:left;margin:0 auto 14px;padding-left:22px;max-width:280px;font-size:14px;line-height:1.9}.lg-steps b{color:var(--gold-l);font-weight:500}
 .or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;margin:14px 0 2px}.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
@@ -367,6 +369,12 @@ html,body{max-width:100%;overflow-x:clip}
 @supports not (overflow:clip){html,body{overflow-x:hidden}}
 @media (hover:none) and (pointer:coarse){input,select,textarea{font-size:16px!important}}
 .phone iframe,.fs-over iframe{width:1px;min-width:100%;max-width:100%}
+/* phones: no double-tap zoom, dark browser parts, keyboard focus visible */
+html{color-scheme:dark;touch-action:manipulation}
+a,button,input,select,textarea,label,summary{touch-action:manipulation}
+:focus-visible{outline:2px solid var(--gold-l,#f6e3a1);outline-offset:2px}
+html.noscroll,html.noscroll body{overflow:hidden}
+.pop,.sheet,.fs-over,.pop.help{overscroll-behavior:contain}
 </style>
 </head>
 <body>
@@ -375,7 +383,7 @@ html,body{max-width:100%;overflow-x:clip}
 
 <header class="hdr">
   <div class="wrap">
-    <a class="logo" data-go="home">
+    <a class="logo" data-go="home" translate="no">
       <svg viewBox="0 0 32 32"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a8782a"/><stop offset=".45" stop-color="#f6e3a1"/><stop offset="1" stop-color="#a8782a"/></linearGradient></defs>
         <path d="M16 2c3 4 3 9 0 13-3-4-3-9 0-13z" fill="url(#lg)"/><path d="M16 15c4-5 9-6 13-4-2 5-8 7-13 4zM16 15c-4-5-9-6-13-4 2 5 8 7 13 4z" fill="none" stroke="url(#lg)" stroke-width="1.4"/>
         <path d="M5 20h22M7 24h18M10 28h12" stroke="url(#lg)" stroke-width="1.3"/></svg>
@@ -529,15 +537,16 @@ html,body{max-width:100%;overflow-x:clip}
     <p class="sub"><span data-l="km">មួយជំហានប៉ុណ្ណោះ រួចអ្នកអាចចាប់ផ្ដើមរចនា។ មិនចាំបាច់មានពាក្យសម្ងាត់ទេ។</span><span data-l="en">Just one step, then you can start designing. No password needed.</span></p>
     <div id="lgStart">
       <a class="sso tg" id="tgLogin" href="#" role="button"><svg viewBox="0 0 24 24" fill="#fff"><path d="M21.9 4.3l-3.2 15c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.2 13l-4.8-1.5c-1-.3-1-1 .2-1.5L20.5 2.8c.9-.3 1.6.2 1.4 1.5z"/></svg><span data-l="km">ចូលតាម Telegram</span><span data-l="en">Sign in with Telegram</span></a>
-      <p class="lg-how"><span data-l="km">Telegram នឹងបើក។ ចុច <b>Start</b> រួច <b>✅ បាទ/ចាស</b> ហើយត្រឡប់មកទីនេះវិញ។</span><span data-l="en">Telegram opens. Tap <b>Start</b>, then <b>✅ Yes</b>, and come back here.</span></p>
+      <p class="lg-how"><span data-l="km">Telegram នឹងបើក។ ចុច <b>Start</b> រួចចុចលេខដែលបង្ហាញនៅទីនេះ ហើយត្រឡប់មកវិញ។</span><span data-l="en">Telegram opens. Tap <b>Start</b>, then tap the number shown here, and come back.</span></p>
       <a class="lg-alt" id="tgWidget" href="/signin"><span data-l="km">ប្រើកុំព្យូទ័រ? ចូលតាមទំព័រ Telegram</span><span data-l="en">On a computer? Use Telegram's login page</span></a>
     </div>
     <div id="lgWait" hidden>
+      <div class="lg-big"><span data-l="km">លេខរបស់អ្នក</span><span data-l="en">Your number</span><b class="lgNum"></b></div>
       <div class="lg-spin" aria-hidden="true"></div>
       <h3 class="lg-h"><span data-l="km">កំពុងរង់ចាំ Telegram…</span><span data-l="en">Waiting for Telegram…</span></h3>
       <ol class="lg-steps">
         <li><span data-l="km">ចុច <b>Start</b> ក្នុង Telegram</span><span data-l="en">Tap <b>Start</b> in Telegram</span></li>
-        <li><span data-l="km">ចុច <b>✅ បាទ/ចាស</b></span><span data-l="en">Tap <b>✅ Yes, it's me</b></span></li>
+        <li><span data-l="km">ចុចលេខ <b class="lgNum"></b></span><span data-l="en">Tap the number <b class="lgNum"></b></span></li>
         <li><span data-l="km">ត្រឡប់មកទីនេះ វានឹងបន្តដោយខ្លួនឯង</span><span data-l="en">Come back here, it continues by itself</span></li>
       </ol>
       <a class="btn block" id="lgOpen" href="#" target="_blank" rel="noopener"><span data-l="km">Telegram មិនបើក? ចុចទីនេះ</span><span data-l="en">Telegram didn't open? Tap here</span></a>
@@ -555,8 +564,8 @@ html,body{max-width:100%;overflow-x:clip}
 <section class="view" id="v-editor"><div class="wrap app">
   <div class="split">
     <div>
-      <div class="eyebrow"><span data-l="km">កំពុងកែប្រែ</span><span data-l="en">Editing</span> · Golden Curtain · <span class="pill draft"><span data-l="km">ព្រាង</span><span data-l="en">Draft</span></span> <span id="saveState" class="savestate"></span></div>
-      <h2 class="h1" style="margin:6px 0 14px;font-size:22px" id="edTitle"></h2>
+      <div class="eyebrow"><span data-l="km">កំពុងកែប្រែ</span><span data-l="en">Editing</span> · Golden Curtain · <span class="pill draft"><span data-l="km">ព្រាង</span><span data-l="en">Draft</span></span> <span id="saveState" role="status" aria-live="polite" class="savestate"></span></div>
+      <h2 class="h1" style="margin:6px 0 14px;font-size:22px" id="edTitle" translate="no"></h2>
       <div class="steps" id="steps">
         <div class="stp-top"><span id="stpNum"></span><b id="stpName"></b></div>
         <div class="stp-bar" id="stpBar">
@@ -636,7 +645,7 @@ html,body{max-width:100%;overflow-x:clip}
         </div>
         <div class="epane" data-p="finish">
           <p class="sub ehint"><span data-l="km">ពិនិត្យមើលចុងក្រោយ មុនផ្សព្វផ្សាយ។</span><span data-l="en">A last look before you publish.</span></p>
-          <ul class="ready" id="readyList"></ul>
+          <ul class="ready" id="readyList" translate="no"></ul>
           <button type="button" class="btn block" id="pvBig">👁 <span data-l="km">មើលធៀបពេញអេក្រង់</span><span data-l="en">See it full screen</span></button>
           <h4 class="sh"><span data-l="km">ផ្នែកដែលភ្ញៀវនឹងឃើញ</span><span data-l="en">What guests will see</span></h4>
           <div id="secToggles"></div>
@@ -696,12 +705,12 @@ html,body{max-width:100%;overflow-x:clip}
     <div>
       <div class="panel" id="gpPanel">
         <div class="eyebrow"><span data-l="km">ភ្ញៀវ និងតំណ</span><span data-l="en">Guests &amp; links</span></div>
-        <h3 id="gpTitle" style="font:600 20px var(--serif);margin:4px 0 6px"></h3>
+        <h3 id="gpTitle" translate="no" style="font:600 20px var(--serif);margin:4px 0 6px"></h3>
         <ol class="nextsteps" id="gpNext"></ol>
         <div id="gpPublish"></div>
         <div id="gpLive" class="hidden">
           <div class="f"><span><span data-l="km">តំណរួម (សម្រាប់ផ្ញើក្នុងក្រុម)</span><span data-l="en">Shared link (for group chats)</span></span></div>
-          <div class="linkrow"><code id="gpShared"></code><button class="btn sm" type="button" id="gpCopyShared">⧉</button><a class="btn sm tgs" id="gpShareShared" target="_blank" rel="noopener" aria-label="Telegram"></a></div>
+          <div class="linkrow"><code id="gpShared"></code><button class="btn sm" type="button" id="gpCopyShared" aria-label="Copy shared link">⧉</button><a class="btn sm tgs" id="gpShareShared" target="_blank" rel="noopener" aria-label="Telegram"></a></div>
           <div class="stats4" id="gpStats"></div>
         </div>
         <div id="gpGuests">
@@ -713,10 +722,10 @@ html,body{max-width:100%;overflow-x:clip}
             <button type="button" class="btn sm hidden" id="gpContacts">👥 <span data-l="km">ពីទំនាក់ទំនង</span><span data-l="en">From contacts</span></button>
           </div>
           <p class="ftip hidden" id="gpTip"><span data-l="km">ក្នុង Excel ឬ Google Sheets៖ ជ្រើសរើសជួរឈ្មោះ → Copy → មកទីនេះ ចុចក្នុងប្រអប់ខាងក្រោម → Paste។ ឈ្មោះមួយក្នុងមួយបន្ទាត់។</span><span data-l="en">In Excel or Google Sheets: select the names column → Copy → come back, tap the box below → Paste. One name per line.</span></p>
-          <textarea id="gpNames" rows="4" placeholder="លោក ដារ៉ា និងភរិយា&#10;Ms. Lina&#10;…"></textarea>
-          <div class="addg2"><select id="gpLang"><option value="km">ខ្មែរ</option><option value="en">English</option><option value="zh">中文</option></select><button class="btn gold sm" type="button" id="gpAdd">+ <span data-l="km">បន្ថែម</span><span data-l="en">Add</span></button><span id="gpCount" class="savestate"></span></div>
-          <div class="gtools"><input id="gpSearch" class="gsearch" placeholder="🔍"><button type="button" class="btn sm" id="gpCopyAll">⧉ <span data-l="km">ចម្លងតំណទាំងអស់</span><span data-l="en">Copy all links</span></button><button type="button" class="btn sm" id="gpCsv">⇩ <span data-l="km">ទាញយកបញ្ជី</span><span data-l="en">Download list</span></button></div>
-          <ul class="glist" id="gpList"></ul>
+          <textarea id="gpNames" rows="4" aria-label="Guest names, one per line" autocomplete="off" spellcheck="false" placeholder="លោក ដារ៉ា និងភរិយា&#10;Ms. Lina&#10;…"></textarea>
+          <div class="addg2"><select id="gpLang" aria-label="Invitation language"><option value="km">ខ្មែរ</option><option value="en">English</option><option value="zh">中文</option></select><button class="btn gold sm" type="button" id="gpAdd">+ <span data-l="km">បន្ថែម</span><span data-l="en">Add</span></button><span id="gpCount" class="savestate"></span></div>
+          <div class="gtools"><input id="gpSearch" class="gsearch" type="search" placeholder="🔍" aria-label="Search guests" autocomplete="off"><button type="button" class="btn sm" id="gpCopyAll">⧉ <span data-l="km">ចម្លងតំណទាំងអស់</span><span data-l="en">Copy all links</span></button><button type="button" class="btn sm" id="gpCsv">⇩ <span data-l="km">ទាញយកបញ្ជី</span><span data-l="en">Download list</span></button></div>
+          <ul class="glist" id="gpList" translate="no"></ul>
           <div id="gpSharedReplies"></div>
         </div>
       </div>
@@ -748,7 +757,7 @@ html,body{max-width:100%;overflow-x:clip}
         <div class="addg f">
           <input id="gName" placeholder="លោក ដារ៉ា / Mr. Dara">
           <select id="gLang"><option value="km">ខ្មែរ</option><option value="en">EN</option><option value="zh">中文</option></select>
-          <button class="btn gold sm" id="gAdd">+</button>
+          <button class="btn gold sm" id="gAdd" aria-label="Add guest">+</button>
         </div>
         <ul class="glist" id="glist"></ul>
       </div>
@@ -764,7 +773,7 @@ html,body{max-width:100%;overflow-x:clip}
 </div>
 <button type="button" class="pv-fab" id="pvFab">👁 <span data-l="km">មើល</span><span data-l="en">Preview</span></button>
 <div class="fs-over" id="fsOver" aria-hidden="true"><iframe id="fsFrame" title="Full screen preview"></iframe><button type="button" id="fsClose" aria-label="Close">✕</button></div>
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <audio id="siteBgm" src="/preview/bgm.mp3?v=4" loop preload="none"></audio>
 <script src="/preview/qrcode.js"></script>
 
@@ -907,7 +916,7 @@ function syncTry(){$('#tryG').value=TRY.groom;$('#tryB').value=TRY.bride;$('#try
 [['#tryG','groom'],['#tryB','bride'],['#tryGuest','guest']].forEach(function(x){$(x[0]).addEventListener('input',function(){TRY[x[1]]=this.value;push()})});
 var guestTimer;$('#tryGuest').addEventListener('input',function(){clearTimeout(guestTimer);guestTimer=setTimeout(function(){post($('#tryFrame'),{type:'replay'})},1200)});
 $('#fullBtn').onclick=function(){openFull($('#v-try .phone'),'try',function(){return $('#v-try .phone')})};
-$('#fsClose').onclick=function(){var o=$('#fsOver'),back=FS_BACK||function(){return $('#v-try .phone')};carry(function(){o.classList.remove('on');o.setAttribute('aria-hidden','true')},o,back);
+$('#fsClose').onclick=function(){document.documentElement.classList.remove('noscroll');var o=$('#fsOver'),back=FS_BACK||function(){return $('#v-try .phone')};carry(function(){o.classList.remove('on');o.setAttribute('aria-hidden','true')},o,back);
   setTimeout(function(){$('#fsFrame').src='about:blank';bgmUpdate()},600)};
 $$('[data-replay]').forEach(function(b){b.onclick=function(){var f=b.closest('.split').querySelector('iframe');post(f,{type:'replay'})}});
 
@@ -945,7 +954,7 @@ var HELP={
    ['ឈ្មោះភ្ញៀវនៅលើក្រប?','The guest name on the cover?','ភ្ញៀវម្នាក់ៗទទួលបានតំណផ្ទាល់ខ្លួន ដែលមានឈ្មោះគាត់នៅលើក្រប។','Each guest gets their own link with their name on the cover.']],
  login:[['ហេតុអ្វីប្រើ Telegram?','Why Telegram?','គ្មានពាក្យសម្ងាត់ត្រូវចាំ ហើយយើងអាចផ្ញើព័ត៌មានការបញ្ជាទិញ និងជួយអ្នកនៅទីនោះ។','No password to remember, and we can send your order updates and help you there.'],
    ['Telegram មិនបើក?','Telegram did not open?','ចុច «Telegram មិនបើក? ចុចទីនេះ»។ ប្រសិនបើនៅតែមិនបាន សូមបើកតំណនេះក្នុង Chrome ឬ Safari។','Tap "Telegram didn\'t open? Tap here". If it still does not work, open this page in Chrome or Safari.'],
-   ['ចុច Yes ហើយ ប៉ុន្តែនៅតែរង់ចាំ?','Tapped Yes but still waiting?','ត្រឡប់មកទំព័រនេះវិញ វានឹងបន្តក្នុងពីរបីវិនាទី។','Come back to this page; it continues within a few seconds.']],
+   ['ចុចលេខហើយ ប៉ុន្តែនៅតែរង់ចាំ?','Tapped the number but still waiting?','ត្រឡប់មកទំព័រនេះវិញ វានឹងបន្តក្នុងពីរបីវិនាទី។','Come back to this page; it continues within a few seconds.']],
  editor:[['ការងាររបស់ខ្ញុំត្រូវបានរក្សាទុកទេ?','Is my work saved?','បាទ/ចាស ដោយខ្លួនឯង។ អ្នកអាចបិទ ហើយត្រឡប់មកវិញពីទូរស័ព្ទណាក៏បាន។','Yes, automatically. You can close it and come back from any phone.'],
    ['យកតំណ Google Maps ដោយរបៀបណា?','How do I get the Google Maps link?','បើក Google Maps → ស្វែងរកទីកន្លែង → Share → Copy link → បិទភ្ជាប់ក្នុងជំហាន «ទីកន្លែង»។','Open Google Maps → find the place → Share → Copy link → paste it in the Venue step.'],
    ['អាចបន្ថែមរូបថតពេលក្រោយបានទេ?','Can I add photos later?','បាន។ សូម្បីតែក្រោយពេលផ្សព្វផ្សាយ ភ្ញៀវនឹងឃើញការកែប្រែភ្លាមៗ។','Yes. Even after publishing, guests see changes right away.'],
@@ -1029,8 +1038,8 @@ function lgPrepare(){
   LG.busy=true;
   return fetch('/api/account/botlogin',{method:'POST',credentials:'same-origin',headers:{'content-type':'application/json'},body:'{}'})
     .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.code||'err');return j})})
-    .then(function(j){LG.link=j.link;LG.app=j.app;LG.until=Date.now()+j.expiresIn*1000;$('#tgLogin').href=isPhone()?j.app:j.link;$('#lgOpen').href=j.link})
-    .catch(function(){LG.link=null}).then(function(){LG.busy=false});
+    .then(function(j){LG.link=j.link;LG.app=j.app;$$('.lgNum').forEach(function(e){e.textContent=j.check});LG.until=Date.now()+j.expiresIn*1000;$('#tgLogin').href=isPhone()?j.app:j.link;$('#lgOpen').href=j.link})
+    .catch(function(e){LG.link=null;LG.err=e&&e.message}).then(function(){LG.busy=false});
 }
 function lgShow(wait){$('#lgStart').hidden=wait;$('#lgWait').hidden=!wait;LG.on=wait;clearTimeout(LG.t);if(wait)LG.t=setTimeout(lgPoll,2500)}
 function lgPoll(){
@@ -1039,7 +1048,7 @@ function lgPoll(){
   fetch('/api/account/botlogin',{credentials:'same-origin'}).then(function(r){return r.json()}).then(function(j){
     if(!LG.on)return;
     if(j.status==='done'){LG.on=false;lgDone();return}
-    if(j.status==='refused'){lgShow(false);LG.link=null;lgPrepare();return}
+    if(j.status==='refused'){lgShow(false);LG.link=null;lgPrepare();toast(T('មិនបានចូល។ សូមព្យាយាមម្ដងទៀត ហើយចុចលេខដែលបង្ហាញនៅទីនេះ។','Not signed in. Please try again and tap the number shown here.'));return}
     if(j.status==='expired'||j.status==='none'||j.status==='used'){lgShow(false);LG.link=null;lgPrepare();return}
     LG.t=setTimeout(lgPoll,document.hidden?6000:2000);
   }).catch(function(){LG.t=setTimeout(lgPoll,4000)});
@@ -1055,7 +1064,7 @@ function lgDone(){
 $('#tgLogin').onclick=function(e){
   if(!REAL){e.preventDefault();$('#tgSheet').classList.add('on');return}
   if(!LG.link){e.preventDefault();var b=this;b.style.opacity=.6;
-    lgPrepare().then(function(){b.style.opacity='';if(!LG.link){toast(T('មិនអាចភ្ជាប់បាន សូមពិនិត្យអ៊ីនធឺណិត','Could not connect, please check your internet'));return}lgShow(true);location.href=isPhone()?LG.app:LG.link});return}
+    lgPrepare().then(function(){b.style.opacity='';if(!LG.link){toast(LG.err==='slow_down'?T('ព្យាយាមច្រើនដងពេក។ សូមរង់ចាំពីរបីនាទី។','Too many tries. Please wait a few minutes.'):T('មិនអាចភ្ជាប់បាន សូមពិនិត្យអ៊ីនធឺណិត','Could not connect, please check your internet'));return}lgShow(true);location.href=isPhone()?LG.app:LG.link});return}
   if(!isPhone()){e.preventDefault();window.open(LG.link,'_blank','noopener')}
   lgShow(true);
 };
@@ -1139,7 +1148,7 @@ $$('.alt-add').forEach(function(b){b.onclick=function(){var k=b.dataset.altadd,f
 var FS_SRC='try';
 function openFull(fromEl,src,backFn){var o=$('#fsOver'),f=$('#fsFrame'),shown=false;FS_SRC=src;FS_BACK=backFn;
   var data=function(){return src==='editor'?settings():trySettings()};
-  var show=function(){if(shown)return;shown=true;carry(function(){o.classList.add('on');o.setAttribute('aria-hidden','false')},fromEl,function(){return o});setTimeout(bgmUpdate,0)};
+  var show=function(){if(shown)return;shown=true;document.documentElement.classList.add('noscroll');carry(function(){o.classList.add('on');o.setAttribute('aria-hidden','false')},fromEl,function(){return o});setTimeout(bgmUpdate,0)};
   f.onload=function(){if(f.src.indexOf('fs=')<0)return;post(f,{type:'settings',data:data()});setTimeout(show,120)};
   f.src='/preview/invite.html?fs='+Date.now();setTimeout(show,1500)}
 var FS_BACK=null;
@@ -1257,7 +1266,7 @@ function setUpState(t,c){var e=$('#upState');e.textContent=t||'';e.className='sa
 function renderPhotos(){
   var n=MEDIA.photos.length;$('#phCount').textContent=n+' / '+MEDIA.maxPhotos;
   $('#upl').innerHTML=MEDIA.photos.map(function(p,i){return '<div class="th"><img src="'+esc(p.url)+'" alt="" loading="lazy">'+(i===0?'<span class="cv">'+T('រូបធំ','Cover')+'</span>':'')+
-    '<div class="act">'+(i>0?'<button type="button" data-cover="'+p.id+'" title="Cover">★</button>':'<span></span>')+(i>0?'<button type="button" data-left="'+p.id+'">‹</button>':'')+'<button type="button" data-del="'+p.id+'" title="Delete">✕</button></div></div>'}).join('')+
+    '<div class="act">'+(i>0?'<button type="button" data-cover="'+p.id+'" title="Cover" aria-label="Make cover photo">★</button>':'<span></span>')+(i>0?'<button type="button" data-left="'+p.id+'" aria-label="Move left">‹</button>':'')+'<button type="button" data-del="'+p.id+'" title="Delete" aria-label="Delete photo">✕</button></div></div>'}).join('')+
     (n<MEDIA.maxPhotos?'<button type="button" class="add" id="addPh">+<small>'+T('បន្ថែមរូប','Add photos')+'</small></button>':'');
   var a=$('#addPh');if(a)a.onclick=function(){$('#upIn').click()};
 }
@@ -1405,8 +1414,8 @@ function gpList(){
     return '<li><div class="gn">'+esc(g.name)+' <small style="color:var(--muted)">· '+({km:'ខ្មែរ',en:'EN',zh:'中文'})[g.lang]+'</small></div>'+
       (pub?'<div class="gl">'+esc(link.replace('https://',''))+'<br><span class="st '+(g.first_opened_at?'ok':'no')+'">'+(g.first_opened_at?'● '+T('បានបើក','Opened'):'○ '+T('មិនទាន់បើក','Not opened'))+'</span> · <span class="rsv">'+r+'</span>'+(g.message?' · “'+esc(g.message)+'”':'')+'</div>'
         :'<div class="gl">'+T('តំណនឹងមាន ក្រោយពេលផ្សព្វផ្សាយ','Link appears after you publish')+'</div>')+
-      '<div class="ga">'+(pub?'<a class="btn sm tgs" href="'+esc(share)+'" target="_blank" rel="noopener" title="Telegram"></a><button class="btn sm" data-msg="'+g.code+'" title="'+T('ចម្លងសារ','Copy message')+'">✉</button><button class="btn sm" data-copy="'+esc(link)+'" title="'+T('ចម្លងតំណ','Copy link')+'">⧉</button>':'')+
-      '<button class="btn sm" data-view="'+g.code+'" title="Preview">👁</button><button class="btn sm" data-gdel="'+g.code+'" title="Delete">✕</button></div></li>'}).join('')||
+      '<div class="ga">'+(pub?'<a class="btn sm tgs" href="'+esc(share)+'" target="_blank" rel="noopener" title="Telegram" aria-label="'+T('ផ្ញើតាម Telegram','Send on Telegram')+'"></a><button class="btn sm" data-msg="'+g.code+'" title="'+T('ចម្លងសារ','Copy message')+'" aria-label="'+T('ចម្លងសារ','Copy message')+'">✉</button><button class="btn sm" data-copy="'+esc(link)+'" title="'+T('ចម្លងតំណ','Copy link')+'" aria-label="'+T('ចម្លងតំណ','Copy link')+'">⧉</button>':'')+
+      '<button class="btn sm" data-view="'+g.code+'" title="Preview" aria-label="'+T('មើល','Preview')+'">👁</button><button class="btn sm" data-gdel="'+g.code+'" title="Delete" aria-label="'+T('លុប','Delete')+'">✕</button></div></li>'}).join('')||
     '<li style="display:block;color:var(--muted);font-size:13.5px">'+T('មិនទាន់មានភ្ញៀវ។ សរសេរ ឬបិទភ្ជាប់ឈ្មោះខាងលើ។','No guests yet. Type or paste names above.')+'</li>';
 }
 $('#gpSearch').addEventListener('input',gpList);
@@ -1414,7 +1423,7 @@ function copyText(t){try{navigator.clipboard.writeText(t).then(function(){toast(
 $('#gpCopyShared').onclick=function(){copyText(GP.data.url)};
 $('#gpCopyAll').onclick=function(){var d=GP.data;copyText(gpVisible().map(function(g){return g.name+' — '+d.url+'/'+g.code}).join('\n'))};
 $('#gpCsv').onclick=function(){var d=GP.data,pub=d.status==='published';
-  var q=function(v){v=String(v==null?'':v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+  var q=function(v){v=String(v==null?'':v);if(/^[=+\-@\t\r]/.test(v))v="'"+v;return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
   var rows=[['Name','Language','Link','Opened','Reply','People','Message']].concat(d.guests.map(function(g){return [g.name,g.lang,pub?d.url+'/'+g.code:'',g.first_opened_at?'yes':'',g.attending===null?'':g.attending?'coming':'not coming',g.attending?g.party:'',g.message||'']}));
   var blob=new Blob(['﻿'+rows.map(function(r){return r.map(q).join(',')}).join('\r\n')],{type:'text/csv;charset=utf-8'});
   var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='guests-'+(d.slug||'mongkulcard')+'.csv';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000)};

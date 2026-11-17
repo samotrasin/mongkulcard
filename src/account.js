@@ -24,6 +24,9 @@ const NEXT_COOKIE = 'mc_next';     // where to go after Telegram sends the custo
 const LOGIN_COOKIE = 'mc_login';   // the browser's half of a bot sign-in
 const LOGIN_MINUTES = 10;
 const HOME_NEXT = '/preview/#dashboard';
+const WELCOME =
+  'សួស្ដី 👋 នេះជា MongkulCard Service ✦\nសរសេរសំណួររបស់អ្នកនៅទីនេះ (អាចផ្ញើរូបថតបាន) យើងនឹងឆ្លើយក្នុង chat នេះ។\n\n' +
+      'Hello 👋 This is MongkulCard Service ✦\nWrite your question here (photos are fine too) and we will answer in this chat.\n\nhttps://mongkulcard.com/preview/';
 const SESSION_DAYS = 60;
 const AUTH_MAX_AGE = 24 * 3600;    // a Telegram confirmation older than a day is refused
 const SITE_FILES = { 'site.js': 'text/javascript', 'site.css': 'text/css' };
@@ -162,17 +165,25 @@ async function newSession(env, accountId) {
 async function botLoginStart(request, env, url) {
   const bot = (env.TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
   if (!env.TELEGRAM_BOT_TOKEN || !/^[A-Za-z0-9_]{5,32}$/.test(bot)) return json({ error: 'Telegram sign-in is not set up yet.', code: 'not_ready' }, 503);
+  const ipHash = await sha256Hex('login:' + (request.headers.get('cf-connecting-ip') || 'local'));
+  const recent = await env.DB.prepare(
+    `SELECT COUNT(*) AS n FROM login_requests WHERE ip_hash = ?1 AND created_at > strftime('%Y-%m-%dT%H:%M:%SZ','now','-10 minutes')`
+  ).bind(ipHash).first();
+  if (recent && recent.n >= 20) return json({ error: 'Too many tries. Please wait a few minutes.', code: 'slow_down' }, 429);
   const code = randomToken().slice(0, 24);
   const nonce = randomToken();
+  const check = 10 + (crypto.getRandomValues(new Uint8Array(1))[0] % 90);   // 10..99, shown on the website, tapped in Telegram
   await env.DB.batch([
     env.DB.prepare(`DELETE FROM login_requests WHERE expires_at < strftime('%Y-%m-%dT%H:%M:%SZ','now','-1 day')`),
     env.DB.prepare(
-      `INSERT INTO login_requests (code_hash, nonce_hash, expires_at) VALUES (?1, ?2, strftime('%Y-%m-%dT%H:%M:%SZ','now','+${LOGIN_MINUTES} minutes'))`
-    ).bind(await sha256Hex(code), await sha256Hex(nonce)),
+      `INSERT INTO login_requests (code_hash, nonce_hash, check_num, ip_hash, expires_at)
+       VALUES (?1, ?2, ?3, ?4, strftime('%Y-%m-%dT%H:%M:%SZ','now','+${LOGIN_MINUTES} minutes'))`
+    ).bind(await sha256Hex(code), await sha256Hex(nonce), check, ipHash),
   ]);
   return json({
     link: `https://t.me/${bot}?start=login_${code}`,
     app: `tg://resolve?domain=${bot}&start=login_${code}`,
+    check,
     expiresIn: LOGIN_MINUTES * 60,
   }, 200, { 'set-cookie': `${LOGIN_COOKIE}=${nonce}; Path=/api/account/botlogin; Max-Age=${LOGIN_MINUTES * 60}; HttpOnly; SameSite=Lax${secure(url)}` });
 }
@@ -205,24 +216,28 @@ async function botLoginCheck(request, env, url) {
 // "/start login_<code>" in the bot
 async function botLoginAsk(env, msg, code) {
   const row = await env.DB.prepare(
-    `SELECT id, status FROM login_requests WHERE code_hash = ?1 AND expires_at > strftime('%Y-%m-%dT%H:%M:%SZ','now')`
+    `SELECT id, status, check_num FROM login_requests WHERE code_hash = ?1 AND expires_at > strftime('%Y-%m-%dT%H:%M:%SZ','now')`
   ).bind(await sha256Hex(code)).first();
   if (!row || (row.status !== 'pending' && row.status !== 'asked')) {
     await botSend(env, msg.chat.id, 'តំណចូលនេះផុតកំណត់ហើយ។ សូមចុច «ចូល» នៅលើគេហទំព័រម្ដងទៀត។\nThis sign-in link has expired. Please tap "Sign in" on the website again.');
     return;
   }
   await env.DB.prepare(`UPDATE login_requests SET status = 'asked', telegram_id = ?2 WHERE id = ?1`).bind(row.id, msg.from.id).run();
+  // Three numbers; only the one shown on the customer's own screen signs in.
+  const nums = [row.check_num];
+  while (nums.length < 3) { const n = 10 + (crypto.getRandomValues(new Uint8Array(1))[0] % 90); if (!nums.includes(n)) nums.push(n); }
+  nums.sort(() => crypto.getRandomValues(new Uint8Array(1))[0] - 128);
   await botSend(env, msg.chat.id,
-    'ចូលគណនី mongkulcard.com?\nចុច «បាទ/ចាស» តែពេលអ្នកទើបតែចុច «ចូល» នៅលើគេហទំព័រ MongkulCard ដោយខ្លួនឯង។\n\n' +
-    'Sign in to mongkulcard.com?\nOnly tap Yes if you just pressed "Sign in" on the MongkulCard website yourself.',
-    { inline_keyboard: [[{ text: '✅ បាទ/ចាស · Yes, it\'s me', callback_data: `login_ok:${row.id}` }, { text: '✕ ទេ · No', callback_data: `login_no:${row.id}` }]] });
+    'ចូលគណនី mongkulcard.com?\nចុចលេខដែលបង្ហាញនៅលើគេហទំព័រ MongkulCard ក្នុងទូរស័ព្ទ ឬកុំព្យូទ័ររបស់អ្នក។\nប្រសិនបើអ្នកមិនបានចុច «ចូល» ខ្លួនឯងទេ ឬមាននរណាម្នាក់ប្រាប់លេខឲ្យអ្នក សូមចុច «មិនមែនខ្ញុំ»។\n\n' +
+    'Sign in to mongkulcard.com?\nTap the number shown on the MongkulCard website on YOUR screen.\nIf you did not press "Sign in" yourself, or someone told you a number, tap "Not me".',
+    { inline_keyboard: [nums.map((n) => ({ text: String(n), callback_data: `login_ok:${row.id}:${n}` })), [{ text: '✕ មិនមែនខ្ញុំ · Not me', callback_data: `login_no:${row.id}:0` }]] });
 }
 
 async function botLoginCallback(cb, env) {
   const answer = (text) => botCall(env, 'answerCallbackQuery', { callback_query_id: cb.id, text });
-  const m = /^login_(ok|no):(\d{1,12})$/.exec(cb.data || '');
+  const m = /^login_(ok|no):(\d{1,12}):(\d{1,2})$/.exec(cb.data || '');
   const row = m && await env.DB.prepare(
-    `SELECT id, status, telegram_id, expires_at > strftime('%Y-%m-%dT%H:%M:%SZ','now') AS live FROM login_requests WHERE id = ?1`
+    `SELECT id, status, telegram_id, check_num, expires_at > strftime('%Y-%m-%dT%H:%M:%SZ','now') AS live FROM login_requests WHERE id = ?1`
   ).bind(Number(m[2])).first();
   const edit = (text) => cb.message && botCall(env, 'editMessageText', { chat_id: cb.message.chat.id, message_id: cb.message.message_id, text });
   if (!row || row.telegram_id !== cb.from?.id || row.status !== 'asked' || !row.live) {
@@ -234,6 +249,12 @@ async function botLoginCallback(cb, env) {
     await env.DB.prepare(`UPDATE login_requests SET status = 'refused' WHERE id = ?1`).bind(row.id).run();
     await answer('OK');
     await edit('មិនបានចូលទេ។ ✕\nNot signed in. ✕');
+    return;
+  }
+  if (Number(m[3]) !== row.check_num) {   // wrong number: this sign-in is cancelled, the website must start again
+    await env.DB.prepare(`UPDATE login_requests SET status = 'refused' WHERE id = ?1`).bind(row.id).run();
+    await answer('✕');
+    await edit('លេខមិនត្រូវគ្នាទេ ដូច្នេះមិនបានចូលទេ។ សូមចុច «ចូល» នៅលើគេហទំព័រម្ដងទៀត។\nThe number did not match, so you were not signed in. Please tap "Sign in" on the website again.');
     return;
   }
   const from = cb.from;
@@ -299,7 +320,7 @@ async function telegramWebhook(request, env, ctx) {
     ).bind(from.id, /^[A-Za-z0-9_]{3,32}$/.test(from.username || '') ? from.username : null, name, phone).run();
     ctx.waitUntil(botSend(env, msg.chat.id,
       'អរគុណ! យើងបានរក្សាទុកលេខទូរស័ព្ទរបស់អ្នក ✓\nThank you! Your phone number is saved ✓\n\nhttps://mongkulcard.com/account',
-      { remove_keyboard: true }));
+      { remove_keyboard: true }).then(() => deliverWaiting(env)));
     return new Response('ok');
   }
 
@@ -316,12 +337,13 @@ async function telegramWebhook(request, env, ctx) {
         phoneKeyboard()));
       return new Response('ok');
     }
-    ctx.waitUntil(botSend(env, msg.chat.id,
-      'សួស្ដី 👋 នេះជា MongkulCard Service ✦\nសរសេរសំណួររបស់អ្នកនៅទីនេះ (អាចផ្ញើរូបថតបាន) យើងនឹងឆ្លើយក្នុង chat នេះ។\n\n' +
-      'Hello 👋 This is MongkulCard Service ✦\nWrite your question here (photos are fine too) and we will answer in this chat.\n\nhttps://mongkulcard.com/preview/'));
+    ctx.waitUntil(botSend(env, msg.chat.id, WELCOME));
     return new Response('ok');
   }
-  if (text.startsWith('/')) return new Response('ok');
+  if (text.startsWith('/')) {   // /help or anything else: say hello and how to ask
+    ctx.waitUntil(botSend(env, msg.chat.id, WELCOME));
+    return new Response('ok');
+  }
 
   await supportMessage(env, ctx, msg);
   return new Response('ok');
@@ -355,6 +377,8 @@ async function supportMessage(env, ctx, msg) {
     return;
   }
 
+  if (adminId) ctx.waitUntil(deliverWaiting(env, adminId));   // anything that arrived before Samotra was connected
+
   const recent = await env.DB.prepare(
     `SELECT COUNT(*) AS n FROM support_messages WHERE customer_chat_id = ?1 AND direction = 'in' AND created_at > strftime('%Y-%m-%dT%H:%M:%SZ','now','-6 hours')`
   ).bind(msg.chat.id).first();
@@ -377,14 +401,43 @@ async function supportMessage(env, ctx, msg) {
     }
   }
   const stmts = (ids.length ? ids : [null]).map((id) => env.DB.prepare(
-    `INSERT INTO support_messages (customer_chat_id, admin_message_id, direction, text) VALUES (?1, ?2, 'in', ?3)`
-  ).bind(msg.chat.id, id, body || '[' + mediaKind(msg) + ']'));
+    `INSERT INTO support_messages (customer_chat_id, admin_message_id, customer_message_id, customer_name, direction, text) VALUES (?1, ?2, ?3, ?4, 'in', ?5)`
+  ).bind(msg.chat.id, id, msg.message_id, (who + (from.username ? ' (@' + from.username + ')' : '')).slice(0, 160), body || '[' + mediaKind(msg) + ']'));
   await env.DB.batch(stmts);
 
   if (!recent || recent.n === 0) {
     ctx.waitUntil(botSend(env, msg.chat.id,
       '✓ យើងបានទទួលសាររបស់អ្នកហើយ។ យើងនឹងឆ្លើយឆាប់ៗ (ម៉ោង ៨ ព្រឹក – ៩ យប់)។\n✓ We got your message and will reply soon (8 AM – 9 PM).'));
   }
+}
+
+// Messages saved while Samotra was not connected yet (no ADMIN_PHONE, or his phone not shared): pass them on now.
+export async function deliverWaiting(env, adminId) {
+  adminId = adminId || await adminTelegramId(env);
+  if (!adminId) return 0;
+  const rows = await env.DB.prepare(
+    `SELECT id, customer_chat_id, customer_message_id, customer_name, text, created_at FROM support_messages
+      WHERE direction = 'in' AND admin_message_id IS NULL AND created_at > strftime('%Y-%m-%dT%H:%M:%SZ','now','-30 days')
+      ORDER BY id LIMIT 25`
+  ).all();
+  let n = 0;
+  for (const r of rows.results) {
+    const who = await env.DB.prepare(`SELECT name, telegram_username, id FROM accounts WHERE telegram_id = ?1`).bind(r.customer_chat_id).first();
+    const header = `💬 ${r.customer_name || (who ? who.name : 'Customer')}${who ? ' · account #' + who.id : ''} · waiting since ${r.created_at.slice(0, 16).replace('T', ' ')} UTC`;
+    let sent = null;
+    if (r.text && !/^\[[a-z_]+\]$/.test(r.text)) {
+      sent = await botCall(env, 'sendMessage', { chat_id: adminId, text: `${header}\n\n${r.text}`.slice(0, 4000), disable_web_page_preview: true });
+    } else if (r.customer_message_id) {
+      await botCall(env, 'sendMessage', { chat_id: adminId, text: header });
+      sent = await botCall(env, 'copyMessage', { chat_id: adminId, from_chat_id: r.customer_chat_id, message_id: r.customer_message_id });
+    } else {
+      sent = await botCall(env, 'sendMessage', { chat_id: adminId, text: `${header}\n\n${r.text || ''}` });
+    }
+    // mark it handled even if Telegram refused it, so one broken message never blocks the rest
+    await env.DB.prepare(`UPDATE support_messages SET admin_message_id = ?2 WHERE id = ?1`).bind(r.id, sent && sent.ok ? sent.result.message_id : 0).run();
+    n++;
+  }
+  return n;
 }
 
 function mediaKind(msg) {

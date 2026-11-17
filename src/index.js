@@ -23,7 +23,7 @@ const SLUG_RE = /^[a-z0-9-]{3,40}$/;
 const BOT_RE = /bot|crawler|spider|facebookexternalhit|whatsapp|preview|slurp/i;
 
 import { hostPage, appFile, api } from './host.js';
-import { siteRoute, accountApi } from './account.js';
+import { siteRoute, accountApi, deliverWaiting } from './account.js';
 import { invitationsApi } from './invitations.js';
 import { paymentsApi, dailyJobs } from './payments.js';
 import { mediaApi, serveInvitationFile, cleanupMedia } from './media.js';
@@ -108,6 +108,7 @@ export default {
   async scheduled(event, env, ctx) {
     ctx.waitUntil(dailyJobs(env));
     ctx.waitUntil(cleanupMedia(env));
+    ctx.waitUntil(deliverWaiting(env).catch(() => 0));   // customer messages that arrived before Samotra was connected
   },
 };
 

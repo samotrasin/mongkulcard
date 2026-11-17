@@ -53,3 +53,9 @@ html[data-lang=en] .doc h1{font:600 26px/1.3 'Cinzel',serif;letter-spacing:.06em
 html,body{max-width:100%;overflow-x:clip}
 @supports not (overflow:clip){html,body{overflow-x:hidden}}
 @media (hover:none) and (pointer:coarse){input,select,textarea{font-size:16px!important}}
+
+/* phones: no double-tap zoom, dark browser parts, keyboard focus visible */
+html{color-scheme:dark;touch-action:manipulation}
+a,button,input,select,textarea,label,summary{touch-action:manipulation}
+:focus-visible{outline:2px solid var(--gold-l,#f6e3a1);outline-offset:2px}
+html.noscroll,html.noscroll body{overflow:hidden}
