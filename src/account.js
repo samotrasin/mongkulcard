@@ -51,6 +51,10 @@ export async function siteRoute(request, env, ctx, url, parts) {
     return htmlPage(html, { 'set-cookie': `${NEXT_COOKIE}=${encodeURIComponent(next)}; Path=/; Max-Age=1800; HttpOnly; SameSite=Lax${secure(url)}` });
   }
 
+  if ((p === 'terms' || p === 'privacy') && parts.length === 1) {
+    return htmlPage(await pageText(env, url, `/site/${p}.html`), { 'cache-control': 'public, max-age=600', 'x-robots-tag': 'all' });
+  }
+
   if (p === 'auth' && parts[1] === 'telegram' && parts.length === 2) return telegramCallback(request, env, url);
 
   if (p === 'account' && parts.length === 1) {

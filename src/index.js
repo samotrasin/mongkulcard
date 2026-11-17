@@ -49,7 +49,7 @@ export default {
       return (await serveInvitationFile(request, env, parts[1], parts[2])) || page(notFound(), 404);
     }
     if (parts[0] === 'api' && (parts[1] === 'packages' || parts[1] === 'orders')) return paymentsApi(request, env, ctx, url, parts);
-    if (['signin', 'auth', 'account', 'site', 'tg'].includes(parts[0])) {
+    if (['signin', 'auth', 'account', 'site', 'tg', 'terms', 'privacy'].includes(parts[0])) {
       return (await siteRoute(request, env, ctx, url, parts)) || page(notFound(), 404);
     }
 

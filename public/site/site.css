@@ -42,3 +42,9 @@ html[data-lang=en] .h{font-family:var(--caps);font-size:21px;letter-spacing:.1em
 .tgbtn{width:100%;margin-top:18px;background:#2aabee;border:0;color:#fff;font-weight:600}
 .sub.small{font-size:13px;margin-top:10px}.sub.small b{color:var(--gold-l);font-weight:500}
 .or-line{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;margin:16px 0 4px}.or-line::before,.or-line::after{content:"";flex:1;height:1px;background:var(--line)}
+.doc{max-width:680px;padding-top:28px;padding-bottom:60px}
+.doc h1{font:400 24px/1.8 'Moul',serif;color:var(--gold-l);margin-bottom:10px}
+html[data-lang=en] .doc h1{font:600 26px/1.3 'Cinzel',serif;letter-spacing:.06em}
+.doc h2{font-size:16px;font-weight:600;color:var(--gold-l);margin:22px 0 6px}
+.doc p{margin:0 0 10px;color:var(--ivory);font-size:15px;line-height:1.75}
+.doc .upd{color:var(--muted);font-size:13px;margin-top:24px}

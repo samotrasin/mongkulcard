@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>MongkulCard · Prototype</title>
+<title>MongkulCard · ធៀបអេឡិចត្រូនិច · E-invitations</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Moul&family=Kantumruy+Pro:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Cinzel:wght@500;600&display=swap" rel="stylesheet">
@@ -155,7 +155,7 @@ input[type=date]{color-scheme:dark}
 
 .final{text-align:center;padding:60px 20px;background:radial-gradient(60% 80% at 50% 100%,rgba(92,21,38,.6),transparent)}
 .foot{border-top:1px solid var(--line);padding:28px 0;text-align:center;font-size:12.5px;color:var(--muted)}
-.foot .links{display:flex;gap:18px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+.foot .links a{color:inherit;text-decoration:none}.foot .links{display:flex;gap:18px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
 
 /* sticky bottom bar (phones) */
 .bbar{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(18,6,9,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
@@ -341,6 +341,7 @@ html[data-lang=km] .sh{font-family:var(--ui);letter-spacing:0;font-size:14px;tex
 #fsClose{position:fixed;top:calc(env(safe-area-inset-top) + 10px);left:10px;z-index:71;width:38px;height:38px;border-radius:50%;border:1px solid rgba(246,227,161,.6);background:rgba(0,0,0,.55);color:#f6e3a1;font-size:16px}
 .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:var(--gold);color:#2a0a10;padding:10px 18px;border-radius:30px;font-weight:600;font-size:14px;opacity:0;transition:.3s;z-index:60;pointer-events:none}
 .toast.on{opacity:1;transform:translateX(-50%)}
+.soonp{font:500 15px var(--ui);color:var(--muted)}
 .proto{position:fixed;top:66px;right:10px;z-index:29;font:600 10px var(--caps);letter-spacing:.15em;color:#2a0a10;background:var(--gold-l);padding:4px 9px;border-radius:20px;opacity:.85}
 </style>
 </head>
@@ -383,7 +384,7 @@ html[data-lang=km] .sh{font-family:var(--ui);letter-spacing:0;font-size:14px;tex
         <p class="sub"><span data-l="km">ជ្រើសរើសគំរូ បំពេញព័ត៌មានដោយខ្លួនឯង ហើយផ្ញើតំណផ្ទាល់ខ្លួនទៅភ្ញៀវម្នាក់ៗ ដែលមានឈ្មោះភ្ញៀវនៅលើក្រប។</span><span data-l="en">Choose a design, fill in your details yourself, and send every guest their own link with their name on the cover.</span></p>
         <div class="hero-btns">
           <button class="btn gold" data-go="templates"><span data-l="km">ជ្រើសរើសគំរូ</span><span data-l="en">Choose a template</span></button>
-          <a class="btn" href="#" onclick="return false"><svg class="tg-ic" viewBox="0 0 24 24" fill="#2aabee"><path d="M21.9 4.3l-3.2 15c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.2 13l-4.8-1.5c-1-.3-1-1 .2-1.5L20.5 2.8c.9-.3 1.6.2 1.4 1.5z"/></svg><span data-l="km">ជជែកតាម Telegram</span><span data-l="en">Chat on Telegram</span></a>
+          <a class="btn" href="https://t.me/mongkulcard_bot?start=help" target="_blank" rel="noopener" data-chat><svg class="tg-ic" viewBox="0 0 24 24" fill="#2aabee"><path d="M21.9 4.3l-3.2 15c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.2 13l-4.8-1.5c-1-.3-1-1 .2-1.5L20.5 2.8c.9-.3 1.6.2 1.4 1.5z"/></svg><span data-l="km">ជជែកតាម Telegram</span><span data-l="en">Chat on Telegram</span></a>
         </div>
         <div class="trust"><span>ខ្មែរ · English · 中文</span><span data-l="km">តំណផ្ទាល់ខ្លួនសម្រាប់ភ្ញៀវម្នាក់ៗ</span><span data-l="en">A personal link for every guest</span><span data-l="km">ដំណើរការល្អក្នុង Telegram និង Messenger</span><span data-l="en">Smooth in Telegram &amp; Messenger</span></div>
       </div>
@@ -438,9 +439,9 @@ html[data-lang=km] .sh{font-family:var(--ui);letter-spacing:0;font-size:14px;tex
         <button class="btn gold block" data-go="templates"><span data-l="km">ជ្រើសរើស</span><span data-l="en">Choose</span></button></div>
       <div class="plan"><div class="pn">SIGNATURE</div><div class="pr">$ — <small>/ <span data-l="km">ធៀប</span><span data-l="en">invitation</span></small></div>
         <ul><li data-i="p8">Everything in Premium</li><li data-i="p5">中文</li><li data-i="p9">Custom design by MongkulCard</li><li data-i="p10">AI video of the couple</li></ul>
-        <button class="btn block"><span data-l="km">ជជែកជាមួយយើង</span><span data-l="en">Talk to us</span></button></div>
+        <a class="btn block" href="https://t.me/mongkulcard_bot?start=help" target="_blank" rel="noopener"><span data-l="km">ជជែកជាមួយយើង</span><span data-l="en">Talk to us</span></a></div>
     </div>
-    <p class="tbd">Prototype: prices and package contents are placeholders, still to decide.</p>
+    <p class="tbd" id="tbdNote">Prototype: prices and package contents are placeholders, still to decide.</p>
   </div></div>
 
   <div class="sec" id="faq" style="padding-top:10px"><div class="wrap">
@@ -454,7 +455,7 @@ html[data-lang=km] .sh{font-family:var(--ui);letter-spacing:0;font-size:14px;tex
     <button class="btn gold" data-go="templates"><span data-l="km">ជ្រើសរើសគំរូ</span><span data-l="en">Choose a template</span></button>
   </div>
   <footer class="foot"><div class="wrap">
-    <div class="links"><span data-l="km">លក្ខខណ្ឌប្រើប្រាស់</span><span data-l="en">Terms</span><span data-l="km">ឯកជនភាព</span><span data-l="en">Privacy</span><span>Telegram</span><span>Facebook</span></div>
+    <div class="links"><a href="/terms"><span data-l="km">លក្ខខណ្ឌប្រើប្រាស់</span><span data-l="en">Terms</span></a><a href="/privacy"><span data-l="km">ឯកជនភាព</span><span data-l="en">Privacy</span></a><a href="https://t.me/mongkulcard_bot?start=help" target="_blank" rel="noopener">Telegram</a></div>
     © 2026 MongkulCard · Phnom Penh
   </div></footer>
 </section>
@@ -604,9 +605,6 @@ html[data-lang=km] .sh{font-family:var(--ui);letter-spacing:0;font-size:14px;tex
               <button type="button" class="btn sm hidden" id="muPlay">▶ <span data-l="km">ស្ដាប់</span><span data-l="en">Listen</span></button>
               <button type="button" class="btn sm hidden" id="muDel">✕ <span data-l="km">លុប</span><span data-l="en">Remove</span></button>
             </div>
-            <div class="f" style="margin-top:8px"><span><span data-l="km">បណ្ណាល័យតន្ត្រី MongkulCard (ឆាប់ៗនេះ)</span><span data-l="en">MongkulCard music library (coming soon)</span></span></div>
-            <button class="mu" disabled style="opacity:.5"><span class="pl">▶</span><div>Golden Morning<small>piano</small></div></button>
-            <button class="mu" disabled style="opacity:.5"><span class="pl">▶</span><div>Khmer Wedding Strings<small>traditional</small></div></button>
             <span id="muState" class="savestate"></span>
             <audio id="muAudio" preload="none"></audio>
           </div>
@@ -727,7 +725,7 @@ html[data-lang=km] .sh{font-family:var(--ui);letter-spacing:0;font-size:14px;tex
 
 <div class="bbar">
   <button class="btn gold" data-go="templates"><span data-l="km">បង្កើតធៀប</span><span data-l="en">Create invitation</span></button>
-  <a class="btn tg" href="#" onclick="return false" aria-label="Telegram"><svg class="tg-ic" viewBox="0 0 24 24" fill="#2aabee"><path d="M21.9 4.3l-3.2 15c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.2 13l-4.8-1.5c-1-.3-1-1 .2-1.5L20.5 2.8c.9-.3 1.6.2 1.4 1.5z"/></svg></a>
+  <a class="btn tg" href="https://t.me/mongkulcard_bot?start=help" target="_blank" rel="noopener" aria-label="Telegram" data-chat><svg class="tg-ic" viewBox="0 0 24 24" fill="#2aabee"><path d="M21.9 4.3l-3.2 15c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.2 13l-4.8-1.5c-1-.3-1-1 .2-1.5L20.5 2.8c.9-.3 1.6.2 1.4 1.5z"/></svg></a>
 </div>
 <button type="button" class="pv-fab" id="pvFab">👁 <span data-l="km">មើល</span><span data-l="en">Preview</span></button>
 <div class="fs-over" id="fsOver" aria-hidden="true"><iframe id="fsFrame" title="Full screen preview"></iframe><button type="button" id="fsClose" aria-label="Close">✕</button></div>
@@ -1448,15 +1446,22 @@ $('#gName').onkeydown=function(e){if(e.key==='Enter')$('#gAdd').click()};
 $('#glist').onclick=function(e){var b=e.target.closest('[data-copy]');if(!b)return;var t='https://'+b.dataset.copy;
   try{navigator.clipboard.writeText(t).then(function(){toast('copied')},function(){toast(t)})}catch(_){toast(t)}};
 
+/* home page packages: real prices once they are set; until then "price coming soon" */
+function loadPlanPrices(){
+  fetch('/api/packages',{credentials:'same-origin'}).then(function(r){return r.json()}).then(function(j){
+    var by={};(j.packages||[]).forEach(function(p){by[p.code]=p});
+    $$('#pricing .plan').forEach(function(pl){var code=pl.querySelector('.pn').textContent.trim().toLowerCase(),p=by[code],pr=pl.querySelector('.pr');
+      if(p&&p.forSale)pr.innerHTML='$'+(p.price_cents/100).toFixed(p.price_cents%100?2:0)+' <small>/ <span data-l="km">ធៀប</span><span data-l="en">invitation</span></small>';
+      else pr.innerHTML='<span class="soonp"><span data-l="km">តម្លៃនឹងប្រកាសឆាប់ៗ</span><span data-l="en">Price coming soon</span></span>';
+      if(p&&p.named_guests){var li=pl.querySelector('[data-i="p3"]');if(li)li.dataset.guests=p.named_guests}})
+  }).catch(function(){});
+}
 setLang('km');renderGuests();
 if(REAL){
   try{var t=sessionStorage.getItem('mc_try');if(t){INV=merge(DEFAULTS,JSON.parse(t));sessionStorage.removeItem('mc_try');bindInputs()}}catch(e){}
-  $('.proto').textContent='PREVIEW · LOGIN IS REAL';
+  $('.proto').remove();$('#tbdNote').remove();loadPlanPrices();
   $('#payDemo').classList.add('hidden');$('#payReal').classList.remove('hidden');
   $('#demoSplit').classList.add('hidden');
-  var ln=$('#v-login .note');if(ln)ln.innerHTML='<b>Real now:</b> Telegram sign-in creates your MongkulCard account. The editor, payment and guest links after it are still a demo.';
-  var dp=$('#v-dashboard .inv-card .pill');if(dp){dp.className='pill draft';dp.innerHTML='<span data-l="km">ឧទាហរណ៍</span><span data-l="en">Demo</span>'}
-  var gp=$('#v-dashboard #glist');if(gp){var nt=document.createElement('div');nt.className='note';nt.innerHTML='<b>Demo:</b> guest links and payment are not real yet (steps 3–4).';gp.parentNode.insertBefore(nt,gp)}
   var dt=$('#v-dashboard .dash-top');if(dt){var a=document.createElement('a');a.href='/account';a.className='btn sm';a.style.marginLeft='auto';a.textContent=(lang()==='km'?'គណនី':'Account');dt.appendChild(a)}
   fetch('/api/account/me',{credentials:'same-origin'}).then(function(r){return r.json()}).then(function(a){if(a&&a.signedIn){loggedIn=true;ACCOUNT=a}}).catch(function(){}).then(function(){go(location.hash.slice(1)||'home',{instant:true,replace:true})});
 }else go(location.hash.slice(1)||'home',{instant:true,replace:true});
