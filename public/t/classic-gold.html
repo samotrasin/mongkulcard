@@ -9,7 +9,7 @@
 (function(){try{var w=Math.min(screen.width,screen.height);if(w&&w<600){document.querySelector('meta[name="viewport"]').setAttribute('content','width=390, viewport-fit=cover')}}catch(e){}})();</script>
 <script>/* FULL-SIZE LAYOUT for tablets and computers (html.wide).
    WIDE_FOR_ALL=false: only shown when the link ends in ?wide (for checking). true: every tablet and computer gets it. Phones never do. */
-(function(){var WIDE_FOR_ALL=false;try{
+(function(){var WIDE_FOR_ALL=true;try{
   var on=WIDE_FOR_ALL||/[?&]wide(=|&|$)/.test(location.search);
   var phone=Math.min(screen.width,screen.height)<600;
   function set(){document.documentElement.classList.toggle('wide',on&&!phone&&window.innerWidth>=700)}
@@ -731,6 +731,8 @@ html[data-lang="en"] .cv-lang::before{transform:translateX(100%)}
 @media (prefers-reduced-motion:reduce){html.lang-out .page>.in,html.lang-out .cover .stage,html.lang-out #langBtn{opacity:1;transform:none}
   html.lang-in .page>.in,html.lang-in .cover .stage,html.lang-in #langBtn,.cd-n.in,.cd-n.out{animation:none}.lb,.lb img,.save-note,.cv-lang::before{transition:none}}
 /* ================= three languages: Khmer, English, 中文 (Nov 2026) ================= */
+@font-face{font-family:'AKbalthom Moul';src:url(img/fonts/ak-moul.woff2) format('woff2');font-weight:100 900;font-style:normal;font-display:swap;unicode-range:U+0020,U+00A0,U+1780-17FF,U+19E0-19FF,U+200B-200D,U+25CC}
+html[data-lang="km"] .plate.kh-name{font-family:'AKbalthom Moul',var(--kh-display);font-size:max(17px,calc(var(--u)*68));line-height:1.6}
 @font-face{font-family:'CY HuPo';src:url(img/fonts/cy-hupo.woff2) format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
 @font-face{font-family:'CY WeiBei';src:url(img/fonts/cy-weibei.woff2) format('woff2');size-adjust:106%;font-weight:100 900;font-style:normal;font-display:swap}
 .ord{text-transform:none;letter-spacing:.02em}
@@ -874,7 +876,7 @@ html.wide{--colw:100%;--cx:50%}
 html.wide body{background:var(--wine-deep)}
 html.wide .side{display:none!important}
 html.wide .phone{max-width:none;margin:0;box-shadow:none}
-html.wide .cover{--cw:min(100vw,600px)}   /* the doors fill the screen; the card keeps its tested portrait shape */
+html.wide .cover{--cw:min(100vw,600px);--u:calc(min(var(--cw),calc(var(--vh)*62))/1240)}   /* the doors fill the screen; the card keeps its tested portrait shape */
 html.wide .bar-in{max-width:1240px;margin:0 auto;height:58px;padding:0 28px}
 html.wide .menu ul,html.wide .menu-lang{max-width:560px;margin-inline:auto}
 html.wide .page{padding-top:76px;padding-bottom:76px}
@@ -1245,8 +1247,8 @@ set();window.addEventListener('resize',set);window.addEventListener('orientation
           <div class="env-slot">
             <div class="env-card" id="envCard">
               <div class="qrcard" id="qrcard" aria-hidden="true">
-                <div class="bank">ABA · KHQR</div>
-                <div class="acct">CHHAY LY LY<small>KHR · 089 991 211</small><small>USD · 018 868 809</small></div>
+                <div class="bank">KHQR</div>
+                <div class="acct">CHHAY LY LY</div>
                 <div id="qr"><img src="img/gift-qr.png" alt="ABA KHQR for CHHAY LY LY" width="660" height="660" data-save="img/gift-qr-full.jpg"></div>
                 <button type="button" class="btn solid qsave" id="saveQr">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>
