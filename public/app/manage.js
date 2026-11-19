@@ -251,11 +251,11 @@
   init();
 
   // ---------- guest photos (the couple's private album)
-  var photos = [], phOpen = null, phArm = false;
+  var photos = [], phOpen = null, phArm = false, phFile = null;
   function loadPhotos() {
     if (!state.ev) return;
     api('GET', '/api/photos?event=' + state.ev.id).then(function (d) {
-      photos = d.photos || []; paintPhotos();
+      photos = d.photos || []; paintPhotos(); if (!busy) resetAll();
     }).catch(function (e) { $('phGrid').textContent = e.message; });
   }
   function fmtWhen(iso) { try { return new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); } catch (e) { return iso; } }
@@ -279,6 +279,10 @@
     $('phImg').src = '/api/photos/' + p.id + '/full';
     $('phCap').textContent = who(p) + (p.name && p.guest && p.name !== p.guest ? ' (link: ' + p.guest + ')' : '') + ' · ' + fmtWhen(p.at);
     $('phDl').href = '/api/photos/' + p.id + '/full'; $('phDl').setAttribute('download', 'photo-' + p.id + '.jpg');
+    phFile = null;
+    if (phone) fetch('/api/photos/' + p.id + '/full').then(function (r) { return r.ok ? r.blob() : null; }).then(function (b) {
+      if (b && phOpen === p) phFile = new File([b], fileName(p, {}), { type: 'image/jpeg' });
+    }).catch(function () {});
     $('phBg').hidden = false;
   }
   function closePhoto() { $('phBg').hidden = true; $('phImg').removeAttribute('src'); phOpen = null; }
@@ -292,21 +296,31 @@
       photos = photos.filter(function (p) { return p.id !== id; }); paintPhotos(); closePhoto(); toast('Photo deleted');
     }).catch(function (e) { toast(e.message); });
   });
-  $('phReload').addEventListener('click', loadPhotos);
+  $('phReload').addEventListener('click', function () { resetAll(); loadPhotos(); });
+  $('phDl').addEventListener('click', function (e) {
+    if (inApp) { e.preventDefault(); toast('Open this page in Safari or Chrome to save photos.'); return; }
+    if (!phone) return;            // computers: the normal download
+    e.preventDefault();
+    if (!phFile) { toast('One moment, the photo is still loading…'); return; }
+    navigator.share({ files: [phFile] }).catch(function (er) { if (!er || er.name !== 'AbortError') toast('Could not open the save screen. Please try again.'); });
+  });
 
   // Download all: the photos are fetched one by one and packed into a single .zip file (no compression; JPEGs are already small).
   var CRC = (function () { var t = new Uint32Array(256); for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
   function crc32(u8) { var c = 0xffffffff; for (var i = 0; i < u8.length; i++) c = CRC[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; }
   function zip(files) {
-    var parts = [], central = [], off = 0, enc = new TextEncoder();
+    var parts = [], central = [], off = 0, enc = new TextEncoder(), d = new Date();
+    var DT = [(d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1), ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate()];
     files.forEach(function (f) {
       var name = enc.encode(f.name), crc = crc32(f.data), sz = f.data.length;
       var h = new DataView(new ArrayBuffer(30));
       h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(8, 0, true); h.setUint32(14, crc, true);
+      h.setUint16(10, DT[0], true); h.setUint16(12, DT[1], true);
       h.setUint32(18, sz, true); h.setUint32(22, sz, true); h.setUint16(26, name.length, true);
       parts.push(h.buffer, name, f.data);
       var c = new DataView(new ArrayBuffer(46));
       c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint32(16, crc, true);
+      c.setUint16(12, DT[0], true); c.setUint16(14, DT[1], true);
       c.setUint32(20, sz, true); c.setUint32(24, sz, true); c.setUint16(28, name.length, true); c.setUint32(42, off, true);
       central.push(c.buffer, name);
       off += 30 + name.length + sz;
@@ -317,25 +331,67 @@
     e.setUint32(12, csize, true); e.setUint32(16, off, true);
     return new Blob(parts.concat(central, [e.buffer]), { type: 'application/zip' });
   }
+  // Phones (iPhone Safari above all) only allow a download or share right after a tap, and a .zip ends up in Files, not Photos.
+  // So on phones the photos are prepared first (20 at a time), then a second tap opens the phone's share sheet -> "Save Images".
+  // Computers get one .zip file.
+  var BATCH = 20, phone = false;
+  try { phone = window.matchMedia('(pointer:coarse)').matches && !!navigator.canShare && navigator.canShare({ files: [new File([new Uint8Array(1)], 'x.jpg', { type: 'image/jpeg' })] }); } catch (e) { phone = false; }
+  var inApp = /FBAN|FBAV|FB_IAB|Instagram|Messenger|Line\/|Telegram|TikTok|MicroMessenger/i.test(navigator.userAgent);
+  var ready = null, start = 0, busy = false;
+  function fileName(p, used) {
+    var base = who(p).replace(/[\\\/:*?"<>|]+/g, '').trim().slice(0, 40) || 'guest', n = base, k = 1;
+    while (used[n]) n = base + '-' + (++k);
+    used[n] = 1; return n + '.jpg';
+  }
+  function fetchPhotos(list, label) {
+    var btn = $('phAll'), out = [], used = {}, i = 0;
+    return new Promise(function (done) {
+      (function next() {
+        if (i >= list.length) return done(out);
+        var p = list[i++]; btn.textContent = label + ' ' + i + ' / ' + list.length + '…';
+        fetch('/api/photos/' + p.id + '/full').then(function (r) { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(function (b) {
+          out.push({ name: fileName(p, used), data: new Uint8Array(b) }); next();
+        }).catch(function () { next(); });
+      })();
+    });
+  }
+  function resetAll() { ready = null; start = 0; busy = false; var b = $('phAll'); b.textContent = 'Download all'; b.disabled = !photos.length; }
+  function prepareBatch() {
+    var btn = $('phAll'), list = photos.slice(start, start + BATCH);
+    busy = true; btn.disabled = true;
+    fetchPhotos(list, 'Preparing').then(function (files) {
+      busy = false; btn.disabled = false;
+      if (!files.length) { toast('Could not load the photos. Please try again.'); resetAll(); return; }
+      ready = files.map(function (f) { return new File([f.data], f.name, { type: 'image/jpeg' }); });
+      btn.textContent = photos.length <= BATCH ? 'Save ' + ready.length + (ready.length > 1 ? ' photos' : ' photo')
+        : 'Save photos ' + (start + 1) + '–' + (start + list.length) + ' of ' + photos.length;
+    });
+  }
   $('phAll').addEventListener('click', function () {
-    if (!photos.length) return;
-    var btn = $('phAll'), list = photos.slice(), files = [], i = 0, used = {};
-    btn.disabled = true;
-    function next() {
-      if (i >= list.length) {
-        var blob = zip(files), a = document.createElement('a');
-        a.href = URL.createObjectURL(blob); a.download = (state.slug || 'photos') + '-guest-photos.zip';
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(function () { URL.revokeObjectURL(a.href); }, 60000);
-        btn.textContent = 'Download all'; btn.disabled = false; return;
-      }
-      var p = list[i++]; btn.textContent = 'Preparing ' + i + ' / ' + list.length + '…';
-      fetch('/api/photos/' + p.id + '/full').then(function (r) { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(function (b) {
-        var base = who(p).replace(/[\\\/:*?"<>|]+/g, '').slice(0, 40) || 'guest', n = base, k = 1;
-        while (used[n]) n = base + '-' + (++k);
-        used[n] = 1; files.push({ name: n + '.jpg', data: new Uint8Array(b) }); next();
-      }).catch(function () { next(); });
+    if (!photos.length || busy) return;
+    if (inApp) { toast('Open this page in Safari or Chrome to save photos.'); return; }
+    var btn = $('phAll');
+    if (!phone) {   // computer: one zip
+      busy = true; btn.disabled = true;
+      fetchPhotos(photos.slice(), 'Preparing').then(function (files) {
+        if (files.length) {
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(zip(files)); a.download = (state.slug || 'photos') + '-guest-photos.zip';
+          document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(function () { URL.revokeObjectURL(a.href); }, 60000);
+        } else toast('Could not load the photos. Please try again.');
+        resetAll();
+      });
+      return;
     }
-    next();
+    if (!ready) { prepareBatch(); return; }   // phone, first tap: get this batch ready
+    navigator.share({ files: ready }).then(function () {   // phone, second tap: the share sheet -> Save Images
+      start += BATCH; ready = null;
+      if (start < photos.length) { toast('Saved. Getting the next photos ready…'); prepareBatch(); }
+      else { toast('All photos saved'); resetAll(); }
+    }).catch(function (e) {
+      if (e && e.name === 'AbortError') return;   // closed the share sheet: keep this batch ready
+      toast('Could not open the save screen. Please try again.'); ready = null; btn.textContent = 'Download all';
+    });
   });
 })();
